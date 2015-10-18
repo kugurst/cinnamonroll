@@ -3,6 +3,9 @@
 
 - Switch backgrounds for each section of my site
 - Transition backgrounds (and also view?)
+- SEARCH!!!
+- Navigation bar
+  - Breadcrumbs?
 
 ## Layout
 
@@ -18,4 +21,3 @@
 - Content
   - Commentary on things that I've read
 
-### Site wide
