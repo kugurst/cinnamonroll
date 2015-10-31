@@ -31,5 +31,6 @@ module Cinnamonroll
     # config.generators do |g|
     #   g.orm :mongoid
     # end
+    config.autoload_paths << Rails.root.join('vendor/assets')
   end
 end

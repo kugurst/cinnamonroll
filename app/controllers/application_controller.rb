@@ -6,4 +6,8 @@ class ApplicationController < ActionController::Base
   def hello
     render text: "hello, world!"
   end
+
+  require_dependency Rails.root.join('vendor/assets/PasswordHash.rb')
+
+  BANNER = "********************************"
 end
