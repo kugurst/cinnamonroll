@@ -31,6 +31,9 @@ module Cinnamonroll
     # config.generators do |g|
     #   g.orm :mongoid
     # end
-    config.autoload_paths << Rails.root.join('vendor/assets')
+    # config.autoload_paths << Rails.root.join('vendor/assets')
+    config.autoload_paths << Rails.root.join('lib')
+    config.autoload_paths << Rails.root.join('vendor')
+    # config.eager_load_paths += ["#{Rails.root}/lib}"]
   end
 end

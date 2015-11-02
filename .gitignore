@@ -95,3 +95,4 @@ bower.json
 ~*
 *#*#
 *solr/
+node_modules

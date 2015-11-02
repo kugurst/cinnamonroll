@@ -15,4 +15,6 @@
 //= require angular
 //= require angular-animate
 //= require turbolinks
+//= require console
+//= require encrypt
 //= require_tree .

@@ -10,6 +10,8 @@ class CommentsController < ApplicationController
   # GET /comments/1
   # GET /comments/1.json
   def show
+    @enc_comment = Comment.new
+
   end
 
   # GET /comments/new
@@ -24,7 +26,12 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    @comment = Comment.new(comment_params)
+    ap = aes_params
+    cp = comment_params
+
+    cp[:body] = Encrypt::AES.decrypt_base64 cp[:body], ap[:iv], ap[:key]
+
+    @comment = Comment.new(cp)
 
     respond_to do |format|
       if @comment.save
@@ -70,5 +77,9 @@ class CommentsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def comment_params
       params.require(:comment).permit(:body, :user, :created_at, :modified_at, :comments)
+    end
+
+    def aes_params
+      params.require(:aes).permit(:iv, :key)
     end
 end

@@ -7,7 +7,7 @@ Rails.application.configure do
   config.cache_classes = false
 
   class Application < Rails::Application
-    config.web_console.whitelisted_ips = '192.168.1.0/24'
+    config.web_console.whitelisted_ips = '192.168.56.0/24'
   end
 
   # Do not eager load code on boot.
@@ -39,4 +39,6 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  config.assets.compress = true
 end
