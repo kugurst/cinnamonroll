@@ -1,0 +1,20 @@
+#-*- mode: org -*-
+#+STARTUP: showall
+
+* Configuration Notes
+  + See -config/application.rb- to add =PasswordHash.rb= to the list of files to load
+  + See -config/environments/development.rb- to set the networks allowed to access the web console
+  + See -app/controllers/application_controller.rb- to set files that will be reloaded when changed.
+  + See -config/boot.rb- to change the =rails server= bind address.
+
+* Practices
+  + Place precompiled javascript files in -public/js-
+    + Include these files by referencing ="/js/..."=
+
+* Security
+** Encryption Scheme
+   + The client makes the RSA key.
+   + The client sends a request.
+     + If the client doesn't have an AES key, it sends a request to the server
+   + The client decrypts the AES key using its private key, and then encrypts using the key and random IV.
+   + Duplex communication is formed by server and client generating their own IV per communication.
