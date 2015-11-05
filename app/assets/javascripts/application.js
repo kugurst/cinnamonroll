@@ -15,6 +15,8 @@
 //= require angular
 //= require angular-animate
 //= require turbolinks
+//= require forge.min.js
+//= require js-routes
 //= require console
 //= require encrypt
 //= require_tree .

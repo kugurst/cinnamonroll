@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :posts
   resources :users
   get '/security/new', to: 'security#new'
+  post '/security/post_rsa_key', to: 'security#post_rsa_key'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

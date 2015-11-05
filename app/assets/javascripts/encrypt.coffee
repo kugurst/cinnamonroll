@@ -1,20 +1,68 @@
+# Module definition #
+@cinnamonroll = {} if !@cinnamonroll
+@cinnamonroll.sec = {}
+cs = @cinnamonroll.sec
+rsa = forge.pki.rsa
+
+# Constant declaration #
 AES_PARAMS = "aes"
+RSA_PARAM = "rsa"
 IV_PARAM = "iv"
 KEY_PARAM = "key"
-AES_IV_PARAM = AES_PARAMS + "[" + IV_PARAM + "]"
-AES_KEY_PARAM = AES_PARAMS + "[" + KEY_PARAM + "]"
+AES_IV_PARAM = AES_PARAMS + "_" + IV_PARAM
+AES_KEY_PARAM = AES_PARAMS + "_" + KEY_PARAM
+RSA_PAIR_PARAM = RSA_PARAM + "_" + KEY_PARAM
+REJECTED_FORM_KEYS = ["commit", "authenticity_token", "utf8", AES_IV_PARAM]
+APPROVED_FORM_ELEMENT_TYPES = ["text"]
+MAX_ATTEMPTS = 3
 
+# Utility functions #
+storageAvailable = (type) ->
+  try
+    storage = window[type]
+    x = '__storage_test__'
+    storage.setItem x, x
+    storage.removeItem x
+    true
+  catch
+    false
+
+isLocalStorageAvailable = ->
+  storageAvailable 'localStorage'
+
+## Keys that are not to be encrypted, either because they're rails values or something else
 isRejectedInputElement = (name) ->
-  rejected = ["commit", "authenticity_token", "utf8", AES_IV_PARAM]
-  rejected.indexOf(name.toLowerCase()) >= 0
+  REJECTED_FORM_KEYS.indexOf(name.toLowerCase()) >= 0
 
-
+## Elements that are allowed to be encrypted
 isApprovedInputElementType = (type) ->
-  approved = ["text"]
-  approved.indexOf(type.toLowerCase()) >= 0
+  APPROVED_FORM_ELEMENT_TYPES.indexOf(type.toLowerCase()) >= 0
+
+# Module function definitions #
+@cinnamonroll.sec.send_pk = (success_func, fail_func, attempt = 0) ->
+  cs.rsa_pair = rsa.generateKeyPair bits: 2048, workers: -1 if !cs.rsa_pair
+  n64 = forge.util.encode64 cs.rsa_pair.publicKey.n.toString()
+  e64 = forge.util.encode64 cs.rsa_pair.publicKey.e.toString()
+
+  jqxhr = $.ajax({
+    type: "POST"
+    url: Routes.security_post_rsa_key_path()
+    data: { "#{RSA_PAIR_PARAM}": { n: n64, e: e64 } }
+  }).done((data, status, jq) ->
+    success_func data, status, jq
+  ).fail((jq, status, e) ->
+    console.log "attempts: #{attempt}"
+    if attempt < MAX_ATTEMPTS
+      cs.send_pk success_func, fail_func, attempt + 1
+    else
+      fail_func jq, status, e
+  )
+
+@cinnamonroll.sec.req_aes_key = ->
+  cs.send_pk cs.recv_aes_key, cs.set_no_enc if !cs.rsa_pair
 
 # Returns a byte array containing the decrypted base64 string
-decrypt = (string, key, iv) ->
+@cinnamonroll.sec.decrypt = (string, key, iv) ->
   decipher = forge.cipher.createDecipher 'AES-CBC', key
   encrypted = forge.util.decode64 string
   decipher.start {iv: iv}
@@ -23,14 +71,14 @@ decrypt = (string, key, iv) ->
   decipher.output.toString 'utf8'
 
 # Returns a base64 string representing the given string
-encryptString = (string, key, iv) ->
+@cinnamonroll.sec.encryptString = (string, key, iv) ->
   cipher = forge.cipher.createCipher 'AES-CBC', key
   cipher.start {iv: iv}
   cipher.update forge.util.createBuffer(string, 'utf8')
   cipher.finish()
   forge.util.encode64 cipher.output.getBytes()
 
-encryptForm = ->
+@cinnamonroll.sec.encryptForm = ->
   stack = new Array()
   key = forge.random.getBytesSync 32
   iv = forge.random.getBytesSync 32
@@ -45,10 +93,24 @@ encryptForm = ->
       if !isRejectedInputElement next.name
         # For supported a wide variety of types
         if isApprovedInputElementType next.type
-          next.value = encryptString next.value, key, iv
-          consolePrint decrypt(next.value, key, iv)
+          next.value = cs.encryptString next.value, key, iv
+          # @consolePrint decrypt(next.value, key, iv)
 
     # Add the iv to the form
     document.forms[0][AES_IV_PARAM].value = forge.util.encode64 iv
     document.forms[0][AES_KEY_PARAM].value = forge.util.encode64 key
   true
+
+# Module variable definitions #
+@cinnamonroll.sec.NO_ENCRYPTION = false
+
+# If we don't have an aes key, load it or request one
+if !@cinnamonroll.sec.aes_key
+  if isLocalStorageAvailable
+    key = localStorage.getItem AES_KEY_PARAM
+    if key
+      cs.aes_key = forge.util.decode64 key
+    else
+      cs.req_aes_key()
+  else
+    cs.req_aes_key()

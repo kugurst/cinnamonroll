@@ -1,0 +1,3 @@
+[submodule "scratch/rsa"]
+	path = scratch/rsa
+	url = https://github.com/bendiken/rsa.git
