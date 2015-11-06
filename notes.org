@@ -7,6 +7,9 @@
   + See -app/controllers/application_controller.rb- to set files that will be reloaded when changed.
   + See -config/boot.rb- to change the =rails server= bind address.
 
+* Things to avoid
+  + Text in the session only
+
 * Practices
   + Place precompiled javascript files in -public/js-
     + Include these files by referencing ="/js/..."=

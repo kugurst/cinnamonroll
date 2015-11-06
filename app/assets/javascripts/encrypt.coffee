@@ -12,6 +12,8 @@ KEY_PARAM = "key"
 AES_IV_PARAM = AES_PARAMS + "_" + IV_PARAM
 AES_KEY_PARAM = AES_PARAMS + "_" + KEY_PARAM
 RSA_PAIR_PARAM = RSA_PARAM + "_" + KEY_PARAM
+RSA_MODULUS_PARAM = "modulus"
+RSA_EXPONENT_PARAM = "exponent"
 REJECTED_FORM_KEYS = ["commit", "authenticity_token", "utf8", AES_IV_PARAM]
 APPROVED_FORM_ELEMENT_TYPES = ["text"]
 MAX_ATTEMPTS = 3
@@ -54,7 +56,7 @@ onPageLoad = (func, args...) ->
   jqxhr = $.ajax {
     type: "POST"
     url: Routes.security_post_rsa_key_path()
-    data: { "#{RSA_PAIR_PARAM}": { n: n64, e: e64 } }
+    data: { "#{RSA_PAIR_PARAM}": { "#{RSA_MODULUS_PARAM}": n64, "#{RSA_EXPONENT_PARAM}": e64 } }
   }
   .done (data, status, jq) ->
     success_func data, status, jq
@@ -71,9 +73,11 @@ onPageLoad = (func, args...) ->
   }
   .done (dat, stat, j) ->
     js = JSON.parse dat
-    cs.aes_key = forge.util.decode64 js[AES_KEY_PARAM]
+    raes = forge.util.decode64 js[AES_KEY_PARAM]
+    aes_key_64 = cs.rsa_pair.privateKey.decrypt raes
+    cs.aes_key = forge.util.decode64 aes_key_64
     if isLocalStorageAvailable
-      localStorage.setItem AES_KEY_PARAM, cs.aes_key
+      localStorage.setItem AES_KEY_PARAM, aes_key_64
   .fail (j, stat, e) ->
     if attempt < MAX_ATTEMPTS
       cs.recv_aes_key data, status, jq, attempt + 1

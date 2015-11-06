@@ -2,8 +2,8 @@ class SecurityController < ApplicationController
   # same constant as in encrypt.coffee
   RSA_KEY_PARAM = :rsa_key
   AES_KEY_PARAM = :aes_key
-  RSA_MODULUS_PARAM = :n
-  RSA_EXPONENT_PARAM = :e
+  RSA_MODULUS_PARAM = :modulus
+  RSA_EXPONENT_PARAM = :exponent
 
   skip_before_action :require_aes_key!, only: :new
 
@@ -17,27 +17,26 @@ class SecurityController < ApplicationController
     if !rkp.key?(RSA_MODULUS_PARAM) || !rkp.key?(RSA_EXPONENT_PARAM)
       head :bad_request
     else
-      begin
-        session[RSA_KEY_PARAM] = SecurityHelper.reconstruct_rsa_pub_key rkp[RSA_MODULUS_PARAM], rkp[RSA_EXPONENT_PARAM]
-      rescue
-        head 420
-      else
-        render nothing: true
-      end
+      session[RSA_MODULUS_PARAM] = rkp[RSA_MODULUS_PARAM]
+      session[RSA_EXPONENT_PARAM] = rkp[RSA_EXPONENT_PARAM]
+      render nothing: true
     end
   end
 
   def get_aes_key
     k64 = Base64.strict_encode64 SecurityHelper.generate_aes_key
     session[AES_KEY_PARAM] = k64
+    rsa_key = SecurityHelper.reconstruct_rsa_pub_key session[RSA_MODULUS_PARAM], session[RSA_EXPONENT_PARAM]
+    aes_enc = rsa_key.public_encrypt k64
+    a64 = Base64.strict_encode64 aes_enc
     jeb = Jbuilder.new do |json|
-      json.set! AES_KEY_PARAM, k64
+      json.set! AES_KEY_PARAM, a64
     end
     render plain: jeb.target!
   end
 
   private
     def rsa_key_params
-      params.require(RSA_KEY_PARAM).permit(:n, :e)
+      params.require(RSA_KEY_PARAM).permit(RSA_MODULUS_PARAM, RSA_EXPONENT_PARAM)
     end
 end
