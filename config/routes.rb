@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :users
   get '/security/new', to: 'security#new'
   post '/security/post_rsa_key', to: 'security#post_rsa_key'
+  get '/security/get_aes_key', to: 'security#get_aes_key'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

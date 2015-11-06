@@ -1,11 +1,11 @@
 class SecurityController < ApplicationController
   # same constant as in encrypt.coffee
   RSA_KEY_PARAM = :rsa_key
+  AES_KEY_PARAM = :aes_key
   RSA_MODULUS_PARAM = :n
   RSA_EXPONENT_PARAM = :e
 
   skip_before_action :require_aes_key!, only: :new
-  skip_before_action :verify_authenticity_token, only: :new
 
   def new
     render js: "alert('Hello Rails')"
@@ -28,8 +28,12 @@ class SecurityController < ApplicationController
   end
 
   def get_aes_key
-    key = SecurityHelper.generate_aes_key
-    render nothing: true
+    k64 = Base64.strict_encode64 SecurityHelper.generate_aes_key
+    session[AES_KEY_PARAM] = k64
+    jeb = Jbuilder.new do |json|
+      json.set! AES_KEY_PARAM, k64
+    end
+    render plain: jeb.target!
   end
 
   private
