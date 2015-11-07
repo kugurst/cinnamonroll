@@ -1,0 +1,1 @@
+../../../foundation-rails/vendor/assets/javascripts/vendor/modernizr.js

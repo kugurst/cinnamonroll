@@ -5,6 +5,7 @@ gem 'rails', '4.2.4'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 gem 'compass-rails'
+gem 'foundation-rails', '~> 5.5.1.0'
 # Mongoid for database
 gem 'mongoid', '~> 5.0.0'
 gem 'sunspot_mongo'

@@ -12,11 +12,16 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require angular
-//= require angular-animate
+// require foundation
+// require angular
+// require angular-animate
 //= require turbolinks
-//= require forge.min.js
 //= require js-routes
-//= require console
-//= require encrypt
-//= require_tree .
+//= require base/console
+//= require base/encrypt
+//= require modernizr
+//= require foundation/foundation
+//= require foundation
+// require_tree .
+
+$(document).foundation();

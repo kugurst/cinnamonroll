@@ -1,3 +1,6 @@
 [submodule "scratch/rsa"]
 	path = scratch/rsa
 	url = https://github.com/bendiken/rsa.git
+[submodule "foundation-rails"]
+	path = foundation-rails
+	url = https://github.com/zurb/foundation-rails/
