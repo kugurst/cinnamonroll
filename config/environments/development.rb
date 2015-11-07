@@ -41,4 +41,7 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   config.assets.compress = true
+
+  config.assets.compile = true
+  config.serve_static_files = true
 end

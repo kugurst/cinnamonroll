@@ -2,9 +2,15 @@ Rails.application.routes.draw do
   resources :comments
   resources :posts
   resources :users
-  get '/security/new', to: 'security#new'
-  post '/security/post_rsa_key', to: 'security#post_rsa_key'
-  get '/security/get_aes_key', to: 'security#get_aes_key'
+
+  post 'security/post_rsa_key', to: 'security#post_rsa_key'
+  get 'security/get_aes_key', to: 'security#get_aes_key'
+
+  get 'login', to: 'session#new'
+  post 'login', to: 'session#create'
+  delete 'logout', to: 'session#destroy'
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

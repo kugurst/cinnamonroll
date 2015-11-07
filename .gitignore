@@ -97,3 +97,4 @@ bower.json
 *solr/
 node_modules
 npm-debug.log
+public/assets*

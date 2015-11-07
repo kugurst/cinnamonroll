@@ -11,3 +11,5 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.precompile += %w( search.js )
 
 # Rails.application.config.assets.precompile += %w( encrypt.js )
+Rails.application.config.assets.precompile += %w( styles/* )
+Rails.application.config.assets.precompile += %w( pages/* )

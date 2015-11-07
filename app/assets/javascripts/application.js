@@ -22,6 +22,6 @@
 //= require modernizr
 //= require foundation/foundation
 //= require foundation
-// require_tree .
+//= require_tree .
 
 $(document).foundation();
