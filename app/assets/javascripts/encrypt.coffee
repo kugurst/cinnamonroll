@@ -108,6 +108,9 @@ onPageLoad = (func, args...) ->
   forge.util.encode64 cipher.output.getBytes()
 
 @cinnamonroll.sec.encrypt_form = ->
+  if cs.NO_ENCRYPTION
+    return true
+
   stack = new Array()
   key = forge.random.getBytesSync 32
   iv = forge.random.getBytesSync 32

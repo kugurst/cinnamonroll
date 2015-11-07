@@ -43,18 +43,17 @@ module PasswordHash
   SECTION_DELIMITER = ':'
   SALT_INDEX = 0
   HASH_INDEX = 1
-  DIGEST = OpenSSL::Digest::SHA256.new
 
   # Returns a salted PBKDF2 hash of the password.
   def self.createHash( password )
-    DIGEST.reset
+    dig = OpenSSL::Digest::SHA256.new
     salt = SecureRandom.base64( SALT_BYTE_SIZE )
     pbkdf2 = OpenSSL::PKCS5::pbkdf2_hmac(
       password,
       salt,
       PBKDF2_ITERATIONS,
       HASH_BYTE_SIZE,
-      DIGEST
+      dig
     )
     return [salt, Base64.encode64( pbkdf2 )].join( SECTION_DELIMITER )
   end
@@ -78,14 +77,14 @@ module PasswordHash
     puts params.length
     return false if params.length != HASH_SECTIONS
 
-    DIGEST.reset
+    dig = OpenSSL::Digest::SHA256.new
     pbkdf2 = Base64.decode64( params[HASH_INDEX] )
     testHash = OpenSSL::PKCS5::pbkdf2_hmac(
       password,
       params[SALT_INDEX],
       PBKDF2_ITERATIONS,
       pbkdf2.length,
-      DIGEST
+      dig
     )
 
     return eql_time_cmp(testHash, pbkdf2)

@@ -24,9 +24,9 @@ class SecurityController < ApplicationController
   end
 
   def get_aes_key
-    k64 = Base64.strict_encode64 SecurityHelper.generate_aes_key
+    k64 = Base64.strict_encode64 Encrypt::AES.generate_aes_key
     session[AES_KEY_PARAM] = k64
-    rsa_key = SecurityHelper.reconstruct_rsa_pub_key session[RSA_MODULUS_PARAM], session[RSA_EXPONENT_PARAM]
+    rsa_key = Encrypt::RSA.reconstruct_rsa_pub_key session[RSA_MODULUS_PARAM], session[RSA_EXPONENT_PARAM]
     aes_enc = rsa_key.public_encrypt k64
     a64 = Base64.strict_encode64 aes_enc
     jeb = Jbuilder.new do |json|

@@ -23,4 +23,6 @@ module SecurityHelper
     cipher.encrypt
     cipher.random_key
   end
+
+  include PasswordHash
 end
