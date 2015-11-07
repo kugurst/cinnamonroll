@@ -4,6 +4,7 @@
 cs = @cinnamonroll.sec
 rsa = forge.pki.rsa
 
+
 # Constant declaration #
 AES_PARAMS = "aes"
 RSA_PARAM = "rsa"
@@ -11,12 +12,16 @@ IV_PARAM = "iv"
 KEY_PARAM = "key"
 AES_IV_PARAM = AES_PARAMS + "_" + IV_PARAM
 AES_KEY_PARAM = AES_PARAMS + "_" + KEY_PARAM
-RSA_PAIR_PARAM = RSA_PARAM + "_" + KEY_PARAM
+RSA_KEY_PARAM = RSA_PARAM + "_" + KEY_PARAM
 RSA_MODULUS_PARAM = "modulus"
 RSA_EXPONENT_PARAM = "exponent"
+ENC_PARAM = "enc"
+ACTIVE_PARAM = "active"
+ENC_ACTIVE_PARAM = ENC_PARAM + "_" + ACTIVE_PARAM
 REJECTED_FORM_KEYS = ["commit", "authenticity_token", "utf8", AES_IV_PARAM]
-APPROVED_FORM_ELEMENT_TYPES = ["text"]
+APPROVED_FORM_ELEMENT_TYPES = ["text", "password", "email"]
 MAX_ATTEMPTS = 3
+
 
 # Environment Setup #
 
@@ -42,9 +47,9 @@ isRejectedInputElement = (name) ->
 isApprovedInputElementType = (type) ->
   APPROVED_FORM_ELEMENT_TYPES.indexOf(type.toLowerCase()) >= 0
 
-onPageLoad = (func, args...) ->
-  $(document).ready -> func args...
-  $(document).on 'page:load', -> func args...
+onPageLoad = (func) ->
+  $(document).ready -> func()
+  $(document).on 'page:load', -> func()
 
 
 # Module function definitions #
@@ -56,7 +61,7 @@ onPageLoad = (func, args...) ->
   jqxhr = $.ajax {
     type: "POST"
     url: Routes.security_post_rsa_key_path()
-    data: { "#{RSA_PAIR_PARAM}": { "#{RSA_MODULUS_PARAM}": n64, "#{RSA_EXPONENT_PARAM}": e64 } }
+    data: { "#{RSA_PARAM}": { "#{RSA_MODULUS_PARAM}": n64, "#{RSA_EXPONENT_PARAM}": e64 } }
   }
   .done (data, status, jq) ->
     success_func data, status, jq
@@ -86,6 +91,9 @@ onPageLoad = (func, args...) ->
 
 @cinnamonroll.sec.set_no_enc = ->
   cs.NO_ENCRYPTION = true
+  # Record for future prosperity
+  if storageAvailable 'sessionStorage'
+    sessionStorage.setItem ENC_ACTIVE_PARAM, JSON.stringify cs.NO_ENCRYPTION
 
 @cinnamonroll.sec.req_aes_key = ->
   cs.send_pk cs.recv_aes_key, cs.set_no_enc if !cs.rsa_pair
@@ -109,10 +117,16 @@ onPageLoad = (func, args...) ->
 
 @cinnamonroll.sec.encrypt_form = ->
   if cs.NO_ENCRYPTION
+    # Add the no_enc field to the form
+    $('<input type="hidden">').attr {
+      id: "#{ENC_PARAM}_#{ACTIVE_PARAM}"
+      name: "#{ENC_PARAM}[#{ACTIVE_PARAM}]"
+      value: "false"
+    }
+    .appendTo 'form'
     return true
 
   stack = new Array()
-  key = forge.random.getBytesSync 32
   iv = forge.random.getBytesSync 32
 
   stack.push(document.forms)
@@ -125,16 +139,32 @@ onPageLoad = (func, args...) ->
       if !isRejectedInputElement next.name
         # For supported a wide variety of types
         if isApprovedInputElementType next.type
-          next.value = cs.encrypt_string next.value, key, iv
+          next.value = cs.encrypt_string next.value, cs.aes_key, iv
           # @consolePrint decrypt(next.value, key, iv)
+        else
+          console.log next.type
 
-    # Add the iv to the form
-    document.forms[0][AES_IV_PARAM].value = forge.util.encode64 iv
-    document.forms[0][AES_KEY_PARAM].value = forge.util.encode64 key
+  # Add the iv to the form
+  $('<input type="hidden">').attr {
+    id: "#{AES_PARAMS}_#{IV_PARAM}"
+    name: "#{AES_PARAMS}[#{IV_PARAM}]"
+    value: "#{forge.util.encode64 iv}"
+  }
+  .appendTo 'form'
   true
 
-# Module variable definitions #
-@cinnamonroll.sec.NO_ENCRYPTION = false
+
+# Static code
+# Check if we are encrypting this session
+if !@cinnamonroll.sec.NO_ENCRYPTION
+  if storageAvailable 'sessionStorage'
+    cs.NO_ENCRYPTION = sessionStorage.getItem ENC_ACTIVE_PARAM
+    if !cs.NO_ENCRYPTION
+      cs.NO_ENCRYPTION = false
+    else
+      cs.NO_ENCRYPTION = JSON.parse cs.NO_ENCRYPTION
+  else
+    cs.NO_ENCRYPTION = false
 
 # If we don't have an aes key, load it or request one
 if !@cinnamonroll.sec.aes_key
@@ -146,3 +176,6 @@ if !@cinnamonroll.sec.aes_key
       onPageLoad cs.req_aes_key
   else
     onPageLoad cs.req_aes_key
+
+# Encrypt all forms on the page on submit
+onPageLoad -> $('form').attr 'onsubmit', "return cinnamonroll.sec.encrypt_form()"

@@ -78,8 +78,4 @@ class CommentsController < ApplicationController
     def comment_params
       params.require(:comment).permit(:body, :user, :created_at, :modified_at, :comments)
     end
-
-    def aes_params
-      params.require(:aes).permit(:iv, :key)
-    end
 end

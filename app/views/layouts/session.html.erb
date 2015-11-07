@@ -1,8 +1,0 @@
-<% content_for :head do %>
-  <% if Rails.env == 'production' %>
-    <%= stylesheet_link_tag 'styles/session' %>
-    <%= javascript_include_tag 'pages/session' %>
-  <% end  %>
-<% end %>
-<%= render template: "layouts/application" %>
-<p> hello </p>

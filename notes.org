@@ -21,3 +21,11 @@
      + If the client doesn't have an AES key, it sends a request to the server
    + The client decrypts the AES key using its private key, and then encrypts using the key and random IV.
    + Duplex communication is formed by server and client generating their own IV per communication.
+
+* TODO List
+** TODO encrypt.coffee
+*** DONE Add that we are not encrypting to the sessionStorage (cinnamonroll.sec.NO_ENCRYPTION should go in sessionStorage)
+*** TODO Check to see if cinnamonroll.sec.NO_ENCRYPTION is true before attempting to request an AES key (prevents clients that can't generate a key from repeatedly generating an RSA key)
+*** TODO refactor the static code portion
+** TODO comments_controller.rb
+*** TODO Get the AES key from the session, not params

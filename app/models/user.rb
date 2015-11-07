@@ -25,6 +25,10 @@ class User
     super Encrypt::Password.createHash pass
   end
 
+  def email=(em)
+    super em.downcase()
+  end
+
   def valid_pass?(test_pass)
     Encrypt::Password.validatePassword self.password test_pass
   end
