@@ -181,7 +181,9 @@ jQuery.fn.preventDoubleSubmission = ->
 # Static code
 # Check if we are encrypting this session
 if !@cinnamonroll.sec.NO_ENCRYPTION
-  if storageAvailable 'sessionStorage'
+  if `window.location.protocol == "https:"`
+    cs.NO_ENCRYPTION = true
+  else if storageAvailable 'sessionStorage'
     cs.NO_ENCRYPTION = sessionStorage.getItem ENC_ACTIVE_PARAM
     if !cs.NO_ENCRYPTION
       cs.NO_ENCRYPTION = false
@@ -192,14 +194,16 @@ if !@cinnamonroll.sec.NO_ENCRYPTION
 
 # If we don't have an aes key, load it or request one
 if !@cinnamonroll.sec.aes_key
-  if isLocalStorageAvailable
-    key = localStorage.getItem AES_KEY_PARAM
-    if key
-      cs.aes_key = forge.util.decode64 key
+  # Only if we are encrypting
+  unless cs.NO_ENCRYPTION
+    if isLocalStorageAvailable
+      key = localStorage.getItem AES_KEY_PARAM
+      if key
+        cs.aes_key = forge.util.decode64 key
+      else
+        onPageLoad cs.req_aes_key
     else
       onPageLoad cs.req_aes_key
-  else
-    onPageLoad cs.req_aes_key
 
 # Encrypt all forms on the page on submit
 # onPageLoad -> $('form').attr 'onsubmit', "return cinnamonroll.sec.encrypt_form(this)"
