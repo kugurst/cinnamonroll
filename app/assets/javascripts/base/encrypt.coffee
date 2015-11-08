@@ -25,6 +25,7 @@ MAX_ATTEMPTS = 3
 
 # Environment Setup #
 
+
 # Utility functions #
 storageAvailable = (type) ->
   try
@@ -50,6 +51,20 @@ isApprovedInputElementType = (type) ->
 onPageLoad = (func) ->
   $(document).ready -> func()
   $(document).on 'page:load', -> func()
+
+jQuery.fn.preventDoubleSubmission = ->
+  $(this).on 'submit', (e) ->
+    $form = $(this)
+
+    if $form.data('submitted') == true
+      # Previously submitted - don't submit again
+      e.preventDefault();
+    else
+      # Mark it so that the next submit can be ignored
+      $form.data 'submitted', true
+
+  # Keep chainability
+  this
 
 
 # Module function definitions #
@@ -115,7 +130,7 @@ onPageLoad = (func) ->
   cipher.finish()
   forge.util.encode64 cipher.output.getBytes()
 
-@cinnamonroll.sec.encrypt_form = ->
+@cinnamonroll.sec.encrypt_form = (attachedForm) ->
   if cs.NO_ENCRYPTION
     # Add the no_enc field to the form
     $('<input type="hidden">').attr {
@@ -139,10 +154,19 @@ onPageLoad = (func) ->
       if !isRejectedInputElement next.name
         # For supported a wide variety of types
         if isApprovedInputElementType next.type
-          next.value = cs.encrypt_string next.value, cs.aes_key, iv
+          # console.log "next name: #{next.name}, next id: #{next.id}"
+          # console.log "attached form: #{attachedForm}, attached form id: #{attachedForm.id}, type: #{attachedForm.type}"
+          $('<input type="hidden">').attr {
+            id: "#{ENC_PARAM}_#{next.id}"
+            name: "#{ENC_PARAM}[#{next.name}]"
+            value: "#{cs.encrypt_string next.value, cs.aes_key, iv}"
+          }
+          .appendTo attachedForm
+          # next.value = cs.encrypt_string next.value, cs.aes_key, iv
+          next.disabled = true
           # @consolePrint decrypt(next.value, key, iv)
-        else
-          console.log next.type
+        # else
+        #   console.log next.type
 
   # Add the iv to the form
   $('<input type="hidden">').attr {
@@ -150,7 +174,7 @@ onPageLoad = (func) ->
     name: "#{AES_PARAMS}[#{IV_PARAM}]"
     value: "#{forge.util.encode64 iv}"
   }
-  .appendTo 'form'
+  .appendTo attachedForm
   true
 
 
@@ -178,4 +202,6 @@ if !@cinnamonroll.sec.aes_key
     onPageLoad cs.req_aes_key
 
 # Encrypt all forms on the page on submit
-onPageLoad -> $('form').attr 'onsubmit', "return cinnamonroll.sec.encrypt_form()"
+# onPageLoad -> $('form').attr 'onsubmit', "return cinnamonroll.sec.encrypt_form(this)"
+onPageLoad -> $('form').preventDoubleSubmission().submit ->
+  cs.encrypt_form this

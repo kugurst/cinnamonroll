@@ -6,6 +6,7 @@
   + See -config/environments/development.rb- to set the networks allowed to access the web console
   + See -app/controllers/application_controller.rb- to set files that will be reloaded when changed.
   + See -config/boot.rb- to change the =rails server= bind address.
+  + See -app/controllers/application_controller.rb- to configure what happens when not permitted parameters are encounterd  =ActionController::Parameters.action_on_unpermitted_parameters = false=
 
 * Things to avoid
   + Text in the session only
@@ -27,6 +28,7 @@
 *** DONE Add that we are not encrypting to the sessionStorage (cinnamonroll.sec.NO_ENCRYPTION should go in sessionStorage)
 *** TODO Check to see if cinnamonroll.sec.NO_ENCRYPTION is true before attempting to request an AES key (prevents clients that can't generate a key from repeatedly generating an RSA key)
 *** TODO refactor the static code portion
-*** TODO dynamically add "enc_" fields to forms so as not to screw up the actual forms on submission
+*** DONE dynamically add "enc_" fields to forms so as not to screw up the actual forms on submission
+*** TODO set encryption to false if HTTPS is active
 ** comments_controller.rb **
 *** DONE Get the AES key from the session, not params

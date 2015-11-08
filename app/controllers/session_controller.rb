@@ -6,11 +6,9 @@ class SessionController < ApplicationController
 
   def create
     lp = login_params
+    decrypt_params! lp
+    puts lp
 
-    if enc_active?
-      ap = aes_params
-      Encrypt::AES.decrypt_params_from_base64! lp, ap[IV_PARAM], session[AES_KEY_PARAM]
-    end
     begin
       user = User.find_by email: lp[:email_or_username].downcase
     rescue Mongoid::Errors::DocumentNotFound
@@ -40,6 +38,6 @@ class SessionController < ApplicationController
 
   private
     def login_params
-      params.require(:session).permit(:password, :email_or_username)
+      enc_require(:session).permit(:password, :email_or_username)
     end
 end

@@ -17,8 +17,6 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  # before_action :require_aes_key!
-
   def hello
     render text: "hello, world!"
   end
@@ -26,6 +24,9 @@ class ApplicationController < ActionController::Base
   # require_dependency Rails.root.join('vendor/PasswordHash.rb')
 
   BANNER = "********************************"
+
+  # Silence the unpermitted message
+  ActionController::Parameters.action_on_unpermitted_parameters = false
 
   private
     def set_return_point(path, overwrite = false)
@@ -58,6 +59,20 @@ class ApplicationController < ActionController::Base
         !enc_params().key?(ACTIVE_PARAM)
       else
         true
+      end
+    end
+
+    def decrypt_params!(parms)
+      if enc_active?
+        Encrypt::AES.decrypt_params_from_base64! parms, aes_params[IV_PARAM], session[AES_KEY_PARAM]
+      end
+    end
+
+    def enc_require(sym, parms = params)
+      if enc_active?
+        parms.require(ENC_PARAM).require(sym)
+      else
+        parms.require(sym)
       end
     end
 end
