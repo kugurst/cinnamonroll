@@ -89,7 +89,15 @@ module Encrypt
     end
   end
 
-  class Password
+  module Password
+    PasswordHash.constants.each do |c|
+      begin
+        Password.module_eval("#{c} = #{PasswordHash.const_get c}")
+      rescue SyntaxError
+        Password.module_eval("#{c} = '#{PasswordHash.const_get c}'")
+      end
+    end
+
     class << self
       PasswordHash.singleton_methods.each do |m|
         define_method m, PasswordHash.method(m).to_proc

@@ -24,7 +24,13 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    @user = User.new(user_params)
+    up = user_params
+    if enc_active?
+      ap = aes_params
+      Encrypt::AES.decrypt_params_from_base64! up, ap[IV_PARAM], session[AES_KEY_PARAM]
+    end
+
+    @user = User.new(up)
 
     respond_to do |format|
       if @user.save

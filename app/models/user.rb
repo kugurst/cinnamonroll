@@ -17,7 +17,8 @@ class User
   # The password will be stored as a base64 hash
   field :password, type: String
 
-  validates :name, :email, :password, uniqueness: true, presence: true
+  validates :password, uniqueness: true, presence: true
+  validates :email, :name, uniqueness: true, presence: true, case_sensitive: false
   validates_with NameNotLikeEmailValidator
 
 
@@ -30,7 +31,7 @@ class User
   end
 
   def valid_pass?(test_pass)
-    Encrypt::Password.validatePassword self.password test_pass
+    Encrypt::Password.validatePassword test_pass, password
   end
 
 end

@@ -1,21 +1,46 @@
-<h1>Session#new</h1>
-<p>Find me in app/views/session/new.html.erb</p>
-
 <% provide(:title, "Log in") %>
-<h1>Log in</h1>
 
 <div class="row">
-  <div class="col-md-6 col-md-offset-3">
+  <div class="small-6 small-offset-3">
+    <h2 class="text-center">Log in</h2>
+  </div>
+</div>
+<% if flash[:error] %>
+  <div class="row">
+    <div class="small-6 small-offset-3">
+      <label class="error"><%= flash[:error] %></label>
+    </div>
+  </div>
+<% end %>
+<div class="row collapse">
+  <div class="small-6 small-offset-3 columns">
     <%= form_for(:session, url: login_path) do |f| %>
-      <%= f.label :email_or_username %>
-      <%= f.text_field :email_or_username, class: 'form-control' %>
-
-      <%= f.label :password %>
-      <%= f.password_field :password, class: 'form-control' %>
-
-      <%= f.submit "Log in", class: "btn btn-primary" %>
+      <div class="row collapse">
+        <div class="small-3 columns">
+          <%= f.label :email_or_username, "Email/username", class: 'prefix' %>
+        </div>
+        <div class="small-9 columns">
+          <%= f.text_field :email_or_username, placeholder: 'example@example.com' %>
+        </div>
+      </div>
+      <div class="row collapse">
+        <div class="small-3 columns">
+          <%= f.label :password, class: 'prefix' %>
+        </div>
+        <div class="small-9 columns">
+          <%= f.password_field :password %>
+        </div>
+      </div>
+      <div class="row collapse">
+        <div class="small-3 small-centered columns">
+          <%= f.submit "Log in", class: 'button expand' %>
+        </div>
+      </div>
     <% end %>
-
-    <p>New user? <%= link_to "Sign up now!", users_path %></p>
+  </div>
+</div>
+<div class="row">
+  <div class="small-6 small-offset-3">
+    <p class="text-right">New user? <%= link_to "Sign up now!", users_path %></p>
   </div>
 </div>
