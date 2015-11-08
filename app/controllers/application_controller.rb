@@ -26,11 +26,6 @@ class ApplicationController < ActionController::Base
   BANNER = "********************************"
 
   private
-    def require_aes_key!(ret_point = request.url)
-      set_return_point ret_point
-      SecurityHelper.require_aes_key session, request, self
-    end
-
     def set_return_point(path, overwrite = false)
       if overwrite or session[:return_point].blank?
         session[:return_point] = path
@@ -57,6 +52,10 @@ class ApplicationController < ActionController::Base
 
     # If this is present in the params, then the client is saying the form is in plain form
     def enc_active?
-      !enc_params().key?(ACTIVE_PARAM)
+      if params.key? ENC_PARAM
+        !enc_params().key?(ACTIVE_PARAM)
+      else
+        true
+      end
     end
 end

@@ -1,0 +1,10 @@
+<%# Add this stuff to the header. See application.html.erb for how this gets injected %>
+<% content_for :head do %>
+  <% if Rails.env == 'production' %>
+    <%= stylesheet_link_tag 'styles/session' %>
+    <%= javascript_include_tag 'pages/session' %>
+  <% end  %>
+<% end %>
+
+<%# Render everything else %>
+<%= render template: "layouts/application" %>

@@ -1,6 +1,5 @@
 class SecurityController < ApplicationController
 
-
   skip_before_action :require_aes_key!, only: :new
 
   def new

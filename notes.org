@@ -28,4 +28,4 @@
 *** TODO Check to see if cinnamonroll.sec.NO_ENCRYPTION is true before attempting to request an AES key (prevents clients that can't generate a key from repeatedly generating an RSA key)
 *** TODO refactor the static code portion
 ** TODO comments_controller.rb
-*** TODO Get the AES key from the session, not params
+*** DONE Get the AES key from the session, not params

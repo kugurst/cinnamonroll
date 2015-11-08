@@ -26,10 +26,11 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    ap = aes_params
     cp = comment_params
-
-    cp[:body] = Encrypt::AES.decrypt_base64 cp[:body], ap[:iv], ap[:key]
+    if enc_active?
+      ap = aes_params
+      Encrypt::AES.decrypt_params_from_base64! cp, ap[IV_PARAM], session[AES_KEY_PARAM]
+    end
 
     @comment = Comment.new(cp)
 

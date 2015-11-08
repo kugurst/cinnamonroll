@@ -132,4 +132,4 @@ module PasswordHash
 
 end
 
-PasswordHash.runSelfTests
+# PasswordHash.runSelfTests
