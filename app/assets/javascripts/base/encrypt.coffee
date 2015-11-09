@@ -21,7 +21,7 @@ ENC_ACTIVE_PARAM = ENC_PARAM + "_" + ACTIVE_PARAM
 REJECTED_FORM_KEYS = ["commit", "authenticity_token", "utf8", AES_IV_PARAM]
 APPROVED_FORM_ELEMENT_TYPES = ["text", "password", "email"]
 MAX_ATTEMPTS = 3
-
+NO_KEY_STATUS = 424
 
 # Environment Setup #
 
@@ -51,6 +51,11 @@ isApprovedInputElementType = (type) ->
 onPageLoad = (func) ->
   $(document).ready -> func()
   $(document).on 'page:load', -> func()
+
+replacePageContent = (content) ->
+  document.open()
+  document.write content
+  document.close()
 
 jQuery.fn.preventDoubleSubmission = ->
   $(this).on 'submit', (e) ->
@@ -86,7 +91,7 @@ jQuery.fn.preventDoubleSubmission = ->
     else
       fail_func jq, status, e
 
-@cinnamonroll.sec.recv_aes_key = (data, status, jq, attempt = 0) ->
+@cinnamonroll.sec.recv_aes_key = (data, status, jq, attempt = 0, func) ->
   jqxhr = $.ajax {
     type: "GET"
     url: Routes.security_get_aes_key_path()
@@ -98,6 +103,7 @@ jQuery.fn.preventDoubleSubmission = ->
     cs.aes_key = forge.util.decode64 aes_key_64
     if isLocalStorageAvailable
       localStorage.setItem AES_KEY_PARAM, aes_key_64
+    func() if func
   .fail (j, stat, e) ->
     if attempt < MAX_ATTEMPTS
       cs.recv_aes_key data, status, jq, attempt + 1
@@ -110,8 +116,8 @@ jQuery.fn.preventDoubleSubmission = ->
   if storageAvailable 'sessionStorage'
     sessionStorage.setItem ENC_ACTIVE_PARAM, JSON.stringify cs.NO_ENCRYPTION
 
-@cinnamonroll.sec.req_aes_key = ->
-  cs.send_pk cs.recv_aes_key, cs.set_no_enc if !cs.rsa_pair
+@cinnamonroll.sec.req_aes_key = (func) ->
+  cs.send_pk(((data, status, jq) -> cs.recv_aes_key data, status, jq, 0, func), cs.set_no_enc) unless cs.rsa_pair
 
 # Returns a byte array containing the decrypted base64 string
 @cinnamonroll.sec.decrypt = (string, key, iv) ->
@@ -138,13 +144,13 @@ jQuery.fn.preventDoubleSubmission = ->
       name: "#{ENC_PARAM}[#{ACTIVE_PARAM}]"
       value: "false"
     }
-    .appendTo 'form'
+    .appendTo attachedForm
     return true
 
   stack = new Array()
   iv = forge.random.getBytesSync 32
 
-  stack.push(document.forms)
+  stack.push(attachedForm)
   while stack.length > 0
     next = stack.pop()
     if next not instanceof HTMLInputElement
@@ -177,6 +183,25 @@ jQuery.fn.preventDoubleSubmission = ->
   .appendTo attachedForm
   true
 
+@cinnamonroll.sec.ajax_submit = (attachedForm, ev) ->
+  cs.encrypt_form attachedForm
+
+  $.ajax {
+    type: attachedForm.method
+    url: attachedForm.action
+    data: $(attachedForm).serialize()
+  }
+  .done (data, status, jq) ->
+    # console.log "done: data: #{data}"
+    replacePageContent data
+  .fail (jq, status, e) ->
+    # console.log "fail: jq: #{jq.status}"
+    if jq.status == NO_KEY_STATUS
+      cs.req_aes_key -> cs.ajax_submit attachedForm, ev
+    else
+      replacePageContent jq.responseText
+
+  ev.preventDefault()
 
 # Static code
 # Check if we are encrypting this session
@@ -207,5 +232,6 @@ if !@cinnamonroll.sec.aes_key
 
 # Encrypt all forms on the page on submit
 # onPageLoad -> $('form').attr 'onsubmit', "return cinnamonroll.sec.encrypt_form(this)"
-onPageLoad -> $('form').preventDoubleSubmission().submit ->
+onPageLoad -> $('form').preventDoubleSubmission().submit (ev) ->
+  # cs.ajax_submit this, ev
   cs.encrypt_form this

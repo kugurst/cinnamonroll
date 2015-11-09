@@ -55,7 +55,7 @@ module PasswordHash
       HASH_BYTE_SIZE,
       dig
     )
-    return [salt, Base64.encode64( pbkdf2 )].join( SECTION_DELIMITER )
+    return [salt, Base64.strict_encode64( pbkdf2 )].join( SECTION_DELIMITER )
   end
 
   def self.eql_time_cmp(a, b)
@@ -74,7 +74,6 @@ module PasswordHash
   # correctHash must be a hash string generated with createHash.
   def self.validatePassword( password, correctHash )
     params = correctHash.split( SECTION_DELIMITER )
-    puts params.length
     return false if params.length != HASH_SECTIONS
 
     dig = OpenSSL::Digest::SHA256.new

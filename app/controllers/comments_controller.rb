@@ -26,11 +26,8 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
+    return request_aes_key if decrypt_sym!(:comment).nil?
     cp = comment_params
-    if enc_active?
-      ap = aes_params
-      Encrypt::AES.decrypt_params_from_base64! cp, ap[IV_PARAM], session[AES_KEY_PARAM]
-    end
 
     @comment = Comment.new(cp)
 
@@ -77,6 +74,6 @@ class CommentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def comment_params
-      params.require(:comment).permit(:body, :user, :created_at, :modified_at, :comments)
+      enc_require(:comment).permit(:body, :user, :created_at, :modified_at, :comments)
     end
 end

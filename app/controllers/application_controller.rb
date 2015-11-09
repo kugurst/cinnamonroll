@@ -11,8 +11,6 @@ class ApplicationController < ActionController::Base
   ENC_PARAM = :enc
   ACTIVE_PARAM = :active
 
-  USER_ID = :user_id
-
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -62,10 +60,16 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    # Returns nil if we don't have an AES key for this session but we are supposed to be encrypting
     def decrypt_params!(parms)
       if enc_active?
-        Encrypt::AES.decrypt_params_from_base64! parms, aes_params[IV_PARAM], session[AES_KEY_PARAM]
+        if !session.key? AES_KEY_PARAM
+          return nil
+        else
+          Encrypt::AES.decrypt_params_from_base64! parms, aes_params[IV_PARAM], session[AES_KEY_PARAM]
+        end
       end
+      parms
     end
 
     def enc_require(sym, parms = params)
@@ -73,6 +77,23 @@ class ApplicationController < ActionController::Base
         parms.require(ENC_PARAM).require(sym)
       else
         parms.require(sym)
+      end
+    end
+
+    def decrypt_sym!(sym, parms = params)
+      par = enc_require sym, parms
+      decrypt_params! par
+    end
+
+    def request_aes_key
+      head :failed_dependency
+    end
+
+    def current_user
+      if @current_user.nil?
+        @current_user = User.find_by(id: session[:user_id])
+      else
+        @current_user
       end
     end
 end

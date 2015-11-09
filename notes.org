@@ -29,6 +29,6 @@
 *** TODO Check to see if cinnamonroll.sec.NO_ENCRYPTION is true before attempting to request an AES key (prevents clients that can't generate a key from repeatedly generating an RSA key)
 *** TODO refactor the static code portion
 *** DONE dynamically add "enc_" fields to forms so as not to screw up the actual forms on submission
-*** TODO set encryption to false if HTTPS is active
+*** DONE set encryption to false if HTTPS is active
 ** comments_controller.rb **
 *** DONE Get the AES key from the session, not params

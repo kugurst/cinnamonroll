@@ -1,13 +1,13 @@
 class SessionController < ApplicationController
   layout 'session/session'
+  include SessionHelper
 
   def new
   end
 
   def create
+    return request_aes_key if decrypt_sym!(:session).nil?
     lp = login_params
-    decrypt_params! lp
-    puts lp
 
     begin
       user = User.find_by email: lp[:email_or_username].downcase
@@ -15,18 +15,17 @@ class SessionController < ApplicationController
       begin
         user = User.find_by name: lp[:email_or_username]
       rescue Mongoid::Errors::DocumentNotFound
-        flash[:error] = "Username/email and password combination not found"
+        flash.now[:error] = "Username/email and password combination not found"
         render 'new', status: :not_found
         return
       end
     end
 
-    puts "password: #{lp[:password]}"
-    puts "valid password?: #{user.valid_pass? lp[:password]}"
     if user && user.valid_pass?(lp[:password])
       # Log the user in and redirect to the user's show page.
-      session[USER_ID] = user._id
-      puts "user id: #{user._id}"
+      log_in user
+      flash[:notice] = "Log in successful!"
+      redirect_to user
     else
       flash[:error] = "Username/email and password combination not found"
       render 'new', status: :not_found

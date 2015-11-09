@@ -24,11 +24,10 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
+    return request_aes_key if decrypt_sym!(:user).nil?
     up = user_params
-    if enc_active?
-      ap = aes_params
-      Encrypt::AES.decrypt_params_from_base64! up, ap[IV_PARAM], session[AES_KEY_PARAM]
-    end
+
+    puts up
 
     @user = User.new(up)
 
@@ -75,6 +74,6 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:name, :email, :password)
+      enc_require(:user).permit(:name, :email, :password)
     end
 end
