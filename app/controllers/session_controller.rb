@@ -24,6 +24,7 @@ class SessionController < ApplicationController
     if user && user.valid_pass?(lp[:password])
       # Log the user in and redirect to the user's show page.
       log_in user
+      remember user
       flash[:notice] = "Log in successful!"
       redirect_to user
     else
@@ -33,6 +34,8 @@ class SessionController < ApplicationController
   end
 
   def destroy
+    log_out if logged_in?
+    redirect_to root_url
   end
 
   private

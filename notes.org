@@ -32,3 +32,6 @@
 *** DONE set encryption to false if HTTPS is active
 ** comments_controller.rb **
 *** DONE Get the AES key from the session, not params
+** user.coffee/session.coffee **
+*** TODO implement client side password validation (minimum length)
+*** TODO implement maximum password tries per second

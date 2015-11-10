@@ -88,12 +88,4 @@ class ApplicationController < ActionController::Base
     def request_aes_key
       head :failed_dependency
     end
-
-    def current_user
-      if @current_user.nil?
-        @current_user = User.find_by(id: session[:user_id])
-      else
-        @current_user
-      end
-    end
 end

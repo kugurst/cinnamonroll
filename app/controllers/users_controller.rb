@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  include SessionHelper
+
+    before_action :set_user, only: [:show, :edit, :update, :destroy]
 
   # GET /users
   # GET /users.json
@@ -26,13 +28,11 @@ class UsersController < ApplicationController
   def create
     return request_aes_key if decrypt_sym!(:user).nil?
     up = user_params
-
-    puts up
-
     @user = User.new(up)
 
     respond_to do |format|
       if @user.save
+        log_in @user
         format.html { redirect_to @user, notice: 'User was successfully created.' }
         format.json { render :show, status: :created, location: @user }
       else
