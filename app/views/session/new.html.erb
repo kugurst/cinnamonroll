@@ -32,7 +32,13 @@
         </div>
       </div>
       <div class="row collapse">
-        <div class="small-3 small-centered columns">
+        <div class="small-6 columns">
+          <%= f.label :remember_me do %>
+            <%= f.check_box :remember_me %>
+            <span>Remember me on this computer</span>
+          <% end %>
+        </div>
+        <div class="small-2 columns">
           <%= f.submit "Log in", class: 'button expand' %>
         </div>
       </div>
