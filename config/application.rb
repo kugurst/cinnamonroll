@@ -35,5 +35,6 @@ module Cinnamonroll
     config.autoload_paths << Rails.root.join('lib')
     config.autoload_paths << Rails.root.join('vendor')
     # config.eager_load_paths += ["#{Rails.root}/lib}"]
+    config.log_level = :warn
   end
 end

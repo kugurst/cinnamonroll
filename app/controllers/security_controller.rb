@@ -8,7 +8,6 @@ class SecurityController < ApplicationController
 
   def post_rsa_key
     rkp = rsa_key_params
-    puts rkp
     if !rkp.key?(MODULUS_PARAM) || !rkp.key?(EXPONENT_PARAM)
       head :bad_request
     else

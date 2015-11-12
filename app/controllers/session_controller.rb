@@ -3,6 +3,10 @@ class SessionController < ApplicationController
   include SessionHelper
 
   def new
+    if logged_in?
+      flash[:notice] = "Already logged in"
+      redirect_to current_user
+    end
   end
 
   def create
@@ -24,7 +28,7 @@ class SessionController < ApplicationController
     if user && user.valid_pass?(lp[:password])
       # Log the user in and redirect to the user's show page.
       log_in user
-      lp[:remember_me] == '1' ? remember(user) : forget(user)
+      remember user if lp[:remember_me] == '1'
       flash[:notice] = "Log in successful!"
       redirect_to user
     else
@@ -40,6 +44,6 @@ class SessionController < ApplicationController
 
   private
     def login_params
-      enc_require(:session).permit(:password, :email_or_username)
+      enc_require(:session).permit(:password, :email_or_username, :remember_me)
     end
 end

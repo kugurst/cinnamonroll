@@ -10,22 +10,31 @@ class User
   include Mongoid::Document
   include Sunspot::Mongo
 
-  attr_accessor :remember_token
-
   # searchable do
     field :name, type: String
     field :email, type: String
   # end
   # The password will be stored as a base64 hash
   field :password, type: String
-  field :remember_hash, type: String
+  field :remember_hash, type: Hash
 
   validates :password, presence: true
   validates :email, :name, uniqueness: true, presence: true, case_sensitive: false
+  validates_length_of :remember_hash, maximum: 10
   validates_with NameNotLikeEmailValidator
+
+  before_validation :trim_remember_hash, on: :update
 
   def self.new_token
     SecureRandom.urlsafe_base64
+  end
+
+  def trim_remember_hash
+    remember_hash.delete remember_hash.keys.map{|e| e.to_i}.min.to_s if remember_hash.length > 10
+  end
+
+  def remember_hash
+    @remember_hash ||= self[:remember_hash].nil? ? {} : self[:remember_hash].clone
   end
 
   def password=(pass)
@@ -41,16 +50,21 @@ class User
   end
 
   def remember
-    self.remember_token = User.new_token
-    update_attribute :remember_hash, Encrypt::Password.createHash(remember_token)
+    new_tok = User.new_token
+    remember_hash[Time.now.to_i] = Encrypt::Password.createHash(new_tok)
+    update_attributes! remember_hash: remember_hash
+    new_tok
   end
 
-  def forget
-    update_attribute(:remember_hash, nil)
+  def forget(tok)
+    update_attributes! remember_hash: remember_hash.delete_if { |k, v| Encrypt::Password.validatePassword tok, v } unless tok.nil?
   end
 
   def valid_rem?(test_tok)
-    return false if remember_hash.nil?
-    Encrypt::Password.validatePassword test_tok, remember_hash
+    ret = false
+    remember_hash.values.each do |correct_rem|
+      ret = true if Encrypt::Password.validatePassword test_tok, correct_rem
+    end
+    ret
   end
 end

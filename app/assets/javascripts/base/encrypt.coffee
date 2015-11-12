@@ -19,7 +19,7 @@ ENC_PARAM = "enc"
 ACTIVE_PARAM = "active"
 ENC_ACTIVE_PARAM = ENC_PARAM + "_" + ACTIVE_PARAM
 REJECTED_FORM_KEYS = ["commit", "authenticity_token", "utf8", AES_IV_PARAM]
-APPROVED_FORM_ELEMENT_TYPES = ["text", "password", "email"]
+APPROVED_FORM_ELEMENT_TYPES = ["text", "password", "email", "checkbox"]
 MAX_ATTEMPTS = 3
 NO_KEY_STATUS = 424
 
@@ -158,6 +158,7 @@ jQuery.fn.preventDoubleSubmission = ->
     else
       # Rails add some default form fields
       if !isRejectedInputElement next.name
+        # console.log "elem: #{next.name}, #{next.type}, #{next.value}"
         # For supported a wide variety of types
         if isApprovedInputElementType next.type
           # console.log "next name: #{next.name}, next id: #{next.id}"
@@ -205,6 +206,7 @@ jQuery.fn.preventDoubleSubmission = ->
 
 # Static code
 # Check if we are encrypting this session
+# @cinnamonroll.sec.NO_ENCRYPTION = true if !@cinnamonroll.sec.NO_ENCRYPTION
 if !@cinnamonroll.sec.NO_ENCRYPTION
   if `window.location.protocol == "https:"`
     cs.NO_ENCRYPTION = true

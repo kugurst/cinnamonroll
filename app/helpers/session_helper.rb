@@ -15,13 +15,13 @@ module SessionHelper
   end
 
   def remember(user)
-    user.remember
+    tok = user.remember
     cookies.permanent.signed[:user_id] = user.id.to_s
-    cookies.permanent[:remember_hash] = user.remember_hash
+    cookies.permanent.signed[:remember_token] = tok.to_s
   end
 
   def forget(user)
-    user.forget
+    user.forget cookies.signed[:remember_token]
     cookies.delete(:user_id)
     cookies.delete(:remember_token)
   end
@@ -31,7 +31,7 @@ module SessionHelper
       @current_user ||= User.find_by(id: user_id)
     elsif (user_id = cookies.signed[:user_id])
       user = User.find_by(id: user_id)
-      if user && user.valid_rem?(cookies[:remember_hash])
+      if user && user.valid_rem?(cookies.signed[:remember_token])
         log_in user
         @current_user = user
       end
