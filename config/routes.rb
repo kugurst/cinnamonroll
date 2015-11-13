@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get 'static/landing'
+
+  get 'static/about_me'
+
   resources :comments
   resources :posts
   resources :users
@@ -15,7 +19,7 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'application#hello'
+  root 'static#landing'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

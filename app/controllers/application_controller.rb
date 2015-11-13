@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
 
   # require_dependency Rails.root.join('vendor/PasswordHash.rb')
 
-  BANNER = "********************************"
+  BANNER = "*" * 80
 
   # Silence the unpermitted message
   ActionController::Parameters.action_on_unpermitted_parameters = false

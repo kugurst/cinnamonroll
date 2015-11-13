@@ -26,6 +26,11 @@ class SecurityController < ApplicationController
     jeb = Jbuilder.new do |json|
       json.set! AES_KEY_PARAM, a64
     end
-    render plain: jeb.target!
+
+    responded = false
+    respond_to do |format|
+      format.json { render  plain: jeb.target!; responded = true }
+    end
+    render nothing: true unless responded
   end
 end
