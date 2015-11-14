@@ -24,7 +24,10 @@ class PostsController < ApplicationController
   # POST /posts
   # POST /posts.json
   def create
-    @post = Post.new(post_params)
+    return request_aes_key if decrypt_sym!(:post).nil?
+    pp = post_params
+    pp[:tags] = pp[:tags].split(/,\s*/) if pp[:tags].is_a? String
+    @post = Post.new(pp)
 
     respond_to do |format|
       if @post.save
@@ -40,8 +43,12 @@ class PostsController < ApplicationController
   # PATCH/PUT /posts/1
   # PATCH/PUT /posts/1.json
   def update
+    return request_aes_key if decrypt_sym!(:post).nil?
+    pp = post_params
+    pp[:tags] = pp[:tags].split(/,\s*/) if pp[:tags].is_a? String
+
     respond_to do |format|
-      if @post.update(post_params)
+      if @post.update(pp)
         format.html { redirect_to @post, notice: 'Post was successfully updated.' }
         format.json { render :show, status: :ok, location: @post }
       else
@@ -69,6 +76,6 @@ class PostsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
-      params.require(:post).permit(:title, :created_at, :modified_at, :tags, :comments)
+      enc_require(:post).permit(:title, :file_path, :tags, :comments)
     end
 end

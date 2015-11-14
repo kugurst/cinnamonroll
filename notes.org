@@ -34,4 +34,8 @@
 *** DONE Get the AES key from the session, not params
 ** user.coffee/session.coffee **
 *** TODO implement client side password validation (minimum length)
+**** TODO display a warning telling the user that we think their password is weak
 *** TODO implement maximum password tries per second
+** posts **
+*** TODO implement comment showing as a partial
+*** TODO implement body showing as a partial
