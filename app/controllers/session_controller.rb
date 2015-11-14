@@ -32,7 +32,7 @@ class SessionController < ApplicationController
       flash[:notice] = "Log in successful!"
       redirect_to user
     else
-      flash[:error] = "Username/email and password combination not found"
+      flash[:error] = "Email/username and password combination not found"
       render 'new', status: :not_found
     end
   end

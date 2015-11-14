@@ -99,3 +99,4 @@ node_modules
 npm-debug.log
 public/assets*
 *.#*
+app/assets/stylesheets/base/.sass-cache/*
