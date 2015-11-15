@@ -6,4 +6,6 @@ class Comment
   belongs_to :user, dependent: :destroy
   belongs_to :post, dependent: :destroy
   has_and_belongs_to_many :comments
+
+  validates :body, :user, :post, presence: true
 end

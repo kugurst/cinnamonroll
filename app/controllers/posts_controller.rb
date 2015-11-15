@@ -1,6 +1,8 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :destroy]
 
+  layout "posts/show_post", only: :show
+
   # GET /posts
   # GET /posts.json
   def index

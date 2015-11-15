@@ -1,0 +1,7 @@
+<div class="row comment-box">
+  <div class="small-10 small-offset-1 large-8 large-offset-2 columns">
+    <% @post.comments.each do |c| %>
+      <%= generateCommentList(c).html_safe %>
+    <% end %>
+  </div>
+</div>
