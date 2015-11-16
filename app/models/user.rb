@@ -10,6 +10,8 @@ class User
   include Mongoid::Document
   include Sunspot::Mongo
 
+  MAX_REMEMBERED_DEVICES = 10
+
   # searchable do
     field :name, type: String
     field :email, type: String
@@ -17,7 +19,7 @@ class User
   # end
   # The password will be stored as a base64 hash
   field :password, type: String
-  field :remember_hash, type: Hash
+  field :remember_hash, type: Hash, default: {}
 
   validates :password, presence: true
   validates :email, :name, uniqueness: true, presence: true, case_sensitive: false
@@ -29,9 +31,6 @@ class User
 
   # Model methods
   # Avoiding nil errors on creation, while also avoiding overwriting the value in the database. Is there a better way to do this?
-  def remember_hash
-    @remember_hash ||= self[:remember_hash].nil? ? {} : self[:remember_hash].clone
-  end
 
   # Automatically encrypt the password on save
   def password=(pass)
@@ -51,7 +50,9 @@ class User
   # Creates a new token and adds it to the list of remembered tokens
   def remember
     new_tok = User.new_token
-    remember_hash[Time.now.to_i] = Encrypt::Password.createHash(new_tok)
+    # Convert times to System.nanoTime(), Java style
+    time = (Time.now.to_f * 10**9).to_i.to_s
+    remember_hash[time] = Encrypt::Password.createHash(new_tok)
     update_attributes! remember_hash: remember_hash
     new_tok
   end
@@ -59,6 +60,10 @@ class User
   # Removes the specified token from the list of remembered tokens. Runs in fixed time
   def forget(tok)
     update_attributes! remember_hash: remember_hash.delete_if { |k, v| Encrypt::Password.validatePassword tok, v } unless tok.nil?
+  end
+
+  def forget_all!
+    update_attributes! remember_hash: {}
   end
 
   # Determines if the specified token is remembered. Runs in fixed time
@@ -72,12 +77,12 @@ class User
 
 
   # Helper methods
-  private
-    def self.new_token
-      SecureRandom.urlsafe_base64
-    end
+  def self.new_token
+    SecureRandom.urlsafe_base64
+  end
 
+  private
     def trim_remember_hash
-      remember_hash.delete remember_hash.keys.map{|e| e.to_i}.min.to_s if remember_hash.length > 10
+      remember_hash.delete remember_hash.keys.map{|e| e.to_i}.min.to_s if remember_hash.length > MAX_REMEMBERED_DEVICES
     end
 end

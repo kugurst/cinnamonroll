@@ -54,6 +54,13 @@ group :development, :test do
   gem 'capybara'
   gem "capybara-webkit"
   gem 'rspec-rails'
+  gem 'mongoid-rspec', '3.0.0'
+  gem 'database_cleaner'
+
+  gem 'pry'
+  gem 'pry-doc', '>= 0.6.0'
+  gem 'method_source', '>= 0.8.2'
+  gem 'pry-rails'
 end
 
 group :development do
@@ -64,9 +71,4 @@ group :development do
 
   # the thin http server for development
   gem 'thin'
-
-  gem 'pry'
-  gem 'pry-doc', '>= 0.6.0'
-  gem 'method_source', '>= 0.8.2'
-  gem 'pry-rails'
 end
