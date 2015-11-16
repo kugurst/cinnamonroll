@@ -26,30 +26,29 @@ class User
 
   before_validation :trim_remember_hash, on: :update
 
-  def self.new_token
-    SecureRandom.urlsafe_base64
-  end
 
-  def trim_remember_hash
-    remember_hash.delete remember_hash.keys.map{|e| e.to_i}.min.to_s if remember_hash.length > 10
-  end
-
+  # Model methods
+  # Avoiding nil errors on creation, while also avoiding overwriting the value in the database. Is there a better way to do this?
   def remember_hash
     @remember_hash ||= self[:remember_hash].nil? ? {} : self[:remember_hash].clone
   end
 
+  # Automatically encrypt the password on save
   def password=(pass)
     super Encrypt::Password.createHash pass
   end
 
+  # Emails are case insensitive
   def email=(em)
     super em.downcase()
   end
 
+  # Simplify password checking. Takes a plain string password
   def valid_pass?(test_pass)
     Encrypt::Password.validatePassword test_pass, password
   end
 
+  # Creates a new token and adds it to the list of remembered tokens
   def remember
     new_tok = User.new_token
     remember_hash[Time.now.to_i] = Encrypt::Password.createHash(new_tok)
@@ -57,10 +56,12 @@ class User
     new_tok
   end
 
+  # Removes the specified token from the list of remembered tokens. Runs in fixed time
   def forget(tok)
     update_attributes! remember_hash: remember_hash.delete_if { |k, v| Encrypt::Password.validatePassword tok, v } unless tok.nil?
   end
 
+  # Determines if the specified token is remembered. Runs in fixed time
   def valid_rem?(test_tok)
     ret = false
     remember_hash.values.each do |correct_rem|
@@ -68,4 +69,15 @@ class User
     end
     ret
   end
+
+
+  # Helper methods
+  private
+    def self.new_token
+      SecureRandom.urlsafe_base64
+    end
+
+    def trim_remember_hash
+      remember_hash.delete remember_hash.keys.map{|e| e.to_i}.min.to_s if remember_hash.length > 10
+    end
 end

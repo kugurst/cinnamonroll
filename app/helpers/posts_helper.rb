@@ -4,7 +4,7 @@ module PostsHelper
 <div class="comment" data-level="#{level}">
   <div class="row collapse">
     <div class="small-6 columns">
-      <span>@#{html_escape(com.user.name)}</span>
+      <span>@#{html_escape_once(com.user.name)}</span>
     </div>
   </div>
   <div class="row collapse">
@@ -17,7 +17,7 @@ module PostsHelper
   </div>
   <div class="row collapse">
     <div class="small-10 small-offset-1 columns">
-      <p>#{html_escape(com.body)}</p>
+      <p>#{html_escape_once(com.body)}</p>
     </div>
   </div>
 </div>
