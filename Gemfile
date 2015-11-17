@@ -46,7 +46,11 @@ gem 'sprockets-rails', :require => 'sprockets/railtie'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
+
+  # a standalone Sunspot server
   gem 'sunspot_solr'
+  # generate fake data
+  gem 'forgery'
 
   # testing
   gem 'factory_girl'
