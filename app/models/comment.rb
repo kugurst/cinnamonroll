@@ -5,7 +5,8 @@ class Comment
   field :body, type: String
   belongs_to :user, dependent: :destroy
   belongs_to :post, dependent: :destroy
-  has_and_belongs_to_many :comments
+  # has_and_belongs_to_many :comments
+  recursively_embeds_many
 
   validates :body, :user, :post, presence: true
 end

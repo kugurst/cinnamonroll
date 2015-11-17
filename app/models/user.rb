@@ -1,8 +1,7 @@
 class NameNotLikeEmailValidator < ActiveModel::Validator
   def validate(record)
-    if record.name =~ /.+@.+\..+/i
-      record.errors[:name] << "user names can't be like emails"
-    end
+    record.errors[:name] << "user names can't be like emails" \
+                            if record.name =~ /.+@.+\..+/i
   end
 end
 
@@ -39,7 +38,7 @@ class User
 
   # Emails are case insensitive
   def email=(em)
-    super em.downcase()
+    super em.downcase
   end
 
   # Simplify password checking. Takes a plain string password
@@ -57,9 +56,10 @@ class User
     new_tok
   end
 
-  # Removes the specified token from the list of remembered tokens. Runs in fixed time
+  # Removes the specified token from the list of remembered tokens. Runs in
+  # fixed time
   def forget(tok)
-    update_attributes! remember_hash: remember_hash.delete_if { |k, v| Encrypt::Password.validatePassword tok, v } unless tok.nil?
+    update_attributes! remember_hash: remember_hash.delete_if { |_k, v| Encrypt::Password.validatePassword tok, v }  unless tok.nil?
   end
 
   def forget_all!
@@ -75,13 +75,13 @@ class User
     ret
   end
 
-
   # Helper methods
   def self.new_token
     SecureRandom.urlsafe_base64
   end
 
   private
+
     def trim_remember_hash
       remember_hash.delete remember_hash.keys.map{|e| e.to_i}.min.to_s if remember_hash.length > MAX_REMEMBERED_DEVICES
     end
