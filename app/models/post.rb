@@ -7,7 +7,7 @@ class Post
   field :title, type: String
   field :tags, type: Array, default: []
   field :file_path, type: String
-  has_many :comments, autosave: true
+  has_many :comments, autosave: true, dependent: :delete
 
   validates :title, :file_path, presence: true
   validates :title, uniqueness: true
