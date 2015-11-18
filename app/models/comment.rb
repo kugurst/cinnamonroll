@@ -3,10 +3,11 @@ class Comment
   include Mongoid::Timestamps::Short
 
   field :body, type: String
-  belongs_to :user, dependent: :destroy
-  belongs_to :post, dependent: :destroy
-  # has_and_belongs_to_many :comments
-  recursively_embeds_many
+  belongs_to :user
+  belongs_to :post
+  # recursively_embeds_many
+  has_many :child_comments, class_name: "Comment", autosave: true, dependent: :destroy
+  belongs_to :parent_comment, class_name: "Comment"
 
   validates :body, :user, :post, presence: true
 end
