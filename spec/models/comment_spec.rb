@@ -78,7 +78,7 @@ describe Comment, 'relations' do
 
     it "should keep the post and user when deleted" do
       post = subject.post
-      user = subject.user
+      user = subject.get_user
 
 
       subject.destroy

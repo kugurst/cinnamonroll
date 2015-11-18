@@ -18,7 +18,7 @@ class Comment
     deleted ? DELETED_STR : super
   end
 
-  def user
-    deleted ? User.deleted_user : super
+  def get_user
+    deleted ? User.deleted_user : user
   end
 end
