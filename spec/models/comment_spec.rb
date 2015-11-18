@@ -8,6 +8,23 @@ describe Comment, 'state' do
     it { is_expected.to be_has_user }
     it { is_expected.to be_has_post }
   end
+
+  context "deleting a comment removes it from the comment list" do
+    before :all do
+      @comment = create :comment, :with_sub_comments, comment_list: [1]
+    end
+
+    it "nullifies the reference in comment" do
+      child = @comment.child_comments[0]
+
+
+      expect(child.delete).to be
+      loaded_comment = Comment.find_by id: @comment.id
+
+
+      expect(loaded_comment.child_comments).to be_empty
+    end
+  end
 end
 
 describe Comment, '#body' do
