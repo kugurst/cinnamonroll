@@ -66,14 +66,13 @@ describe Comment, 'relations' do
       expect(loaded_child.body).to be == child.body
     end
 
-    it "should delete all comments when deleted" do
+    it "should not destroy sub comments when destroy" do
       child_comment = subject.child_comments[0]
 
 
       subject.destroy
 
-
-      expect(Comment.where(id: child_comment.id).exists?).to_not be
+      expect(child_comment.deleted).to_not be
     end
 
     it "should keep the post and user when deleted" do

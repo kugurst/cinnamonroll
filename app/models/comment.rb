@@ -9,10 +9,12 @@ class Comment
   belongs_to :user
   belongs_to :post
   # recursively_embeds_many
-  has_many :child_comments, class_name: "Comment", autosave: true, dependent: :destroy
+  has_many :child_comments, class_name: "Comment", autosave: true
   belongs_to :parent_comment, class_name: "Comment"
 
   validates :body, :user, :post, presence: true
+
+  before_destroy :delete_comment
 
   def body
     deleted ? DELETED_STR : super
@@ -20,5 +22,10 @@ class Comment
 
   def get_user
     deleted ? User.deleted_user : user
+  end
+
+  def delete_comment
+    update_attributes deleted: true
+    false
   end
 end
