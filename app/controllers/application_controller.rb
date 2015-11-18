@@ -39,10 +39,6 @@ class ApplicationController < ActionController::Base
       ret
     end
 
-    def rsa_key_params
-      params.require(RSA_PARAM).permit(MODULUS_PARAM, EXPONENT_PARAM)
-    end
-
     def enc_params
       params.require(ENC_PARAM).permit(ACTIVE_PARAM)
     end
