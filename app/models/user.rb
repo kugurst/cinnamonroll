@@ -11,6 +11,10 @@ class User
 
   MAX_REMEMBERED_DEVICES = 10
 
+  DELETED_NAME = '[not your business]'
+  DELETED_EMAIL = 'who.cares@anyway.com'
+  DELETED_PASSWORD = "how did you find out? that's actually an issue"
+
   # searchable do
     field :name, type: String
     field :email, type: String
@@ -78,6 +82,10 @@ class User
   # Helper methods
   def self.new_token
     SecureRandom.urlsafe_base64
+  end
+
+  def self.deleted_user
+    @@deleted_user ||= User.new name: DELETED_NAME, email: DELETED_EMAIL, password: DELETED_PASSWORD
   end
 
   private
