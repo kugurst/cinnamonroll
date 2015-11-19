@@ -47,7 +47,7 @@ class ApplicationController < ActionController::Base
       params.require(AES_PARAM).permit(IV_PARAM)
     end
 
-    # If this is present in the params, then the client is saying the form is in plain form
+    # If this is present in the params, then the client is saying the form is not encrypted
     def enc_active?
       if params.key? ENC_PARAM
         !enc_params().key?(ACTIVE_PARAM)
@@ -73,6 +73,14 @@ class ApplicationController < ActionController::Base
         parms.require(ENC_PARAM).require(sym)
       else
         parms.require(sym)
+      end
+    end
+
+    def enc_fetch(sym, parms = params)
+      if enc_active?
+        parms.fetch(ENC_PARAM, {}).fetch(sym, {})
+      else
+        parms.fetch(sym, {})
       end
     end
 
