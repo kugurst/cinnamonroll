@@ -7,7 +7,7 @@ class Post
   field :title, type: String
   field :tags, type: Array, default: []
   field :file_path, type: String
-  has_many :comments, autosave: true, dependent: :delete
+  has_many :comments, dependent: :delete, before_remove: :inform_parent
 
   validates :title, :file_path, presence: true
   validates :title, uniqueness: true
@@ -15,5 +15,8 @@ class Post
   def file_path=(path)
     path = FILE_PATH + path unless path.start_with? FILE_PATH
     super path
+  end
+
+  def inform_parent(comment)
   end
 end

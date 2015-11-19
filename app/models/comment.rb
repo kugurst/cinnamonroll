@@ -8,7 +8,11 @@ class Comment
   field :deleted, type: Boolean, default: false
   belongs_to :user
   belongs_to :post, autosave: true
+
   # recursively_embeds_many
+  # accepts_nested_attributes_for :child_comments
+  # embeds_many :child_comments, class_name: "Comment", after_add: :set_child_post, cyclic: true
+  # embedded_in :parent_comment, class_name: "Comment", cyclic: true
   has_many :child_comments, class_name: "Comment", autosave: true, after_add: :set_child_post
   belongs_to :parent_comment, class_name: "Comment"
 
@@ -29,7 +33,7 @@ class Comment
     false
   end
 
-  def set_child_post(com)
-    com.update_attributes post: post
+  def set_child_post(child)
+    child.post = post if post
   end
 end

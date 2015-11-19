@@ -108,6 +108,21 @@ describe Post, '#comments' do
       expect(loaded_post.comments.length).to be == total_comments + 1
     end
 
+    it 'removes a direct comment' do
+      length = @post.comments.length
+
+
+      @post.comments.delete @post.comments[@post.comments.length - 1]
+
+
+      expect(@post.update_attribute :comments, @post.comments).to be
+      expect(@post.comments.length).to be == length - 1
+
+
+      loaded_post = Post.find_by id: @post.id
+      expect(loaded_post.comments.length).to be == @post.comments.length
+    end
+
     it "deletes the comments when the post is destroyed" do
       comment = @post.comments[0].child_comments[0]
 

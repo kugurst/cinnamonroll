@@ -73,10 +73,12 @@ describe Comment, 'relations' do
       child.body += modifying_string
 
 
-      expect(subject.save!).to be
+      expect(child.save!).to be
 
 
       loaded_comment = Comment.find_by id: subject.id
+      # puts loaded_comment.child_comments.length
+
 
       loaded_child = loaded_comment.child_comments[0]
       expect(loaded_child.id).to be == child.id
@@ -88,6 +90,7 @@ describe Comment, 'relations' do
 
 
       subject.destroy
+
 
       expect(child_comment.deleted).to_not be
     end
@@ -102,6 +105,23 @@ describe Comment, 'relations' do
 
       expect(Post.where(id: post.id).exists?).to be
       expect(User.where(id: user.id).exists?).to be
+    end
+
+    it 'should be able to save comment removal' do
+      expect(subject.save).to be
+
+
+      subject.delete subject.child_comments[0]
+
+
+      expect(subject.save).to be
+
+
+      subject.child_comments[0].delete subject.child_comments[0].child_comments[0]
+
+
+      expect(subject.child_comments[0].save).to be
+      expect(subject.save).to be
     end
   end
 end

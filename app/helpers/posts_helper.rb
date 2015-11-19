@@ -32,7 +32,7 @@ module PostsHelper
       ret += "  " * level + line + "\n"
     end
 
-    com.comments.each do |child|
+    com.child_comments.each do |child|
       ret += generateCommentList child, level + 1
     end
     ret
