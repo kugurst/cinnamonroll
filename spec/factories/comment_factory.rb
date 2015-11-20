@@ -6,8 +6,8 @@ FactoryGirl.define do
       same_user false
     end
 
-    association :user
-    association :post
+    # association :user
+    # association :post
     body { Forgery::LoremIpsum.words words }
 
     trait :with_sub_comments do
@@ -15,9 +15,8 @@ FactoryGirl.define do
         # due to the workings of embedded, we have to build each comment first, rather than recursing to the end and building back up
         # shorten our lines
         cl = evaluator.comment_list
-        post = com.post
         # constant for every comment built
-        new_com_hash = { words: evaluator.words, post: post, user: (com.user if evaluator.same_user) }.delete_if{ |k, v| v.nil? }
+        new_com_hash = { words: evaluator.words }
         # starting our recursion
         to_add = [com]
         while !cl.empty?
@@ -27,7 +26,7 @@ FactoryGirl.define do
             while i < cl[0]
               new_com = build :comment, new_com_hash
               # aggregate the children
-              next_stage << (current_comment.comments.build body: new_com.body, post: post, user: new_com.user)
+              next_stage << (current_comment.comments.build body: new_com.body)
               i += 1
             end
           end

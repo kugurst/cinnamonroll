@@ -5,8 +5,6 @@ describe Comment, 'state' do
     subject { create :comment }
 
     # Make sure that all fields that are required to be present are present
-    it { is_expected.to be_has_user }
-    it { is_expected.to be_has_post }
   end
 
   context "deleting a comment removes it from the comment list" do
@@ -90,18 +88,6 @@ describe Comment, 'relations' do
 
 
       expect(child_comment.deleted).to_not be
-    end
-
-    it "should keep the post and user when deleted" do
-      post = subject.post
-      user = subject.get_user
-
-
-      subject.destroy
-
-
-      expect(Post.where(id: post.id).exists?).to be
-      expect(User.where(id: user.id).exists?).to be
     end
 
     it 'should be able to save direct sub comment removal' do
