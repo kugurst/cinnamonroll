@@ -39,3 +39,11 @@
 ** posts **
 *** TODO implement comment showing as a partial
 *** TODO implement body showing as a partial
+** users **
+*** TODO implement a before_destroy callback that sets all comments to deleted
+** comments **
+*** Final design
+**** Recursive embedding
+**** Has a post_id and user_id
+**** Users have an arraay of all comments they've written, regardless of nesting level
+**** Posts have an array of all head comments (comments with a nesting level of 0)
