@@ -7,7 +7,7 @@ class Post
   field :title, type: String
   field :tags, type: Array, default: []
   field :file_path, type: String
-  has_many :comments, dependent: :delete, before_remove: :inform_parent
+  has_many :comments, inverse_of: :post, dependent: :delete, before_remove: :inform_parent
 
   validates :title, :file_path, presence: true
   validates :title, uniqueness: true

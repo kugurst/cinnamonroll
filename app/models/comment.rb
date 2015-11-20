@@ -6,15 +6,15 @@ class Comment
 
   field :body, type: String
   field :deleted, type: Boolean, default: false
-  belongs_to :user
-  belongs_to :post, autosave: true
+  belongs_to :user, polymorphic: true
+  belongs_to :post, inverse_of: :comment, polymorphic: true, autosave: true
 
   # recursively_embeds_many
-  # accepts_nested_attributes_for :child_comments
-  # embeds_many :child_comments, class_name: "Comment", after_add: :set_child_post, cyclic: true
-  # embedded_in :parent_comment, class_name: "Comment", cyclic: true
-  has_many :child_comments, class_name: "Comment", autosave: true, after_add: :set_child_post
-  belongs_to :parent_comment, class_name: "Comment"
+  embeds_many :comments, as: :com_thread, after_add: :set_child_post, cyclic: true
+  embedded_in :com_thread, cyclic: true, polymorphic: true
+  # accepts_nested_attributes_for :child_comments, polymorphic: true
+  # has_many :child_comments, class_name: "Comment", autosave: true, after_add: :set_child_post
+  # belongs_to :parent_comment, class_name: "Comment"
 
   validates :body, :user, :post, presence: true
 
@@ -22,6 +22,15 @@ class Comment
 
   def body
     deleted ? DELETED_STR : super
+  end
+
+  def user=(user)
+    self[:user] = user.id
+  end
+
+  def post=(post)
+    self[:post] = post.id
+    post.comments << self
   end
 
   def get_user

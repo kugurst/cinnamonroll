@@ -12,16 +12,28 @@ FactoryGirl.define do
 
     trait :with_sub_comments do
       after(:create) do |com, evaluator|
-        unless evaluator.comment_list.empty?
-          if evaluator.same_user
-            create_list(:comment, evaluator.comment_list[0], :with_sub_comments, post: com.post, user: com.user, words: evaluator.words, comment_list: evaluator.comment_list[1, evaluator.comment_list.length]).each do |e|
-              com.child_comments << e
-            end
-          else
-            create_list(:comment, evaluator.comment_list[0], :with_sub_comments, post: com.post, words: evaluator.words, comment_list: evaluator.comment_list[1, evaluator.comment_list.length]).each do |e|
-              com.child_comments << e
+        # due to the workings of embedded, we have to build each comment first, rather than recursing to the end and building back up
+        # shorten our lines
+        cl = evaluator.comment_list
+        post = com.post
+        # constant for every comment built
+        new_com_hash = { words: evaluator.words, post: post, user: (com.user if evaluator.same_user) }.delete_if{ |k, v| v.nil? }
+        # starting our recursion
+        to_add = [com]
+        while !cl.empty?
+          next_stage = []
+          to_add.each do |current_comment|
+            i = 0
+            while i < cl[0]
+              new_com = build :comment, new_com_hash
+              # aggregate the children
+              next_stage << (current_comment.comments.build body: new_com.body, post: post, user: new_com.user)
+              i += 1
             end
           end
+          # next level
+          to_add = next_stage
+          cl = cl[1, cl.length]
         end
       end
     end

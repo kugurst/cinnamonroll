@@ -18,7 +18,7 @@ class User
   # searchable do
     field :name, type: String
     field :email, type: String
-    has_many :comments, dependent: :destroy
+    has_many :comments, dependent: :destroy, class_name: "Comment"
   # end
   # The password will be stored as a base64 hash
   field :password, type: String
