@@ -111,7 +111,7 @@ end
 
 describe User, 'relations' do
   subject { create :user }
-  it "deletes all comments when deleted" do
+  it "sets comments to deleted when destroyed" do
     c = create :comment, :with_sub_comments, same_user: true, comment_list: [5]
     subject.comments << c
     c.comments.each{ |e| subject.comments << e }
@@ -122,7 +122,8 @@ describe User, 'relations' do
 
     subject.destroy
 
-    # expect(c.deleted).to be
-    c.comments.each { |child| expect(child.deleted).to be; puts child.com_thread.deleted }
+
+    expect(c.deleted).to be
+    c.comments.each { |child| expect(child.deleted).to be }
   end
 end
