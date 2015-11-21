@@ -17,7 +17,7 @@ class Comment
   embedded_in :com_thread, cyclic: true
   # accepts_nested_attributes_for :child_comments, polymorphic: true
 
-  index post_id: 1
+  index({post_id: 1})
 
   validates :body, :post_id, :user_id, :nesting_level, :total_comments, presence: true
 
