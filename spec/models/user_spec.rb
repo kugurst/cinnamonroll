@@ -112,7 +112,7 @@ end
 describe User, 'relations' do
   subject { create :user }
   it "sets comments to deleted when destroyed" do
-    c = create :comment, :with_sub_comments, same_user: true, comment_list: [5]
+    c = create :comment, :with_sub_comments, same_user: true, sub_list: [5]
     subject.comments << c
     c.comments.each{ |e| subject.comments << e }
     expect(subject.save).to be

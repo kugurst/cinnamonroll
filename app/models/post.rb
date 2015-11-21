@@ -7,7 +7,7 @@ class Post
   field :title, type: String
   field :tags, type: Array, default: []
   field :file_path, type: String
-  has_and_belongs_to_many :comments, inverse_of: nil
+  has_and_belongs_to_many :comment_threads, class_name: "Comment", inverse_of: nil
 
   validates :title, :file_path, presence: true
   validates :title, uniqueness: true

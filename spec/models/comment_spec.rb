@@ -8,7 +8,7 @@ describe Comment, 'state' do
   end
 
   context "deleting a comment removes it from the comment list" do
-    subject { create :comment, :with_sub_comments, comment_list: [1] }
+    subject { create :comment, :with_sub_comments, sub_list: [1] }
 
     it "nullifies the reference in comment" do
       child = subject.comments[0]
@@ -46,7 +46,7 @@ describe Comment, 'relations' do
   context "considering embedded comments" do
     sub_comments = 2
     sub_sub_comments = 3
-    subject { create :comment, :with_sub_comments, comment_list: [sub_comments, sub_sub_comments] }
+    subject { create :comment, :with_sub_comments, sub_list: [sub_comments, sub_sub_comments] }
 
     it { is_expected.to be_has_comments }
 
