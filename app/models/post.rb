@@ -7,7 +7,9 @@ class Post
   field :title, type: String
   field :tags, type: Array, default: []
   field :file_path, type: String
-  has_many :comments, dependent: :delete, before_remove: :inform_parent
+  has_and_belongs_to_many :comment_threads, class_name: "Comment", inverse_of: nil, autosave: true
+
+  index({title: 1}, {unique: true})
 
   validates :title, :file_path, presence: true
   validates :title, uniqueness: true

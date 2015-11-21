@@ -2,24 +2,20 @@ require "rails_helper"
 
 describe Comment, 'state' do
   context "considering required fields" do
-    subject { build :comment }
+    subject { create :comment }
 
     # Make sure that all fields that are required to be present are present
-    it { is_expected.to be_has_user }
-    it { is_expected.to be_has_post }
   end
 
   context "deleting a comment removes it from the comment list" do
-    before :all do
-      @comment = create :comment, :with_sub_comments, sub_list: [1]
-    end
+    subject { create :comment, :with_sub_comments, sub_list: [1] }
 
     it "nullifies the reference in comment" do
-      child = @comment.comments[0]
+      child = subject.comments[0]
 
 
       expect(child.delete).to be
-      loaded_comment = Comment.find_by id: @comment.id
+      loaded_comment = Comment.find_by id: subject.id
 
 
       expect(loaded_comment.comments).to be_empty
@@ -54,17 +50,17 @@ describe Comment, 'relations' do
 
     it { is_expected.to be_has_comments }
 
-    it "should have children with a parent" do
-      expect(subject.comments[0]).to be_has_parent_comment
-    end
+    # it "should have children with a parent" do
+    #   expect(subject.comments[0]).to be_has_parent_comment
+    # end
 
     it "should have children with children" do
       expect(subject.comments[0]).to be_has_comments
     end
 
-    it "should have children with children with parents" do
-      expect(subject.comments[0].comments[0]).to be_has_parent_comment
-    end
+    # it "should have children with children with parents" do
+    #   expect(subject.comments[0].comments[0]).to be_has_parent_comment
+    # end
 
     modifying_string = "test"
     it "should save changes to an edited child" do
@@ -73,11 +69,10 @@ describe Comment, 'relations' do
       child.body += modifying_string
 
 
-      expect(child.save!).to be
+      expect(subject.save!).to be
 
 
       loaded_comment = Comment.find_by id: subject.id
-      # puts loaded_comment.child_comments.length
 
 
       loaded_child = loaded_comment.comments[0]
@@ -95,33 +90,35 @@ describe Comment, 'relations' do
       expect(child_comment.deleted).to_not be
     end
 
-    it "should keep the post and user when deleted" do
-      post = subject.post
-      user = subject.user
+    it 'should be able to save direct sub comment removal' do
+      expect(subject.save).to be
+      subject.comments.delete subject.comments[0]
 
 
-      subject.destroy
+      expect(subject.comments.length).to be == sub_comments - 1
+      expect(subject.save).to be
 
 
-      expect(Post.where(id: post.id).exists?).to be
-      expect(User.where(id: user.id).exists?).to be
+      lc = Comment.find_by id: subject.id
+      expect(lc.comments.length).to be == subject.comments.length
     end
 
-    it 'should be able to save comment removal' do
+    it 'should be able to save multi-nested comment removal' do
+      expect(subject.save).to be
+      sub_length = subject.comments[0].comments.length
+      subject.comments[0].comments[0].delete
+
+
       expect(subject.save).to be
 
 
-      subject.delete subject.comments[0]
+      expect(subject.comments[0].comments.length).to be == sub_length - 1
 
 
-      expect(subject.save).to be
+      lc = Comment.find_by id: subject.id
 
 
-      subject.comments[0].delete subject.comments[0].comments[0]
-
-
-      expect(subject.comments[0].save).to be
-      expect(subject.save).to be
+      expect(lc.comments[0].comments.length).to be == subject.comments[0].comments.length
     end
   end
 end

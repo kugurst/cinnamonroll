@@ -11,27 +11,20 @@ class User
 
   MAX_REMEMBERED_DEVICES = 10
 
-  DELETED_NAME = 'not@your.business'
+  DELETED_NAME = '[not your business]'
   DELETED_EMAIL = 'who.cares@anyway.com'
-  DELETED_PASSWORD = "go ahead and try"
-
-  def self.new_token
-    SecureRandom.urlsafe_base64
-  end
-
-  def self.deleted_user
-    @@deleted_user ||= User.new name: DELETED_NAME, email: DELETED_EMAIL, password: DELETED_PASSWORD
-  end
-
+  DELETED_PASSWORD = "how did you find out? that's actually an issue"
 
   # searchable do
     field :name, type: String
     field :email, type: String
-    has_many :comments, dependent: :destroy
+    has_and_belongs_to_many :comments, inverse_of: nil
   # end
   # The password will be stored as a base64 hash
   field :password, type: String
   field :remember_hash, type: Hash, default: {}
+
+  index({name: 1, email: 1}, {unique: true})
 
   validates :password, presence: true
   validates :email, :name, uniqueness: true, presence: true, case_sensitive: false
@@ -39,6 +32,10 @@ class User
   validates_with NameNotLikeEmailValidator
 
   before_validation :trim_remember_hash, on: :update
+  before_destroy :delete_all_comments
+
+  # Model methods
+  # Avoiding nil errors on creation, while also avoiding overwriting the value in the database. Is there a better way to do this?
 
   # Automatically encrypt the password on save
   def password=(pass)
@@ -84,9 +81,23 @@ class User
     ret
   end
 
+  # Helper methods
+  def self.new_token
+    SecureRandom.urlsafe_base64
+  end
+
+  def self.deleted_user
+    @@deleted_user ||= User.new name: DELETED_NAME, email: DELETED_EMAIL, password: DELETED_PASSWORD
+  end
+
   private
 
-  def trim_remember_hash
-    remember_hash.delete remember_hash.keys.map{|e| e.to_i}.min.to_s if remember_hash.length > MAX_REMEMBERED_DEVICES
-  end
+    def trim_remember_hash
+      remember_hash.delete remember_hash.keys.map{|e| e.to_i}.min.to_s if remember_hash.length > MAX_REMEMBERED_DEVICES
+    end
+
+    def delete_all_comments
+      comments.each{ |e| e.delete_comment }
+      true
+    end
 end

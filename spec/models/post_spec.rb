@@ -35,11 +35,11 @@ describe Post, '#comments' do
     end
 
     it "has the right number of comments" do
-      expect(@post.comments.length).to be == num_comments
+      expect(@post.comment_threads.length).to be == num_comments
     end
 
     it "has comments that belong to itself, and only itself" do
-      @post.comments.each do |c|
+      @post.comment_threads.each do |c|
         expect(c.post).to be == @post
       end
     end
@@ -49,32 +49,57 @@ describe Post, '#comments' do
     list = [4, 2, 3, 1]
     before :all do
       @post = create :post, :with_comments, comment_list: list
+      # @post.comment_threads.each { |e| expect(e.save) }
     end
 
-    total_comments = 0
-    it "has the correct number of comments" do
-      i = 0
-      mult = 1
-      while i < list.length
-        total_comments += list[i] * mult
-        mult *= list[i]
-        i += 1
-      end
-
-      expect(@post.comments.length).to be == total_comments
+    it "has the correct number of comment threads" do
+      expect(@post.comment_threads.length).to be == list[0]
     end
 
     it "has comments that belong to itself, and only itself" do
-      @post.comments.each do |com|
-        expect(com.post).to be == @post
+      com_level = @post.comment_threads
+      total = 0
+      until com_level.empty?
+        next_level = []
+        com_level.each do |com|
+          total += 1
+          expect(com.post).to be == @post
+          next_level.concat com.comments
+        end
+        com_level = next_level
       end
+      post_total = 0
+      @post.comment_threads.each { |e| post_total += e.total_comments }
+
+      expect(total).to be == post_total
+    end
+
+    it "persists multi-level comment_threads" do
+      expect(@post.save).to be
+      lp = Post.includes(:comment_threads).find_by id: @post.id
+
+      com_level = lp.comment_threads
+      total = 0
+      until com_level.empty?
+        next_level = []
+        com_level.each do |com|
+          total += 1
+          expect(com.post).to be == @post
+          next_level.concat com.comments
+        end
+        com_level = next_level
+      end
+      post_total = 0
+      @post.comment_threads.each { |e| post_total += e.total_comments }
+
+      expect(total).to be == post_total
     end
 
     it "sets the post when a comment is added to a chain" do
-      sub_comment = @post.comments[0].comments[0]
+      sub_comment = @post.comment_threads[0].comments[0]
       expect(sub_comment.post).to be == @post
 
-      new_comment = build :comment, post: nil
+      new_comment = build :comment
       sub_comment.comments << new_comment
 
 
@@ -84,47 +109,46 @@ describe Post, '#comments' do
       expect(new_comment.post).to be == @post
     end
 
-    it "removes a comment that was added" do
-      comment = @post.comments[0].comments[0].comments[0]
+    # it "removes a comment that was added" do
+    #   expect(@post.comment_threads[0].comments[0].comments[0].delete).to be
+    #
+    #
+    #   expect(@post.save).to be
+    #   expect(@post.comment_threads[0].save).to be
+    #   expect(@post.comment_threads[0]).to_not be_changed
+    # end
 
-
-      expect(@post.comments[0].comments[0].delete comment).to be
-
-
-      expect(@post.save).to be
-    end
-
-    it "updates the comment count when a nested comment is added" do
-      sub_comment = @post.comments[0].comments[0]
-      new_comment = build :comment, post: nil
-      sub_comment.comments << new_comment
+    it "updates the thread count when a comment is added" do
+      thread_count = @post.comment_threads.length
+      new_comment = build :comment
+      @post.comment_threads << new_comment
 
 
       expect(new_comment.save).to be
       loaded_post = Post.find_by id: @post.id
 
 
-      expect(@post.comments.length).to be == total_comments + 1
-      expect(loaded_post.comments.length).to be == total_comments + 1
+      expect(@post.comment_threads.length).to be == thread_count + 1
+      expect(loaded_post.comment_threads.length).to be == thread_count + 1
     end
 
     it 'removes a direct comment' do
-      length = @post.comments.length
+      length = @post.comment_threads.length
 
 
-      @post.comments.delete @post.comments[@post.comments.length - 1]
+      @post.comment_threads.delete @post.comment_threads[@post.comment_threads.length - 1]
 
 
-      expect(@post.update_attribute :comments, @post.comments).to be
-      expect(@post.comments.length).to be == length - 1
+      expect(@post.save).to be
+      expect(@post.comment_threads.length).to be == length - 1
 
 
       loaded_post = Post.find_by id: @post.id
-      expect(loaded_post.comments.length).to be == @post.comments.length
+      expect(loaded_post.comment_threads.length).to be == @post.comment_threads.length
     end
 
     it "deletes the comments when the post is destroyed" do
-      comment = @post.comments[0].comments[0]
+      comment = @post.comment_threads[0].comments[0]
 
 
       @post.destroy
