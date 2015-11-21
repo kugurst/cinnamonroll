@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :comment do |c|
     transient do
       words 20
-      comment_list []
+      sub_list []
       same_user false
     end
 
@@ -11,16 +11,14 @@ FactoryGirl.define do
     body { Forgery::LoremIpsum.words words }
 
     trait :with_sub_comments do
-      after(:create) do |com, evaluator|
-        unless evaluator.comment_list.empty?
-          if evaluator.same_user
-            create_list(:comment, evaluator.comment_list[0], :with_sub_comments, post: com.post, user: com.user, words: evaluator.words, comment_list: evaluator.comment_list[1, evaluator.comment_list.length]).each do |e|
-              com.child_comments << e
-            end
-          else
-            create_list(:comment, evaluator.comment_list[0], :with_sub_comments, post: com.post, words: evaluator.words, comment_list: evaluator.comment_list[1, evaluator.comment_list.length]).each do |e|
-              com.child_comments << e
-            end
+      after(:create) do |com, eval|
+        unless eval.sub_list.empty?
+          sl = eval.sub_list
+          cl_hash = { post: com.post, words: eval.words,
+                      sub_list: sl[1, sl.length],
+                      user: (com.user if eval.same_user) }.delete_if{ |k, v| v.nil? }
+          create_list(:comment, sl[0], :with_sub_comments, cl_hash).each do |e|
+            com.comments << e
           end
         end
       end

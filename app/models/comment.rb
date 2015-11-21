@@ -6,34 +6,41 @@ class Comment
 
   field :body, type: String
   field :deleted, type: Boolean, default: false
-  belongs_to :user
+  field :nesting_level, type: Integer, default: 0
+  belongs_to :user, autosave: true
   belongs_to :post, autosave: true
-
-  # recursively_embeds_many
-  # accepts_nested_attributes_for :child_comments
-  # embeds_many :child_comments, class_name: "Comment", after_add: :set_child_post, cyclic: true
-  # embedded_in :parent_comment, class_name: "Comment", cyclic: true
-  has_many :child_comments, class_name: "Comment", autosave: true, after_add: :set_child_post
-  belongs_to :parent_comment, class_name: "Comment"
+  belongs_to :parent_comment, class_name: "Comment", autosave: true
+  has_many :comments, after_add: [:set_child_post, :set_nesting_level]
 
   validates :body, :user, :post, presence: true
 
   before_destroy :delete_comment
 
-  def body
-    deleted ? DELETED_STR : super
+  def body_with_delete
+    deleted ? DELETED_STR : body_without_delete
   end
 
-  def get_user
-    deleted ? User.deleted_user : user
+  def user_with_delete
+    deleted ? User.deleted_user : user_without_delete
   end
+
+  alias_method_chain :user, :delete
+  alias_method_chain :body, :delete
 
   def delete_comment
-    update_attributes deleted: true
+    set deleted: true
     false
   end
 
+  def undelete_comment
+    set deleted: false
+  end
+
   def set_child_post(child)
-    child.post = post if post
+    child.set post: post if post && !child.post
+  end
+
+  def set_nesting_level(child)
+    child.set nesting_level: nesting_level + 1
   end
 end

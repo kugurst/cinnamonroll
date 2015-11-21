@@ -112,14 +112,15 @@ end
 describe User, 'relations' do
   subject { create :user }
   it "deletes all comments when deleted" do
-    c = create :comment, :with_sub_comments, same_user: true, user: subject, comment_list: [5]
-    expect(c.child_comments[0].get_user).to be == subject
+    c = create :comment, :with_sub_comments, same_user: true, user: subject, sub_list: [5]
+    expect(c.comments[0].user).to be == subject
 
 
     subject.destroy
 
+
     expect(c.deleted).to be
-    expect(c.get_user).to be == User.deleted_user
-    c.child_comments.each { |child| expect(child.deleted).to be }
+    expect(c.user).to be == User.deleted_user
+    c.comments.each { |child| expect(child.deleted).to be }
   end
 end

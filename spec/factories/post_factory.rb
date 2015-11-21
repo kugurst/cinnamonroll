@@ -11,13 +11,10 @@ FactoryGirl.define do
 
     trait :with_comments do
       after(:create) do |post, eval|
+        cc_args = eval.comment_list.length == 1 ? [] : [:with_sub_comments, { post: post, same_user: eval.same_user, words: eval.words, sub_list: eval.comment_list[1, eval.comment_list.length] } ]
         i = 0
         while i < eval.comment_list[0]
-          if eval.comment_list.length == 1
-            post.comments << create(:comment)
-          else
-            post.comments << create(:comment, :with_sub_comments, post: post, same_user: eval.same_user, words: eval.words, comment_list: eval.comment_list[1, eval.comment_list.length])
-          end
+          post.comments << create(:comment, *cc_args)
           i += 1
         end
       end

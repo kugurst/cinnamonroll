@@ -71,11 +71,11 @@ describe Post, '#comments' do
     end
 
     it "sets the post when a comment is added to a chain" do
-      sub_comment = @post.comments[0].child_comments[0]
+      sub_comment = @post.comments[0].comments[0]
       expect(sub_comment.post).to be == @post
 
       new_comment = build :comment, post: nil
-      sub_comment.child_comments << new_comment
+      sub_comment.comments << new_comment
 
 
       expect(new_comment.save).to be
@@ -85,19 +85,19 @@ describe Post, '#comments' do
     end
 
     it "removes a comment that was added" do
-      comment = @post.comments[0].child_comments[0].child_comments[0]
+      comment = @post.comments[0].comments[0].comments[0]
 
 
-      expect(@post.comments[0].child_comments[0].delete comment).to be
+      expect(@post.comments[0].comments[0].delete comment).to be
 
 
       expect(@post.save).to be
     end
 
     it "updates the comment count when a nested comment is added" do
-      sub_comment = @post.comments[0].child_comments[0]
+      sub_comment = @post.comments[0].comments[0]
       new_comment = build :comment, post: nil
-      sub_comment.child_comments << new_comment
+      sub_comment.comments << new_comment
 
 
       expect(new_comment.save).to be
@@ -124,7 +124,7 @@ describe Post, '#comments' do
     end
 
     it "deletes the comments when the post is destroyed" do
-      comment = @post.comments[0].child_comments[0]
+      comment = @post.comments[0].comments[0]
 
 
       @post.destroy
