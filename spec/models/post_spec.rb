@@ -49,6 +49,7 @@ describe Post, '#comments' do
     list = [4, 2, 3, 1]
     before :all do
       @post = create :post, :with_comments, comment_list: list
+      # @post.comment_threads.each { |e| expect(e.save) }
     end
 
     it "has the correct number of comment threads" do
@@ -57,14 +58,41 @@ describe Post, '#comments' do
 
     it "has comments that belong to itself, and only itself" do
       com_level = @post.comment_threads
+      total = 0
       until com_level.empty?
         next_level = []
         com_level.each do |com|
+          total += 1
           expect(com.post).to be == @post
           next_level.concat com.comments
         end
         com_level = next_level
       end
+      post_total = 0
+      @post.comment_threads.each { |e| post_total += e.total_comments }
+
+      expect(total).to be == post_total
+    end
+
+    it "persists multi-level comment_threads" do
+      expect(@post.save).to be
+      lp = Post.includes(:comment_threads).find_by id: @post.id
+
+      com_level = lp.comment_threads
+      total = 0
+      until com_level.empty?
+        next_level = []
+        com_level.each do |com|
+          total += 1
+          expect(com.post).to be == @post
+          next_level.concat com.comments
+        end
+        com_level = next_level
+      end
+      post_total = 0
+      @post.comment_threads.each { |e| post_total += e.total_comments }
+
+      expect(total).to be == post_total
     end
 
     it "sets the post when a comment is added to a chain" do

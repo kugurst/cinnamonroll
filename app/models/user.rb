@@ -24,6 +24,8 @@ class User
   field :password, type: String
   field :remember_hash, type: Hash, default: {}
 
+  index({name: 1, email: 1}, {unique: true})
+
   validates :password, presence: true
   validates :email, :name, uniqueness: true, presence: true, case_sensitive: false
   validates_length_of :remember_hash, maximum: 10
