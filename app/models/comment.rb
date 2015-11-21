@@ -12,7 +12,14 @@ class Comment
   belongs_to :parent_comment, class_name: "Comment", autosave: true
   has_many :comments, after_add: [:set_child_post, :set_nesting_level]
 
-  validates :body, :user, :post, presence: true
+  # recursively_embeds_many
+  embeds_many :comments, as: :com_thread, cyclic: true, cascade_callbacks: true, after_add: [:increment_total_and_chain, :set_child_post, :set_nesting_level], after_remove: :decrement_total_and_chain
+  embedded_in :com_thread, cyclic: true
+  # accepts_nested_attributes_for :child_comments, polymorphic: true
+
+  index({post_id: 1})
+
+  validates :body, :post_id, :user_id, :nesting_level, :total_comments, presence: true
 
   before_destroy :delete_comment
 
