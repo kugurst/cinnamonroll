@@ -1,9 +1,0 @@
-<div class="all-comments">
-  <% @post.comment_threads.each do |c| %>
-    <div class="row comment-thread">
-      <div class="small-10 small-offset-1 large-8 large-offset-2 columns">
-        <%= generateCommentList(c).html_safe %>
-      </div>
-    </div>
-  <% end %>
-</div>

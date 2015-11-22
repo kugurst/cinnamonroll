@@ -44,4 +44,6 @@ Rails.application.configure do
 
   config.assets.compile = true
   config.serve_static_files = true
+
+  Mongo::Logger.logger.level = Logger::INFO
 end
