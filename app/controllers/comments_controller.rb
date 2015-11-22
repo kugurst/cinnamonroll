@@ -11,7 +11,6 @@ class CommentsController < ApplicationController
   # GET /comments/1.json
   def show
     @enc_comment = Comment.new
-
   end
 
   # GET /comments/new

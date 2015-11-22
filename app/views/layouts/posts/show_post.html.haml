@@ -1,0 +1,12 @@
+- content_for :head do
+  - if Rails.env == 'production'
+    = stylesheet_link_tag 'styles/posts'
+    = javascript_include_tag "/js/autosize.min.js", 'data-turbolinks-track' => true
+    = javascript_include_tag 'pages/posts'
+
+-# Render everything else
+
+- content_for :body do
+  = render "posts/show_comments"
+
+= render template: "layouts/application"

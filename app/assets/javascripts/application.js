@@ -17,8 +17,9 @@
 // require angular-animate
 //= require turbolinks
 //= require js-routes
-// require base/console
-// require base/encrypt
+//= require base/global
+//= require base/console
+//= require base/encrypt
 //= require modernizr
 //= require foundation/foundation
 //= require foundation

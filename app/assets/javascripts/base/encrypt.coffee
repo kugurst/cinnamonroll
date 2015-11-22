@@ -19,7 +19,7 @@ ENC_PARAM = "enc"
 ACTIVE_PARAM = "active"
 ENC_ACTIVE_PARAM = ENC_PARAM + "_" + ACTIVE_PARAM
 REJECTED_FORM_KEYS = ["commit", "authenticity_token", "utf8", AES_IV_PARAM]
-APPROVED_FORM_ELEMENT_TYPES = ["text", "password", "email", "checkbox"]
+APPROVED_FORM_ELEMENT_TYPES = ["text", "password", "email", "checkbox", "textarea"]
 MAX_ATTEMPTS = 3
 NO_KEY_STATUS = 424
 
@@ -48,9 +48,7 @@ isRejectedInputElement = (name) ->
 isApprovedInputElementType = (type) ->
   APPROVED_FORM_ELEMENT_TYPES.indexOf(type.toLowerCase()) >= 0
 
-onPageLoad = (func) ->
-  $(document).ready -> func()
-  $(document).on 'page:load', -> func()
+onPageLoad = @cinnamonroll.on_page_load
 
 replacePageContent = (content) ->
   document.open()
@@ -153,7 +151,7 @@ jQuery.fn.preventDoubleSubmission = ->
   stack.push(attachedForm)
   while stack.length > 0
     next = stack.pop()
-    if next not instanceof HTMLInputElement
+    if cinnamonroll.is_populated_array next
       stack.push elem for elem in next
     else
       # Rails add some default form fields
@@ -234,6 +232,6 @@ if !@cinnamonroll.sec.aes_key
 
 # Encrypt all forms on the page on submit
 # onPageLoad -> $('form').attr 'onsubmit', "return cinnamonroll.sec.encrypt_form(this)"
-onPageLoad -> $('form').preventDoubleSubmission().submit (ev) ->
+@cinnamonroll.on_page_load -> $('form').preventDoubleSubmission().submit (ev) ->
   # cs.ajax_submit this, ev
   cs.encrypt_form this

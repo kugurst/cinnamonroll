@@ -1,5 +1,8 @@
 .all-comments
-  - @post.comment_threads.each do |c|
-    .row.comment-thread
-      .small-10.small-offset-1.large-8.large-offset-2.columns
-        - generateCommentList(c)
+  - if @post.comment_threads.empty?
+    %strong No comments to here...
+  - else
+    - @post.comment_threads.each do |c|
+      .row.comment-thread
+        .small-10.small-offset-1.large-8.large-offset-2.columns
+          - generateCommentList(c)

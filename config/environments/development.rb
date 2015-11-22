@@ -40,8 +40,7 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
-  config.assets.compress = true
-
+  config.assets.compress = false
   config.assets.compile = true
   config.serve_static_files = true
 
