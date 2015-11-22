@@ -18,7 +18,15 @@ class Post
   validates :title, uniqueness: true
 
   def file_path
-    FILE_PATH + category.to_s.pluralize + "/" + super
+    FILE_PATH + category + "/" + super
+  end
+
+  def category
+    self[:category].to_s.pluralize
+  end
+
+  def to_param
+    title
   end
 
   def add_self_to_child(post)

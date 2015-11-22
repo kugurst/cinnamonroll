@@ -15,6 +15,14 @@ class User
   DELETED_EMAIL = 'who.cares@anyway.com'
   DELETED_PASSWORD = "how did you find out? that's actually an issue"
 
+  def self.new_token
+    SecureRandom.urlsafe_base64
+  end
+
+  def self.deleted_user
+    @@deleted_user ||= User.new name: DELETED_NAME, email: DELETED_EMAIL, password: DELETED_PASSWORD
+  end
+
   # searchable do
     field :name, type: String
     field :email, type: String
@@ -35,8 +43,6 @@ class User
   before_destroy :delete_all_comments
 
   # Model methods
-  # Avoiding nil errors on creation, while also avoiding overwriting the value in the database. Is there a better way to do this?
-
   # Automatically encrypt the password on save
   def password=(pass)
     super Encrypt::Password.createHash pass
@@ -81,13 +87,8 @@ class User
     ret
   end
 
-  # Helper methods
-  def self.new_token
-    SecureRandom.urlsafe_base64
-  end
-
-  def self.deleted_user
-    @@deleted_user ||= User.new name: DELETED_NAME, email: DELETED_EMAIL, password: DELETED_PASSWORD
+  def to_param
+    name
   end
 
   private

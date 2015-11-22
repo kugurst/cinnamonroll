@@ -19,6 +19,10 @@ class ApplicationController < ActionController::Base
     render text: "hello, world!"
   end
 
+  def not_found
+    raise ActionController::RoutingError.new('Not Found')
+  end
+
   # require_dependency Rails.root.join('vendor/PasswordHash.rb')
 
   BANNER = "*" * 80

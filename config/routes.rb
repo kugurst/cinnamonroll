@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   get 'static/about_me'
 
+  get 'posts/:category/:file_path', to: 'posts#show', as: :post_cat
+
   resources :comments
   resources :posts
   resources :users

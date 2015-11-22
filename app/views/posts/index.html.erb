@@ -26,7 +26,7 @@
         <td><%= post.tags %></td>
         <td><%= post.file_path %></td>
         <td><%= post.comment_threads %></td>
-        <td><%= link_to 'Show', post %></td>
+        <td><%= link_to 'Show', post_cat_path(post.category, post[:file_path]) %></td>
         <td><%= link_to 'Edit', edit_post_path(post) %></td>
         <td><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>

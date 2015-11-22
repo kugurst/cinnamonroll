@@ -73,7 +73,16 @@ class PostsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
-      @post = Post.includes(:comment_threads).find(params[:id])
+      if params.key? :category and params.key? :file_path
+        begin
+          @post = Post.includes(:comment_threads).find_by category: params[:category].to_s.singularize, file_path: params[:file_path]
+        rescue Mongoid::Errors::DocumentNotFound
+          @post = Post.includes(:comment_threads).find_by title: params[:category]
+          render params[:file_path]
+        end
+      else
+        @post = Post.includes(:comment_threads).find_by title: params[:id]
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
