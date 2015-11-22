@@ -18,7 +18,7 @@ class User
   # searchable do
     field :name, type: String
     field :email, type: String
-    has_and_belongs_to_many :comments, inverse_of: nil
+    has_and_belongs_to_many :comments, inverse_of: nil, autosave: true
   # end
   # The password will be stored as a base64 hash
   field :password, type: String

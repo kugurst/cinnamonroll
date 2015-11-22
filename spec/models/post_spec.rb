@@ -1,21 +1,21 @@
 require "rails_helper"
 
 describe Post, 'state' do
-  subject { create :post }
+  subject { create :post, category: :testing }
 
   test_path = "test"
-  it "puts #{Post::FILE_PATH} before the specified path" do
+  it "puts #{Post::FILE_PATH}/testings before the specified path" do
     subject.file_path = test_path
 
 
-    expect(subject.file_path).to be == Post::FILE_PATH + test_path
+    expect(subject.file_path).to be == Post::FILE_PATH + "testings/" + test_path
   end
 
-  second_test_path = Post::FILE_PATH + "second_test"
-  it "doesn't put #{Post::FILE_PATH} before a path that already has it" do
-    subject.file_path = second_test_path
+  it "changes the file_path if the category changes" do
+    subject.file_path = test_path
+    subject.category = :review
 
-    expect(subject.file_path).to be == second_test_path
+    expect(subject.file_path).to be == Post::FILE_PATH + "reviews/" + test_path
   end
 
   it "requires a unique title" do
@@ -27,7 +27,23 @@ describe Post, 'state' do
   end
 end
 
-describe Post, '#comments' do
+describe Post, '#related_posts' do
+  it 'has a reference to all other related posts' do
+    p1 = create :post
+    p2 = create :post
+
+
+    p1.related_posts << p2
+    expect(p1.save).to be
+    expect(p2).to_not be_changed
+
+
+    expect(p1.related_posts).to be_include p2
+    expect(p2.related_posts).to be_include p1
+  end
+end
+
+describe Post, '#comment_threads' do
   context 'with no nested comments' do
     num_comments = 5
     before :all do

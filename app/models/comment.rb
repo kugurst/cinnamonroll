@@ -28,7 +28,6 @@ class Comment
   end
 
   def post=(post)
-    @post = post
     set post_id: post.id
   end
 
@@ -42,7 +41,6 @@ class Comment
   end
 
   def user=(user)
-    @user = user
     set user_id: user.id
   end
 
