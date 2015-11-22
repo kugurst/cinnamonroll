@@ -35,6 +35,9 @@ gem 'haml'
 # Simplify URLs
 # gem 'friendly_id', '~> 5.1.0', require: false
 
+# transferring data to the javascript
+gem 'gon'
+
 # Sprockts for compressing data
 gem 'sprockets-rails', require: 'sprockets/railtie'
 # Use ActiveModel has_secure_password
