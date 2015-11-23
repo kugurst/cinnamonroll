@@ -5,6 +5,19 @@ class Post
   FILE_PATH = "posts/sources/"
   CATEGORIES = [:review, :project, :thought, :testing]
 
+  def self.path_to_post(path)
+    path_arr = path.split('/').delete_if {|p| p.blank?}
+    post = nil
+    if path_arr.length == 3
+      if path_arr[0] == 'posts'
+        # We can now try the path
+        results = Post.where(category: path_arr[1].singularize, file_path: path_arr[2])
+        post = results[0] if results.exists?
+      end
+    end
+    post
+  end
+
   field :title, type: String
   field :tags, type: Array, default: []
   field :file_path, type: String

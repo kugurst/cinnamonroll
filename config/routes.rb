@@ -16,6 +16,8 @@ Rails.application.routes.draw do
   post 'login', to: 'session#create'
   delete 'logout', to: 'session#destroy'
 
+  get 'comments/partials/reply_box', to: 'comments#reply_box'
+  get 'comments/partials/new_box', to: 'comments#new_box'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

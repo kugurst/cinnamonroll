@@ -5,4 +5,7 @@
     - @post.comment_threads.each do |c|
       .row.comment-thread
         .small-10.small-offset-1.large-8.large-offset-2.columns
-          - generateCommentList(c)
+          - generate_comment_list(c)
+  .row
+    .small-12.small-centered.columns.center-text
+      %a#new-link.center-text Write a comment

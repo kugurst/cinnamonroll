@@ -47,3 +47,6 @@
 **** Has a post_id and user_id
 **** Users have an arraay of all comments they've written, regardless of nesting level
 **** Posts have an array of all head comments (comments with a nesting level of 0)
+** application.rb **
+*** TODO remove sprockets from development
+**** This will allow us to use per controller styles and coffee more easily, but without needing to do a require-tree and thus possibly clobbering files

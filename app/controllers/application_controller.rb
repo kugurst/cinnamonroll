@@ -96,4 +96,10 @@ class ApplicationController < ActionController::Base
     def request_aes_key
       head :failed_dependency
     end
+
+    def head_if_true(status, test)
+      return false unless test
+      head status
+      true
+    end
 end

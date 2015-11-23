@@ -1,4 +1,6 @@
 class PostsController < ApplicationController
+  include SessionHelper
+
   before_action :set_post, only: [:show, :edit, :update, :destroy]
 
   layout "posts/show_post", only: :show
@@ -12,7 +14,7 @@ class PostsController < ApplicationController
   # GET /posts/1
   # GET /posts/1.json
   def show
-    @comment = Comment.new
+    gon.push logged_in: logged_in?
   end
 
   # GET /posts/new

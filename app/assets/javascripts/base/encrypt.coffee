@@ -232,6 +232,7 @@ if !@cinnamonroll.sec.aes_key
 
 # Encrypt all forms on the page on submit
 # onPageLoad -> $('form').attr 'onsubmit', "return cinnamonroll.sec.encrypt_form(this)"
-@cinnamonroll.on_page_load -> $('form').preventDoubleSubmission().submit (ev) ->
-  # cs.ajax_submit this, ev
-  cs.encrypt_form this
+@cinnamonroll.on_page_load ->
+  $('form').preventDoubleSubmission().submit (ev) ->
+    # cs.ajax_submit this, ev
+    cs.encrypt_form this

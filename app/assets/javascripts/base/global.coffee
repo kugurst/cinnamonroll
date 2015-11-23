@@ -1,5 +1,7 @@
 @cinnamonroll = {} if !@cinnamonroll
 
+@cinnamonroll.MAX_AJAX_ATTEMPTS = 3
+
 @cinnamonroll.is_populated_array = (subject) ->
   try
     if subject

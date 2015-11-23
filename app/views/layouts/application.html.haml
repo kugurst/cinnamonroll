@@ -29,14 +29,11 @@
     -# stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
     -# javascript_include_tag "/js/modernizr.js"
     = javascript_include_tag "/js/forge.min.js", 'data-turbolinks-track' => true
-    - if Rails.env != 'production'
-      = javascript_include_tag "/js/autosize.min.js", 'data-turbolinks-track' => true
     = javascript_include_tag "application", 'data-turbolinks-track' => true
     = csrf_meta_tags
     = yield :head
 
   %body
-    = include_gon
     = Gon::Base.render_data
     %nav.top-bar(data-topbar role="navigation")
       %section.top-bar-section
