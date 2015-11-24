@@ -19,7 +19,7 @@ ENC_PARAM = "enc"
 ACTIVE_PARAM = "active"
 ENC_ACTIVE_PARAM = ENC_PARAM + "_" + ACTIVE_PARAM
 REJECTED_FORM_KEYS = ["commit", "authenticity_token", "utf8", AES_IV_PARAM]
-APPROVED_FORM_ELEMENT_TYPES = ["text", "password", "email", "checkbox", "textarea"]
+APPROVED_FORM_ELEMENT_TYPES = ["text", "password", "email", "checkbox", "textarea", "hidden"]
 MAX_ATTEMPTS = 3
 NO_KEY_STATUS = 424
 
@@ -54,21 +54,6 @@ replacePageContent = (content) ->
   document.open()
   document.write content
   document.close()
-
-jQuery.fn.preventDoubleSubmission = ->
-  $(this).on 'submit', (e) ->
-    $form = $(this)
-
-    if $form.data('submitted') == true
-      # Previously submitted - don't submit again
-      e.preventDefault();
-    else
-      # Mark it so that the next submit can be ignored
-      $form.data 'submitted', true
-
-  # Keep chainability
-  this
-
 
 # Module function definitions #
 @cinnamonroll.sec.send_pk = (success_func, fail_func, attempt = 0) ->
@@ -134,6 +119,26 @@ jQuery.fn.preventDoubleSubmission = ->
   cipher.finish()
   forge.util.encode64 cipher.output.getBytes()
 
+@cinnamonroll.sec.reenable_form = (form) ->
+  $(form).find('.button').prop 'disabled', false
+  stack = new Array()
+
+  stack.push(form)
+  while stack.length > 0
+    next = stack.pop()
+    if cinnamonroll.is_populated_array next
+      stack.push elem for elem in next
+    else
+      # Rails add some default form fields
+      if !isRejectedInputElement next.name
+        if isApprovedInputElementType next.type
+          # console.log "elem: #{next.name}, #{next.type}, #{next.value}"
+          $next = $(next)
+          $next.prop 'disabled', false if $next.prop 'disabled'
+          if next.name.lastIndexOf('enc[', 0) == 0 || next.name.lastIndexOf('aes[', 0) == 0
+            $(next).remove()
+          # For supported a wide variety of types
+
 @cinnamonroll.sec.encrypt_form = (attachedForm) ->
   if cs.NO_ENCRYPTION
     # Add the no_enc field to the form
@@ -155,8 +160,8 @@ jQuery.fn.preventDoubleSubmission = ->
       stack.push elem for elem in next
     else
       # Rails add some default form fields
+      # console.log "elem: #{next.name}, #{next.type}, #{next.value}"
       if !isRejectedInputElement next.name
-        # console.log "elem: #{next.name}, #{next.type}, #{next.value}"
         # For supported a wide variety of types
         if isApprovedInputElementType next.type
           # console.log "next name: #{next.name}, next id: #{next.id}"
@@ -182,7 +187,7 @@ jQuery.fn.preventDoubleSubmission = ->
   .appendTo attachedForm
   true
 
-@cinnamonroll.sec.ajax_submit = (attachedForm, ev) ->
+@cinnamonroll.sec.encrypt_and_ajax_submit = (attachedForm, ev) ->
   cs.encrypt_form attachedForm
 
   $.ajax {
@@ -196,11 +201,37 @@ jQuery.fn.preventDoubleSubmission = ->
   .fail (jq, status, e) ->
     # console.log "fail: jq: #{jq.status}"
     if jq.status == NO_KEY_STATUS
-      cs.req_aes_key -> cs.ajax_submit attachedForm, ev
+      cs.req_aes_key -> cs.encryp_and_ajax_submit attachedForm, ev
     else
       replacePageContent jq.responseText
 
   ev.preventDefault()
+
+@cinnamonroll.sec.encrypt_and_ajax_submit_form_expect_json = (form, done_func, fail_func, always_func, attempt = 1) ->
+  cs.encrypt_form form
+
+  $.ajax {
+    type: form.method
+    url: form.action
+    data: $(form).serialize()
+    dataType: 'json'
+  }
+  .done (data, status, jq) ->
+    done_func data, status, jq
+  .fail (jq, status, e) ->
+    if jq.status == NO_KEY_STATUS
+      cs.req_aes_key ->
+        cs.encrypt_and_ajax_submit_form_expect_json form, done_func, fail_func, always_func
+    else
+      if attempt < cinnamonroll.MAX_AJAX_ATTEMPTS
+        cs.encrypt_and_ajax_submit_form_expect_json form, done_func, fail_func, always_func, attempt + 1
+      else
+        fail_func jq, status, e
+  .always (dj, status, je) ->
+    # call the always on the last attempt. Either success or we've reached max tries
+    if status == 'success' || attempt == cinnamonroll.MAX_AJAX_ATTEMPTS
+      always_func dj, status, je
+
 
 # Static code
 # Check if we are encrypting this session
@@ -234,5 +265,5 @@ if !@cinnamonroll.sec.aes_key
 # onPageLoad -> $('form').attr 'onsubmit', "return cinnamonroll.sec.encrypt_form(this)"
 @cinnamonroll.on_page_load ->
   $('form').preventDoubleSubmission().submit (ev) ->
-    # cs.ajax_submit this, ev
+    # cs.encrypt_and_ajax_submit this, ev
     cs.encrypt_form this

@@ -20,6 +20,7 @@ gem 'js-routes'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 # Use jquery for easier dynamic behaviour
 gem 'angularjs-rails'
 

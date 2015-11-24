@@ -1,11 +1,13 @@
 .all-comments
   - if @post.comment_threads.empty?
-    %strong No comments to here...
+    .row.comment-thread#no-comments-row
+      .small-12.large-12.columns.text-center
+        %strong no comments here...
   - else
     - @post.comment_threads.each do |c|
       .row.comment-thread
         .small-10.small-offset-1.large-8.large-offset-2.columns
           - generate_comment_list(c)
   .text-center#new-link-container
-    %a#new-link Write a comment
+    %a#new-link write a comment
   %br/

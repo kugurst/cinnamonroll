@@ -46,20 +46,22 @@ class CommentsController < ApplicationController
     parent_comment_id = cp.delete :parent_comment_id
     parent_comment = nil
     unless parent_comment_id.nil?
-      results = Comment.where(id: parent_comment_id)
-      parent_comment = results[0] if results.exists?
+      Comment.each_matching_comment BSON::ObjectId(parent_comment_id) do |c|
+        parent_comment = c
+      end
     end
     @comment = Comment.new(cp)
 
     respond_to do |format|
       if @comment.valid?
-        parent_comment.comments << @comment unless parent_comment.nil?
-        current_user.comments << @comment
-        post.comment_threads << @comment if @comment.nesting_level == 0
-        current_user.save
-        post.save
-        format.html { redirect_to return_point }
-        format.json { render :show, status: :created, location: @comment }
+        com = render_to_string 'create', layout: false
+        # parent_comment.comments << @comment unless parent_comment.nil?
+        # current_user.comments << @comment
+        # post.comment_threads << @comment if @comment.nesting_level == 0
+        # current_user.save
+        # post.save
+        msg = { html: com }
+        format.json { render json: msg, status: :ok }
       else
         format.html do
           flash[:notice] = "Comment failed to save"
@@ -108,6 +110,6 @@ class CommentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def comment_params
-      enc_require(:comment).permit(:body, :user, :created_at, :modified_at, :comments)
+      enc_require(:comment).permit(:body, :user, :created_at, :modified_at, :comments, :parent_comment_id)
     end
 end

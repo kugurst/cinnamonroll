@@ -1,7 +1,7 @@
 .row.new-comment-box
   - if logged_in?
     .small-10.small-offset-1.columns
-      = form_for :comment, url: comments_path do |f|
+      = form_for :comment, url: comments_path, html: { class: 'new-coment-form' } do |f|
         .row.collapse
           - if @reply
             %strong new reply
@@ -9,7 +9,7 @@
             %strong new comment
         .row.collapse
           .small-12.columns
-            = f.text_area :body
+            = f.text_area :body, id: 'new-comment-textarea'
         .row.collapse
           .small-2.small-offset-10.columns
             = f.submit 'Submit', class: 'button postfix'

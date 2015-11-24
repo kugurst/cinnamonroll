@@ -13,3 +13,17 @@
 @cinnamonroll.on_page_load = (func) ->
   $(document).ready -> func()
   $(document).on 'page:load', -> func()
+
+jQuery.fn.preventDoubleSubmission = ->
+  $(this).on 'submit', (e) ->
+    $form = $(this)
+
+    if $form.data('submitted') == true
+      # Previously submitted - don't submit again
+      e.preventDefault();
+    else
+      # Mark it so that the next submit can be ignored
+      $form.data 'submitted', true
+
+  # Keep chainability
+  this

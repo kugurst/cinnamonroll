@@ -35,6 +35,7 @@
 
   %body
     = Gon::Base.render_data
+    = yield :body
     %nav.top-bar(data-topbar role="navigation")
       %section.top-bar-section
         .row.collapse
