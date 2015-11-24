@@ -94,10 +94,11 @@ class CommentsController < ApplicationController
     end
   end
 
-  def reply_box
-    @reply = true
+  def box
+    @reply = true if params[:type] == :reply
     render 'box', layout: false
   end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

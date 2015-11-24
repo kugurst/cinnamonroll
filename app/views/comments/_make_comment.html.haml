@@ -8,9 +8,10 @@
           - else
             %strong new comment
         .row.collapse
-          .small-10.columns
+          .small-12.columns
             = f.text_area :body
-          .small-2.columns
+        .row.collapse
+          .small-2.small-offset-10.columns
             = f.submit 'Submit', class: 'button postfix'
   - else
     %p.text-center You must be #{link_to "logged in", login_path} in order to comment. New user? #{link_to "Sign up!", new_user_path}
