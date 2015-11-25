@@ -1,1 +1,6 @@
-- build_comment(@comment, @comment.nesting_level)
+- if @parent_comment.nil?
+  - build_comment(@comment, @comment.nesting_level)
+- else
+  .row
+    .small-11.small-offset-1.columns
+      - build_comment(@comment, @comment.nesting_level)

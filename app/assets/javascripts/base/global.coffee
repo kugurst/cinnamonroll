@@ -2,6 +2,14 @@
 
 @cinnamonroll.MAX_AJAX_ATTEMPTS = 3
 
+@cinnamonroll.add_attr_to_form = (scope, param, value, form) ->
+  $('<input type="hidden">').attr {
+    id: "#{scope}_#{param}"
+    name: "#{scope}[#{param}]"
+    value: "#{value}"
+  }
+  .appendTo form
+
 @cinnamonroll.is_populated_array = (subject) ->
   try
     if subject

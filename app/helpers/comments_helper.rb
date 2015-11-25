@@ -3,7 +3,7 @@ module CommentsHelper
     haml_tag :div, class: 'comment', 'data-level' => level, 'data-id' => com.id do
       haml_tag :div, class: 'row' do
         haml_tag :div, class: 'small-5 columns' do
-          haml_tag :span, link_to("@#{html_escape_once(com.user.name)}", com.user)
+          haml_tag :span, link_to("@#{com.user.name}", com.user)
         end
         if logged_in?
           haml_tag :div, class: 'small-5 columns text-right' do
@@ -15,16 +15,16 @@ module CommentsHelper
         haml_tag :div, class: 'small-12 columns' do
           haml_tag :div, class: 'comment-dates' do
             haml_tag :div, class: 'comment-dates-row' do
-              haml_tag :div, "Wrote on: #{com.c_at.to_s}", class: 'comment-written'
+              haml_tag :div, "Wrote on: #{com.c_at.to_s :short}", class: 'comment-written'
               haml_tag :div, '|', class: 'comment-separator'
-              haml_tag :div, "Edited on: #{com.u_at.to_s}", class: 'comment-edited text-right'
+              haml_tag :div, "Edited on: #{com.u_at.to_s :short}", class: 'comment-edited text-right'
             end
           end
         end
       end
       haml_tag :div, class: 'row' do
         haml_tag :div, class: 'small-10 small-offset-1 columns' do
-          haml_tag :p, "#{html_escape_once(com.body)}"
+          haml_tag :p, "#{com.body}"
         end
       end
     end

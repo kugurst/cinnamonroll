@@ -16,7 +16,7 @@
 // require foundation
 // require angular
 // require angular-animate
-//= require turbolinks
+//= require turbograft
 //= require js-routes
 //= require base/global
 //= require base/console

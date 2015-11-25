@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
   include SessionHelper
 
-  before_action :set_post, only: [:show, :edit, :update, :destroy]
+  before_action :set_post, only: [:show, :edit, :update, :destroy, :comments]
 
   layout "posts/show_post", only: :show
 
@@ -16,6 +16,11 @@ class PostsController < ApplicationController
   def show
     @comment_list = PostsHelper.tree_comments @post
     gon.push logged_in: logged_in?
+  end
+
+  def comments
+    @comment_list = PostsHelper.tree_comments @post
+    render layout: false
   end
 
   # GET /posts/new

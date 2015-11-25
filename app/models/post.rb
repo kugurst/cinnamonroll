@@ -18,6 +18,11 @@ class Post
     post
   end
 
+  def self.cat_and_path_to_post(cat, path)
+    results = Post.where(category: cat.singularize, file_path: path)
+    results.exists? ? results[0] : nil
+  end
+
   field :title, type: String
   field :tags, type: Array, default: []
   field :file_path, type: String

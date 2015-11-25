@@ -28,39 +28,44 @@ class CommentsController < ApplicationController
   # POST /comments.json
   def create
     # require a referer and user
-    return if head_if_true(:forbidden, request.referer.blank? && Rails.env != 'test')
-    return if head_if_true(:unauthorized, !logged_in?)
+    return if head_if_true(:forbidden, post_params.blank?)
+    return if head_if_true :unauthorized, !logged_in?
 
     return request_aes_key if decrypt_sym!(:comment).nil?
+    decrypt_sym! :post
 
-    # Get the post from the URL
-    referer = URI(request.referer).path
-    set_return_point referer
-    post = Post.path_to_post referer
+    # Get the post from the params
+    pp = post_params
+    post = Post.cat_and_path_to_post pp[:category], pp[:file_path]
     return if head_if_true(:forbidden, post.nil?)
 
-    # Set the additional comment fields, and add the comment to its parent, if present
+    # Set the additional comment fields
     cp = comment_params
-    cp[:post_id] = post.id
-    cp[:user_id] = current_user.id
+    cp[:body].strip!
+    cp[:post] = post
+    cp[:user] = current_user
     parent_comment_id = cp.delete :parent_comment_id
-    parent_comment = nil
+    get_all_comments = cp.delete :all
+    @parent_comment = nil
     unless parent_comment_id.nil?
-      Comment.each_matching_comment BSON::ObjectId(parent_comment_id) do |c|
-        parent_comment = c
-      end
+      results = Comment.where id: parent_comment_id
+      @parent_comment = results[0] if results.exists?
     end
     @comment = Comment.new(cp)
 
     respond_to do |format|
       if @comment.valid?
-        com = render_to_string 'create', layout: false
-        # parent_comment.comments << @comment unless parent_comment.nil?
-        # current_user.comments << @comment
-        # post.comment_threads << @comment if @comment.nesting_level == 0
-        # current_user.save
-        # post.save
-        msg = { html: com }
+        @parent_comment.comments << @comment if @parent_comment
+        @comment.save
+        com = ""
+        if !get_all_comments
+          com = render_to_string layout: false
+        else
+          @comment_list = PostsHelper.tree_comments post
+          com = render_to_string 'post_comments', layout: false
+        end
+
+        msg = { html: com, id: @comment.id.to_s }
         format.json { render json: msg, status: :ok }
       else
         format.html do
@@ -110,6 +115,10 @@ class CommentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def comment_params
-      enc_require(:comment).permit(:body, :user, :created_at, :modified_at, :comments, :parent_comment_id)
+      enc_require(:comment).permit(:body, :user, :created_at, :modified_at, :comments, :parent_comment_id, :all)
+    end
+
+    def post_params
+      enc_fetch(:post).permit(:category, :file_path)
     end
 end

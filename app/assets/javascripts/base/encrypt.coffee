@@ -160,10 +160,10 @@ replacePageContent = (content) ->
       stack.push elem for elem in next
     else
       # Rails add some default form fields
-      # console.log "elem: #{next.name}, #{next.type}, #{next.value}"
       if !isRejectedInputElement next.name
         # For supported a wide variety of types
         if isApprovedInputElementType next.type
+          # console.log "elem: #{next.name}, #{next.type}, #{next.value}"
           # console.log "next name: #{next.name}, next id: #{next.id}"
           # console.log "attached form: #{attachedForm}, attached form id: #{attachedForm.id}, type: #{attachedForm.type}"
           $('<input type="hidden">').attr {
