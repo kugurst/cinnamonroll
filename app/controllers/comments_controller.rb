@@ -65,7 +65,7 @@ class CommentsController < ApplicationController
       else
         format.html do
           flash[:notice] = "Comment failed to save"
-          redirect_to return_point
+          redirect_to return_point_if_none root_path
         end
         format.json { render json: @comment.errors, status: :unprocessable_entity }
       end

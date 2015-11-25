@@ -52,7 +52,7 @@ describe SessionController, '#create' do
 
 
         expect(response.status).to be 302
-        expect(response).to redirect_to "/users/#{@user.id}"
+        expect(response).to redirect_to "/users/#{@user.name}"
       end
     end
   end
@@ -73,19 +73,14 @@ describe SessionController, '#new' do
       pass = "password"
       @user = create :user, password: pass
 
-
-      post :create, session: { email_or_username: @user.email, password: pass },
-           enc: { active: false }
-
-
-      expect(response).to redirect_to "/users/#{@user.id}"
+      session[:user_id] = @user.id.to_s
     end
 
     it "redirects us to the user's page" do
       get :new
 
 
-      expect(response).to redirect_to "/users/#{@user.id}"
+      expect(response).to redirect_to "/users/#{@user.name}"
     end
   end
 end
@@ -101,7 +96,7 @@ describe SessionController, '#destroy' do
            enc: { active: false }
 
 
-      expect(response).to redirect_to "/users/#{@user.id}"
+      expect(response).to redirect_to "/users/#{@user.name}"
     end
 
     it 'logs the user out' do

@@ -14,6 +14,7 @@ class PostsController < ApplicationController
   # GET /posts/1
   # GET /posts/1.json
   def show
+    @comment_list = PostsHelper.tree_comments @post
     gon.push logged_in: logged_in?
   end
 
@@ -78,13 +79,13 @@ class PostsController < ApplicationController
     def set_post
       if params.key? :category and params.key? :file_path
         begin
-          @post = Post.includes(:comment_threads).find_by category: params[:category].to_s.singularize, file_path: params[:file_path]
+          @post = Post.includes(:comments).find_by category: params[:category].to_s.singularize, file_path: params[:file_path]
         rescue Mongoid::Errors::DocumentNotFound
-          @post = Post.includes(:comment_threads).find_by title: params[:category]
+          @post = Post.includes(:comments).find_by title: params[:category]
           render params[:file_path]
         end
       else
-        @post = Post.includes(:comment_threads).find_by title: params[:id]
+        @post = Post.includes(:comments).find_by title: params[:id]
       end
     end
 

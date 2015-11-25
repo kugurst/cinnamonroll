@@ -9,7 +9,7 @@ class SessionController < ApplicationController
     end
     if logged_in?
       flash[:notice] = "Already logged in"
-      redirect_to return_point
+      redirect_to return_point_if_none current_user
     end
   end
 
@@ -34,7 +34,7 @@ class SessionController < ApplicationController
       log_in user
       remember user if lp[:remember_me] == '1'
       flash[:notice] = "Log in successful!"
-      redirect_to return_point
+      redirect_to return_point_if_none user
     else
       flash[:error] = "Email/username and password combination not found"
       render 'new', status: :not_found

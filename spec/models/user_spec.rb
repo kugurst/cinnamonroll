@@ -111,36 +111,16 @@ end
 
 describe User, 'relations' do
   subject { create :user }
-  it "sets comments to deleted when destroyed" do
-    c = create :comment, :with_sub_comments, same_user: true, sub_list: [5]
-    subject.comments << c
-    c.comments.each{ |e| subject.comments << e }
-    expect(subject.save).to be
-    expect(c.save).to be
-    expect(subject.comments[0]).to be == c
+  it "deletes all comments when deleted" do
+    c = create :comment, :with_sub_comments, same_user: true, user: subject, sub_list: [5]
+    expect(c.comments[0].user).to be == subject
 
 
     subject.destroy
 
 
     expect(c.deleted).to be
+    expect(c.user).to be == User.deleted_user
     c.comments.each { |child| expect(child.deleted).to be }
-  end
-
-  it 'updates the comment list when a comment is deleted' do
-    c = create :comment, :with_sub_comments, same_user: true, sub_list: [5]
-    subject.comments << c
-    c.comments.each{ |e| subject.comments << e }
-    expect(subject.save).to be
-    expect(subject.comments[0].id).to be == c.id
-
-
-    c.delete
-    expect(subject.save).to be
-    user = User.find subject.id
-
-    expect(Comment.where(id: c.id)).to_not be_exists
-    c.comments.each{ |e| expect(Comment.where(id: e.id)).to_not be_exists }
-    expect(user.comments).to be_empty
   end
 end

@@ -38,9 +38,15 @@ class ApplicationController < ActionController::Base
     end
 
     def return_point
+      was_blank = session[:return_point].blank?
       ret = session[:return_point] || root_path
       session.delete :return_point
-      ret
+      return ret, was_blank
+    end
+
+    def return_point_if_none(alternate_path)
+      return_path, was_blank = return_point
+      was_blank ? alternate_path : return_path
     end
 
     def enc_params

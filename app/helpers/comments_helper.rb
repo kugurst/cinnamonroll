@@ -30,23 +30,35 @@ module CommentsHelper
     end
   end
 
-  def generate_comment_list(com, level = 1)
+  def generate_comment_list(com, temp = false, level = 1)
     @max_level ||= level
     if level != 1
       haml_tag :div, class: 'row' do
         haml_tag :div, class: 'small-11 small-offset-1 columns' do
           build_comment(com, level)
 
-          com.comments.each do |child|
-            generate_comment_list child, level + 1
+          if temp
+            com.temp_comments.each do |child|
+              generate_comment_list child, temp, level + 1
+            end
+          else
+            com.comments.each do |child|
+              generate_comment_list child, temp,  level + 1
+            end
           end
         end
       end
     else
       build_comment(com, level)
 
-      com.comments.each do |child|
-        generate_comment_list child, level + 1
+      if temp
+        com.temp_comments.each do |child|
+          generate_comment_list child, temp, level + 1
+        end
+      else
+        com.comments.each do |child|
+          generate_comment_list child, temp, level + 1
+        end
       end
     end
 
