@@ -68,11 +68,17 @@ add_box = (parent, type, data) ->
   $(jdat).slideDown duration: SLIDE_DOWN_DURATION, done: ->
     $textarea = jdat.find '#new-comment-textarea'
     autosize $textarea
+    $textarea.keydown((e) ->
+      if e.keyCode == 13 && !e.shiftKey
+        e.preventDefault()
+        $textarea.submit()
+    )
     current_reply = $(parent).find '.new-comment-box'
     if type == cc.type_enum.NEW
       # Add an id to make it easy to identify this particular box
       $(current_reply).attr 'id', COMMENT_ID
-    $('html,body').animate scrollTop: current_reply.offset().top
+    if !$textarea.visible()
+      $('html,body').animate scrollTop: current_reply.offset().top
     $textarea.focus()
 
 validate_form = ($form) ->
@@ -106,7 +112,6 @@ validate_form = ($form) ->
         $('#all-comments').fadeIn 130, ->
           $('html,body').animate scrollTop: $new_comment.offset().top
         cinnamonroll.comments.activate_links()
-        # Turbolinks.visit Routes.post_cat_path(category: path_arr[CATEGORY_POS], file_path: path_arr[FILE_PATH_POS]), change: ['all-comments']
     , (jq, status, e) ->
       return
     , (dj, status, je) ->
