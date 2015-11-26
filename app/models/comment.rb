@@ -47,4 +47,8 @@ class Comment
   def temp_comments
     @temp_comments ||= []
   end
+
+  def temp_comments=(list)
+    @temp_comments = list
+  end
 end

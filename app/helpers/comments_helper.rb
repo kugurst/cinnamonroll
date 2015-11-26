@@ -34,7 +34,7 @@ module CommentsHelper
     @max_level ||= level
     if level != 1
       haml_tag :div, class: 'row' do
-        haml_tag :div, class: 'small-11 small-offset-1 columns' do
+        haml_tag :div, class: 'small-11 small-offset-1 columns comment-thread' do
           build_comment(com, level)
 
           if temp

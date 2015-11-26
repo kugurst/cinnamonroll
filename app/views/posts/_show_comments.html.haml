@@ -1,12 +1,12 @@
 #all-comments(data-tg-refresh="comments")
   - if @comment_list.empty?
-    .row.comment-thread#no-comments-row
+    .row#no-comments-row
       .small-12.large-12.columns.text-center
         %strong no comments here...
   - else
     - @comment_list.each do |c|
-      .row.comment-thread
-        .small-10.small-offset-1.large-8.large-offset-2.columns
+      .row
+        .small-10.small-offset-1.large-8.large-offset-2.columns.comment-thread
           - generate_comment_list(c, true)
   .text-center#new-link-container
     %a#new-link write a comment

@@ -1,5 +1,18 @@
 module PostsHelper
+  class StubComment
+    def temp_comments
+      @temp_comments ||= []
+    end
+    def temp_comments=(list)
+      @temp_comments = list
+    end
+  end
+
   def self.tree_comments(post)
+    PostsHelper.tree_comments_2_pass post
+  end
+
+  def self.tree_comments_2_pass(post)
     found_comments = {}
     comment_list = []
     post.comments.each do |c|
@@ -15,6 +28,68 @@ module PostsHelper
         parent.temp_comments << v
       end
     end
+    # puts "found_comments.length: #{found_comments.length}"
+    comment_list
+  end
+
+  def self.tree_comments_array_placeholder(post)
+    found_comments = {}
+    comment_list = []
+    post.comments.each do |c|
+      # parent this element
+      unless c.parent_comment_id.nil?
+        parent = found_comments[c.parent_comment_id]
+        if parent.is_a? Array
+          parent << c
+        # If it's a comment, then add it to the list directly
+        elsif parent.is_a? Comment
+          parent.temp_comments << c
+        # nil: first time this parent has been encountered
+        else
+          list = [c]
+          found_comments[c.parent_comment_id] = list
+        end
+      end
+
+      # add this comment to the list
+      if found_comments.key? c.id
+        # if we already exist in this list, then it's in array form
+        c.temp_comments = found_comments[c.id]
+      else
+        found_comments[c.id] = c
+      end
+      comment_list << c if c.nesting_level == 0
+    end
+    # puts "found_comments.length: #{found_comments.length}"
+    comment_list
+  end
+
+  def self.tree_comments_stub_placeholder(post)
+    found_comments = {}
+    comment_list = []
+    post.comments.each do |c|
+      # parent this element
+      unless c.parent_comment_id.nil?
+        parent = found_comments[c.parent_comment_id]
+        if parent.nil?
+          # stub the parent
+          parent = StubComment.new
+          found_comments[c.parent_comment_id] = parent
+        end
+        parent.temp_comments << c
+      end
+
+      # add this comment to the list
+      if found_comments.key? c.id
+        # if we already exist in this list, then it's a stub
+        stub = found_comments[c.id]
+        c.temp_comments = stub.temp_comments
+      else
+        found_comments[c.id] = c
+      end
+      comment_list << c if c.nesting_level == 0
+    end
+    # puts "found_comments.length: #{found_comments.length}"
     comment_list
   end
 end
