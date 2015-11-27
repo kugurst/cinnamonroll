@@ -1,3 +1,5 @@
+@import "globals";
+
 // Foundation by ZURB
 // foundation.zurb.com
 // Licensed under MIT Open Source
@@ -1403,7 +1405,7 @@ $include-html-global-classes: $include-html-classes;
 // $include-html-top-bar-classes: $include-html-classes;
 
 // Background color for the top bar
-// $topbar-bg-color: $oil;
+$topbar-bg-color: $alt-bar-color;
 // $topbar-bg: $topbar-bg-color;
 
 // Height and margin

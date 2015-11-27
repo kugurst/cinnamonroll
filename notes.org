@@ -23,6 +23,14 @@
    + The client decrypts the AES key using its private key, and then encrypts using the key and random IV.
    + Duplex communication is formed by server and client generating their own IV per communication.
 
+* Color Schemes
+** Necessary variables:
+*** header-color
+*** bar-color
+*** error-color
+*** bg-color
+*** fill-color
+
 * TODO List
 ** encrypt.coffee **
 *** DONE Add that we are not encrypting to the sessionStorage (cinnamonroll.sec.NO_ENCRYPTION should go in sessionStorage)
