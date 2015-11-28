@@ -7,6 +7,7 @@ FactoryGirl.define do
     end
 
     p.sequence(:title) { |n| Forgery::Email.subject + n.to_s }
+    additional_info {{ splash_img: Forgery::Basic.text }}
     file_path Forgery::Name.first_name
 
     trait :with_comments do
@@ -17,6 +18,29 @@ FactoryGirl.define do
           post.comments << create(:comment, *cc_args)
           i += 1
         end
+      end
+    end
+  end
+
+  factory :oh_my_zsh, class: Post do |p|
+    file_path 'oh_my_zsh'
+    category :testing
+    title 'Oh My Zsh'
+    additional_info {{ subtitle: 'A great, zero-effort way to improve the Z shell', splash_img: 'oh_my_zsh_terminal.png' }}
+    tags { ['scripting', 'shell', 'enhancement'] }
+
+    after :create do |post, eval|
+      (0..1).each do
+        com = create :comment, post: post
+        com.save
+      end
+      (0..1).each do
+        com = create :comment, :with_sub_comments, sub_list: [3,2], post: post
+        com.save
+      end
+      (0..1).each do
+        com = create :comment, :with_sub_comments, sub_list: [2,2,1,2,1,1], post: post
+        com.save
       end
     end
   end

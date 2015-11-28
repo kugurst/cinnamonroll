@@ -14,6 +14,7 @@
 * Practices
   + Place precompiled javascript files in -public/js-
     + Include these files by referencing ="/js/..."=
+  + Use rails conventions. Stick all static files under public. Tree out directory according to controller if relevant
 
 * Security
 ** Encryption Scheme
@@ -23,15 +24,9 @@
    + The client decrypts the AES key using its private key, and then encrypts using the key and random IV.
    + Duplex communication is formed by server and client generating their own IV per communication.
 
-* Color Schemes
-** Necessary variables:
-*** header-color
-*** bar-color
-*** error-color
-*** bg-color
-*** fill-color
-
 * TODO List
+** TODO Make page changes slide outs and use History.js to udpate the current URL
+** TODO Investigate the viability of Turbolinks or Turbograft to facilitate page replacement
 ** encrypt.coffee **
 *** DONE Add that we are not encrypting to the sessionStorage (cinnamonroll.sec.NO_ENCRYPTION should go in sessionStorage)
 *** TODO Check to see if cinnamonroll.sec.NO_ENCRYPTION is true before attempting to request an AES key (prevents clients that can't generate a key from repeatedly generating an RSA key)

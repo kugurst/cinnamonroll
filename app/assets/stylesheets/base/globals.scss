@@ -65,8 +65,19 @@ $clay-theme: (
   bar-color: #D4AA7A,
   alt-header-color: #E7AA3D,
   alt-bg-color: #A6752B,
-  bg-color: darken(#B5512F, 5%),
+  bg-color: darken(#B5512F, 0.5%), // original: darken(#B5512F, 1%), darken then lighten: #C95A34, lighten only: #B14F2E
   fill-color: #83633D
+);
+
+$clay-light-theme: (
+  error-color: #E15624,
+  header-color: #523015,
+  bar-color: #D4AA7A,
+  alt-header-color: #E7AA3D,
+  alt-bg-color: #A6752B,
+  bg-color: #E9C898,
+  fill-color: #83633D,
+  font-color: #000000
 );
 
 @mixin apply-theme($theme) {
@@ -81,7 +92,7 @@ $clay-theme: (
   $font-color: if(map-has-key($theme, font-color), map-get($theme, font-color), #FFFFFF) !global;
 };
 
-@include apply-theme($clay-theme);
+@include apply-theme($clay-light-theme);
 
 @for $i from 1 through 6 {
   h#{$i} {

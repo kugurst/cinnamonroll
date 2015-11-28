@@ -1,0 +1,25 @@
+* Color Schemes
+** Necessary variables:
+*** header-color
+*** bar-color
+*** error-color
+*** bg-color
+*** fill-color
+
+* Clay Theme
+** adobe-theme
+*** error-color: provides a subtle difference with the bg-color
+*** header-color: makes a great contrast with the bg-color
+** monochrome-theme
+***  alt-bg-color: might make a good sidebar/header
+** spring-theme
+*** bg-color: might make a good box for some kind of content
+*** bar-color: sidebar or nav bar
+*** alt-header-color: contrasts super well with the background
+*** header-color: good for some sort of content. Possibly comments
+*** error-color: contrasts well with bg-color
+** vibrant-theme
+*** alt-header-color: little eye strain
+*** header-color: possibly useful for a side bar. little eye strain
+*** alt-bar-color: possibly footer cooler?
+*** alt-bg-color: should be our alt-bg-color. Might need to redden/saturate a bit

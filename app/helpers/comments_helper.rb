@@ -16,8 +16,10 @@ module CommentsHelper
           haml_tag :div, class: 'comment-dates' do
             haml_tag :div, class: 'comment-dates-row' do
               haml_tag :div, "Wrote on: #{com.c_at.to_s :short}", class: 'comment-written'
-              haml_tag :div, '|', class: 'comment-separator'
-              haml_tag :div, "Edited on: #{com.u_at.to_s :short}", class: 'comment-edited text-right'
+              unless com.c_at == com.u_at
+                haml_tag :div, '|', class: 'comment-separator'
+                haml_tag :div, "Edited on: #{com.u_at.to_s :short}", class: 'comment-edited text-right'
+              end
             end
           end
         end
