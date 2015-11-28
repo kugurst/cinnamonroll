@@ -36,7 +36,6 @@
 
   %body
     = Gon::Base.render_data
-    = yield :body
     %nav.top-bar(data-topbar role="navigation")
       %section.top-bar-section
         .row.collapse
@@ -60,4 +59,5 @@
                     %a(href="#") First link in dropdown
                   %li.active
                     %a(href="#") Active link in dropdown
+    = yield :body
     = yield

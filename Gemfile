@@ -49,6 +49,10 @@ gem 'gon'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+group :assets do
+  gem 'zurb-foundation'
+end
+
 group :production do
   # Sprockts for compressing data
   gem 'sprockets-rails', require: 'sprockets/railtie'
