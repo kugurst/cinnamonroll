@@ -7,15 +7,16 @@
 BEGIN_EASING_PERCENTAGE = 0.15
 HOVER_SHOW_TIMEOUT = 250
 HOVER_OUT_TIMEOUT = 500
-SIDE_BAR_PEEK_PERCENTAGE = '-7%'
-SIDE_BAR_HIDE_PERCENTAGE = '-10%'
+SIDE_BAR_PEEK_PERCENTAGE = '-4.5%'
+SIDE_BAR_HIDE_PERCENTAGE = '-9%'
 
 # instance variables #
 
 eased_in = false
 shown = false
 show_timeout = null
-body_width = $(window).width()
+body_width = $('body').width()
+body_height = $('body').height()
 $post_nav = null
 
 # instance/helper methods #
@@ -52,6 +53,7 @@ $post_nav = null
 # static code
 $(window).resize ->
   body_width = $('body').width()
+  body_height = $('body').height()
 
 @cinnamonroll.on_page_load ->
   $post_nav = $('#post-nav')
@@ -86,12 +88,16 @@ $(window).resize ->
       ev.preventDefault()
   )
   $(window).mouseleave((ev) ->
-    if ev.clientX < 0
+    if ev.clientX < 0 || ev.clientY < 0 || ev.clientY > body_height
       $post_nav.trigger 'mouseleave'
   )
 
 @cinnamonroll.on_page_load ->
   $('body').mousemove((ev) ->
+    # Breaks in firefox, wtf?
+    if ev.buttons & 1 > 0
+      return
+    #
     if !eased_in && ev.pageX / body_width < BEGIN_EASING_PERCENTAGE
       eased_in = true
       cinnamonroll.posts.peek_side_bar()
