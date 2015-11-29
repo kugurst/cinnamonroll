@@ -174,7 +174,6 @@ replacePageContent = (content) ->
           .appendTo attachedForm
           # next.value = cs.encrypt_string next.value, cs.aes_key, iv
           next.disabled = true
-          # @consolePrint decrypt(next.value, key, iv)
         # else
         #   console.log next.type
 

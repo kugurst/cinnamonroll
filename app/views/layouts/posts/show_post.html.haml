@@ -7,6 +7,7 @@
   = javascript_include_tag 'pages/comments', 'data-turbolinks-track' => true
 - content_for :body do
   = javascript_include_tag "/js/notie.min.js", 'data-turbolinks-track' => true
+  = render "posts/post_nav"
 
 -# Render everything else
 = render template: "layouts/application"
