@@ -21,9 +21,10 @@
 //= require base/global
 //= require base/console
 //= require base/encrypt
-//= require modernizr
-//= require foundation/foundation
+//= require vendor/modernizr
 //= require foundation
 // require_tree .
 
-$(document).foundation();
+// $(document).foundation();
+
+$(function(){ $(document).foundation(); });

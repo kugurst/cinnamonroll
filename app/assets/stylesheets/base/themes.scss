@@ -1,0 +1,98 @@
+$vibrant-theme: (
+  bar-color: #E6B07B,
+  alt-header-color: #359276,
+  header-color: #2E95BB,
+  alt-bar-color: #32CC84,
+  bg-color: #232C22,
+  alt-bg-color: #893F2C,
+  fill-color: #80B019,
+  error-color: #C95916,
+);
+
+$spring-theme: (
+  bg-color: #764A3B,
+  bar-color: #88FF85,
+  alt-header-color: #78F7F3,
+  header-color: #3471AA,
+  error-color: #F2F543,
+  alt-bar-color: #2B5411,
+  alt-bg-color: #853B06,
+);
+
+$monochrome-theme: (
+  fill-color: #BE8441,
+  alt-bg-color: #6D471F,
+  error-color: #E37A28,
+  bar-color: #D0AA7D,
+  header-color: #E8A537,
+  bg-color: #A55818,
+  font-color: #F8F8FF
+);
+
+$adobe-theme: (
+  bg-color: #915827,
+  header-color: #E54F22,
+  alt-header-color: #DA9F37,
+  bar-color: #DCAC79,
+  alt-bar-color: #503318,
+  fill-color: #907650,
+  error-color: #BD532D,
+);
+
+$crossing-brown-theme: (
+  fill-color: #D0A372,
+  header-color: #EA7D2A,
+  alt-bg-color: #5D3D1E,
+  error-color: #EEA82D,
+  bar-color: #8F5D26,
+  alt-header-color: #CD8E3C,
+  bg-color: #B45C1B
+);
+
+$mud-theme: (
+  header-color: #D47B40,
+  alt-bg-color: #4F381D,
+  alt-header-color: #D6AE7D,
+  bar-color: #DAA537,
+  error-color: #8A3B1D,
+  bg-color: #D84B24,
+  fill-color: #916D3A,
+);
+
+$clay-theme: (
+  error-color: #E15624,
+  header-color: #523015,
+  bar-color: #D4AA7A,
+  alt-header-color: #E7AA3D,
+  alt-bg-color: #A6752B,
+  bg-color: darken(#B5512F, 0.5%), // original: darken(#B5512F, 1%), darken then lighten: #C95A34, lighten only: #B14F2E
+  fill-color: #83633D
+);
+
+$cinnamon-roll-theme: (
+  error-color: #CB6D30,
+  header-color: lighten(#60231C, 10%),
+  bar-color: #F6ECC9,
+  nav-bar-color: #A95530, // #A8532E // #A95B2E // #A8512E
+  // bg-color: #FEFBF7,
+  bg-color: #FEFCF7,
+  alt-bg-color: #F5E2D4,
+  fill-color: #CDA075,
+  font-color: #2E2724 // #292220 // #39302D // #3A3431
+);
+
+@mixin apply-theme($theme) {
+  $bg-color: map-get($theme, bg-color) !global;
+  $alt-bg-color: if(map-has-key($theme, alt-bg-color), map-get($theme, alt-bg-color), saturate(map-get($theme, bg-color), 20%)) !global;
+  $header-color: map-get($theme, header-color) !global;
+  $alt-header-color: if(map-has-key($theme, alt-header-color), map-get($theme, alt-header-color), lighten(map-get($theme, header-color), 20%)) !global;
+  $bar-color: map-get($theme, bar-color) !global;
+  $alt-bar-color: if(map-has-key($theme, alt-bar-color), map-get($theme, alt-bar-color), adjust-hue(map-get($theme, bg-color), 90deg)) !global;
+  $fill-color: map-get($theme, fill-color) !global;
+  $error-color: map-get($theme, error-color) !global;
+  $font-color: if(map-has-key($theme, font-color), map-get($theme, font-color), #FFFFFF) !global;
+  $header-font-color: if(map-has-key($theme, header-font-color), map-get($theme, header-font-color), darken(map-get($theme, font-color), 10%)) !global;
+  $nav-bar-color: if(map-has-key($theme, nav-bar-color), map-get($theme, nav-bar-color), adjust-hue(map-get($theme, bar-color), -90deg)) !global;
+};
+
+@include apply-theme($cinnamon-roll-theme);
