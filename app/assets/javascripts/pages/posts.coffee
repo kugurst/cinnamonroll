@@ -4,8 +4,9 @@
 
 # Constants #
 
-BEGIN_EASING_PERCENTAGE = 0.2
-HOVER_SHOW_TIMEOUT = 500
+BEGIN_EASING_PERCENTAGE = 0.15
+HOVER_SHOW_TIMEOUT = 250
+HOVER_OUT_TIMEOUT = 500
 SIDE_BAR_PEEK_PERCENTAGE = '-7%'
 SIDE_BAR_HIDE_PERCENTAGE = '-10%'
 
@@ -57,24 +58,22 @@ $(window).resize ->
   $post_nav.mouseenter((ev) ->
     clearTimeout show_timeout unless show_timeout == null
     show_timeout = setTimeout(() ->
-      unless !shown
-        return
       shown = true
       eased_in = true
-      cinnamonroll.posts.show_side_bar()
       show_timeout = null
+      $('.velocity-animating').velocity("stop", true)
+      cinnamonroll.posts.show_side_bar()
     , HOVER_SHOW_TIMEOUT)
   )
   $post_nav.mouseleave((ev) ->
     clearTimeout show_timeout unless show_timeout == null
     show_timeout = setTimeout(() ->
-      unless shown
-        return
       shown = false
       eased_in = false
-      cinnamonroll.posts.hide_side_bar()
       show_timeout = null
-    , HOVER_SHOW_TIMEOUT)
+      $('.velocity-animating').velocity("stop", true)
+      cinnamonroll.posts.hide_side_bar()
+    , HOVER_OUT_TIMEOUT)
   )
   $post_nav.click((ev) ->
     shown = true
@@ -85,6 +84,10 @@ $(window).resize ->
   $post_nav.find('a').click((ev) ->
     if !shown
       ev.preventDefault()
+  )
+  $(window).mouseleave((ev) ->
+    if ev.clientX < 0
+      $post_nav.trigger 'mouseleave'
   )
 
 @cinnamonroll.on_page_load ->
