@@ -16,7 +16,7 @@ module CommentsHelper
           haml_tag :div, class: 'comment-dates' do
             haml_tag :div, class: 'comment-dates-row' do
               haml_tag :div, "Wrote on: #{com.c_at.to_s :short}", class: 'comment-written'
-              unless com.c_at == com.u_at
+              unless com.c_at.to_s(:short) == com.u_at.to_s(:short)
                 haml_tag :div, '|', class: 'comment-separator'
                 haml_tag :div, "Edited on: #{com.u_at.to_s :short}", class: 'comment-edited text-right'
               end
@@ -36,7 +36,7 @@ module CommentsHelper
     @max_level ||= level
     if level != 1
       haml_tag :div, class: 'row' do
-        haml_tag :div, class: 'small-11 small-offset-1 columns comment-thread' do
+        haml_tag :div, class: "small-11 small-offset-1 columns comment-thread #{level % 2 == 0 ? 'comment-thread-pong' : 'comment-thread-ping'}" do
           build_comment(com, level)
 
           if temp

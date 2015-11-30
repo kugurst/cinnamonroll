@@ -1,6 +1,5 @@
-// Place all the styles related to the Comments controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+@import '../base/themes';
+
 .comment-separator, .comment-edited, .comment-written {
   display: table-cell;
 }
@@ -19,7 +18,30 @@
 }
 
 .comment-thread {
-  background-color:rgba(155,231,255,0.1);
-  padding-bottom: 1em;
-  padding-top: 1em;
+  // background-color:rgba(155,231,255,0.1);
+  border-style: solid;
+  border-color: $comment-border-color;
+  border-width: 0.1em;
+  padding-right: 1.2em;
+  padding-top: 0.5em;
+  margin-bottom: 1em;
+}
+
+.comment-thread-ping {
+  background-color: $comment-ping-color;
+}
+
+.comment-thread-pong {
+  background-color: $comment-pong-color;
+}
+
+#comment-announce {
+  background-color: $comment-ping-color;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  @for $i from 1 through 6 {
+    h#{$i} {
+      color: $font-color;
+    }
+  }
 }

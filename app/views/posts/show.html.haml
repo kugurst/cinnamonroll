@@ -1,4 +1,10 @@
 .row(data-turbolinks-permanent)
+  .small-10.small-offset-1.large-12.large-offset-0.columns
+    #title-container
+      %h1.first-header= @post.title
+      %h3.last-header= @post.additional_info[:subtitle]
+
+.row(data-turbolinks-permanent)
   .small-10.small-offset-1.large-12.large-offset-0.columns#main-content
     %br/
     = render @post.file_path

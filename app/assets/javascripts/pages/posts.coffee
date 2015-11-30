@@ -11,7 +11,6 @@ SIDE_BAR_PEEK_PERCENTAGE = '-4.5%'
 SIDE_BAR_HIDE_PERCENTAGE = '-9%'
 
 # instance variables #
-
 eased_in = false
 shown = false
 show_timeout = null
@@ -22,10 +21,9 @@ $post_nav = null
 # instance/helper methods #
 
 # module functions #
-
 @cinnamonroll.posts.show_side_bar = () ->
-  $('.velocity-animating').velocity("stop", true)
-  $('#post-nav').velocity {
+  $post_nav.velocity("stop", true)
+  $post_nav.velocity {
     left: '0'
   }, {
     easing: 'easeInSine'
@@ -33,8 +31,8 @@ $post_nav = null
   }
 
 @cinnamonroll.posts.peek_side_bar = () ->
-  $('.velocity-animating').velocity("stop", true)
-  $('#post-nav').velocity {
+  $post_nav.velocity("stop", true)
+  $post_nav.velocity {
     left: SIDE_BAR_PEEK_PERCENTAGE
   }, {
     easing: 'easeInSine'
@@ -42,8 +40,8 @@ $post_nav = null
   }
 
 @cinnamonroll.posts.hide_side_bar = () ->
-  $('.velocity-animating').velocity("stop", true)
-  $('#post-nav').velocity {
+  $post_nav.velocity("stop", true)
+  $post_nav.velocity {
     left: SIDE_BAR_HIDE_PERCENTAGE
   }, {
     easing: 'easeInSine'
@@ -63,7 +61,7 @@ $(window).resize ->
       shown = true
       eased_in = true
       show_timeout = null
-      $('.velocity-animating').velocity("stop", true)
+      $post_nav.velocity("stop", true)
       cinnamonroll.posts.show_side_bar()
     , HOVER_SHOW_TIMEOUT)
   )
@@ -73,7 +71,7 @@ $(window).resize ->
       shown = false
       eased_in = false
       show_timeout = null
-      $('.velocity-animating').velocity("stop", true)
+      $post_nav.velocity("stop", true)
       cinnamonroll.posts.hide_side_bar()
     , HOVER_OUT_TIMEOUT)
   )
@@ -92,16 +90,19 @@ $(window).resize ->
       $post_nav.trigger 'mouseleave'
   )
 
+  pn_wid = $post_nav.width()
+  console.log pn_wid
+
 @cinnamonroll.on_page_load ->
-  $('body').mousemove((ev) ->
+  $(window).mousemove((ev) ->
     # Breaks in firefox, wtf?
     if ev.buttons & 1 > 0
       return
-    #
-    if !eased_in && ev.pageX / body_width < BEGIN_EASING_PERCENTAGE
+
+    if !eased_in && ev.clientX / body_width < BEGIN_EASING_PERCENTAGE
       eased_in = true
       cinnamonroll.posts.peek_side_bar()
-    else if eased_in && !shown && ev.pageX / body_width > BEGIN_EASING_PERCENTAGE
+    else if eased_in && !shown && ev.clientX / body_width > BEGIN_EASING_PERCENTAGE
       eased_in = false
       cinnamonroll.posts.hide_side_bar()
   )

@@ -3,6 +3,7 @@
 
 $margin: 0.9375rem;
 $offset: rem-calc(30)/2;
+$border-width: 0.1rem;
 
 #main-content {
   $border-color: mix($nav-bar-color, $bg-color, 20%);
@@ -10,17 +11,42 @@ $offset: rem-calc(30)/2;
   background-color: $alt-bg-color;
   border-left-style: solid;
   border-left-color: $border-color;
-  border-left-width: 2px;
+  border-left-width: $border-width;
   border-right-style: solid;
   border-right-color: $border-color;
-  border-right-width: 2px;
+  border-right-width: $border-width;
+  border-bottom-style: solid;
+  border-bottom-color: $border-color;
+  border-bottom-width: $border-width;
+
+  margin-bottom: $offset*3;
+}
+
+@mixin header-shadow {
+  -webkit-box-shadow: 2px 10px 11px -14px rgba(0,0,0,0.65);
+  -moz-box-shadow: 2px 10px 11px -14px rgba(0,0,0,0.65);
+  box-shadow: 2px 10px 11px -14px rgba(0,0,0,0.65);
+}
+
+#title-container {
+  position: relative;
+  z-index: 5;
+  padding-left: $offset*2;
+  margin-right: -$offset;
+  margin-left: -$offset*2;
+  background-color: $header-color;
+  @for $i from 1 through 6 {
+    h#{$i} {
+      color: $bg-color;
+    }
+  }
+  @include header-shadow;
 }
 
 #post-nav {
   background: linear-gradient($bg-color, $font-color, $bg-color);
-  z-index: 3;
   position: fixed;
-  min-width: 9%;
+  max-width: 9%;
   overflow: hidden;
   left: -9%;
   padding-right: 1px;
@@ -31,7 +57,6 @@ $offset: rem-calc(30)/2;
     position: relative;
     top: 50%;
     transform: translateY(-50%);
-    text-align: right;
   }
 
   div {
@@ -46,13 +71,11 @@ $offset: rem-calc(30)/2;
     color: $bg-color;
   }
 
-  margin-left: -$offset*2;
-  margin-right: -$offset;
+  margin-left: -$offset*2 - $border-width;
+  margin-right: -$offset - $border-width;
   margin-bottom: $offset;
   margin-top: $offset*2;
-  padding: $offset/8 $offset $offset/8 $offset*(1+2/8);
+  padding: $offset/8 $offset $offset/8 $offset+$border-width;
 
-  -webkit-box-shadow: 2px 10px 11px -14px rgba(0,0,0,0.65);
-  -moz-box-shadow: 2px 10px 11px -14px rgba(0,0,0,0.65);
-  box-shadow: 2px 10px 11px -14px rgba(0,0,0,0.65);
+  @include header-shadow;
 }

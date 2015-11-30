@@ -76,8 +76,11 @@ $cinnamon-roll-theme: (
   nav-bar-color: #A95530, // #A8532E // #A95B2E // #A8512E
   // bg-color: #FEFBF7,
   bg-color: #FEFCF7,
-  alt-bg-color: #F5E2D4,
+  alt-bg-color: lighten(#F5E2D4, 2.5%),
   fill-color: #CDA075,
+  comment-border-color: #C8E5EA,
+  comment-ping-color: #F4FAF8,
+  comment-pong-color: darken(#EBF8F9, 1%), // #E3F6FA,
   font-color: #2E2724 // #292220 // #39302D // #3A3431
 );
 
@@ -93,6 +96,9 @@ $cinnamon-roll-theme: (
   $font-color: if(map-has-key($theme, font-color), map-get($theme, font-color), #FFFFFF) !global;
   $header-font-color: if(map-has-key($theme, header-font-color), map-get($theme, header-font-color), darken(map-get($theme, font-color), 10%)) !global;
   $nav-bar-color: if(map-has-key($theme, nav-bar-color), map-get($theme, nav-bar-color), adjust-hue(map-get($theme, bar-color), -90deg)) !global;
+  $comment-ping-color: if(map-has-key($theme, comment-ping-color), map-get($theme, comment-ping-color), adjust-hue($bg-color, -30deg)) !global;
+  $comment-pong-color: if(map-has-key($theme, comment-pong-color), map-get($theme, comment-pong-color), adjust-hue($bg-color, 30deg)) !global;
+  $comment-border-color: if(map-has-key($theme, comment-border-color), map-get($theme, comment-border-color), mix($alt-bg-color, $comment-ping-color, 50%)) !global;
 };
 
 @include apply-theme($cinnamon-roll-theme);

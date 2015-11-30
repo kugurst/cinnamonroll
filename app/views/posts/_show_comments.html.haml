@@ -4,9 +4,12 @@
       .small-12.large-12.columns.text-center
         %strong no comments here...
   - else
+    .row
+      .small-10.small-offset-1.large-8.large-offset-2.columns.text-right#comment-announce
+        %h4 comments
     - @comment_list.each do |c|
       .row
-        .small-10.small-offset-1.large-8.large-offset-2.columns.comment-thread
+        .small-10.small-offset-1.large-8.large-offset-2.columns.comment-thread.comment-thread-ping
           - generate_comment_list(c, true)
   .text-center#new-link-container
     %a#new-link write a comment
