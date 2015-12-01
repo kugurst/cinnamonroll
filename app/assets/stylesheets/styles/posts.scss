@@ -124,3 +124,9 @@ $image-outer-margin: rem-calc(72);
   margin-top: $offset*2;
   padding: $offset/8 $offset $offset/8 $offset+$border-width;
 }
+
+$browser-clear: rem-calc(72);
+
+.header-buffer {
+  padding-bottom: $browser-clear/2;
+}

@@ -1,4 +1,6 @@
+# Module definitions #
 @cinnamonroll = {} if !@cinnamonroll
+@cinnamonroll.static = {}
 
 # Module constants #
 

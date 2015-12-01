@@ -53,3 +53,5 @@
 ** application.rb **
 *** TODO remove sprockets from development
 **** This will allow us to use per controller styles and coffee more easily, but without needing to do a require-tree and thus possibly clobbering files
+** routes.rb **
+*** Shorten the post pages path by removing post and sticking them in the category loop

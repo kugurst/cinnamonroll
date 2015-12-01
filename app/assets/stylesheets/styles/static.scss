@@ -8,9 +8,34 @@ $header-height: rem-calc(72);
   margin: 0 auto;
 }
 
+$fast-transition: 0.1s;
+$medium-transition: $fast-transition*2;
+
+@mixin ease-transition($speed) {
+  -webkit-transition: all $speed ease;
+  -moz-transition: all $speed ease;
+  -o-transition: all $speed ease;
+  transition: all $speed ease;
+}
+
+$browser-clear: rem-calc(72);
+
 .image-container {
   position: relative;
+
+  // border-style: solid;
+  // border-width: 0.25em;
+  // border-color: mix($header-color, $alt-bg-color, 15%);
 }
+
+.post-container {
+  width: 90%;
+  margin-left: 5%;
+}
+
+// .image-container-last {
+//   margin-bottom: 0;
+// }
 
 .post-image {
 }
@@ -24,10 +49,21 @@ $header-height: rem-calc(72);
   top: 0;
   left: 0;
   text-shadow: 0px 0px 0.33em #000000;
+
+  @include ease-transition($medium-transition);
+
   @for $i from 1 through 6 {
     h#{$i} {
       color: $bg-color;
       font-weight: normal;
+    }
+  }
+}
+
+.post-link {
+  &:hover {
+    .image-overlay-text {
+      background-color: rgba(#1A1A1A, 0.5);
     }
   }
 }
@@ -53,8 +89,6 @@ $header-height: rem-calc(72);
 #header {
   height: $header-height;
 }
-
-$browser-clear: rem-calc(72);
 
 #site-content {
   background-color: $alt-bg-color;
@@ -93,10 +127,8 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
   font-size: $font-size !important;
   color: $font-color;
   margin-left: 1rem;
-  -webkit-transition: all 0.1s ease;
-  -moz-transition: all 0.1s ease;
-  -o-transition: all 0.1s ease;
-  transition: all 0.1s ease;
+
+  @include ease-transition($fast-transition);
 
   &:hover {
     border-color: $bg-color;
@@ -110,11 +142,14 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
 }
 
 @for $i from 1 through 4 {
+  $rotation: ($i - 1)*90;
   #cat-#{$i} {
     &:hover {
-      $rotation: ($i - 1)*90;
       background-color: adjust-hue($badge-color, $rotation);
     }
+  }
+  .cat-#{$i}-perma {
+    background-color: adjust-hue($badge-color, $rotation);
   }
 }
 
@@ -130,4 +165,17 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
   position: absolute;
   text-align: center;
   display: none;
+}
+
+.post-cat-badge {
+  @include horizontal-center-contents;
+}
+
+.perma-circle {
+  @extend .circle;
+  @extend .circle:hover;
+
+  margin-left: 0;
+  margin-top: $browser-clear/2;
+  margin-bottom: $browser-clear/2;
 }

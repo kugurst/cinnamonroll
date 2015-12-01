@@ -11,38 +11,28 @@
     %h1#message= greeting_message
     %h3#explanation pick a category below to explore, or scroll down to view my recent posts
   #category-row
-    %a#cat-1.circle(href="projects") P
-    %a#cat-2.circle(href="thoughts") T
-    %a#cat-3.circle(href="reviews") R
-    %a#cat-4.circle(href="testings") T
+    - i = 1
+    - Post::CATEGORIES.each do |c|
+      %a.circle(id="cat-#{i}" href="#{c.to_s.pluralize}")= c.to_s.capitalize()[0]
+      - i += 1
   .category-description-container
-    #cat-1-desc.category-description
-      %h4 Projects
-      %p cool things I've made
-    #cat-2-desc.category-description
-      %h4 Thoughts
-      %p an assortment of things that have crossed my mind
-    #cat-3-desc.category-description
-      %h4 Reviews
-      %p neat (or not so neat) things that I decided to write about
-    #cat-4-desc.category-description
-      %h4 Testing
-      %p debugging my website (congrats on finding this)
+    - i = 1
+    - Post::CATEGORIES.each do |c|
+      .category-description(id="cat-#{i}-desc")
+        %h4= c.to_s.pluralize.capitalize
+        %p= get_description(c)
+      - i += 1
 
-.image-container
-  = image_tag @posts[0].get_image_path(:splash_img), class: 'post-image'
-  .image-overlay-text
-    .image-overlay-table
-      .image-overlay-cell
-        .image-overlay-text-center
-          %h1= @posts[0].title
-          %h3= @posts[0].additional_info[:subtitle]
-
-.image-container
-  = image_tag @posts[0].get_image_path(:splash_img), class: 'post-image'
-  .image-overlay-text
-    .image-overlay-table
-      .image-overlay-cell
-        .image-overlay-text-center
-          %h1= @posts[0].title
-          %h3= @posts[0].additional_info[:subtitle]
+- @posts.each_with_index do |post, i|
+  .post-cat-badge
+    %h1(class="perma-circle cat-#{Post::CATEGORIES.index(post[:category]) + 1}-perma")= post.category.capitalize()[0]
+  .post-container
+    %a.post-link(href="#{post_cat_path_fallback(post)}")
+      .image-container
+        = image_tag post.get_image_path(:splash_img), class: 'post-image'
+        .image-overlay-text
+          .image-overlay-table
+            .image-overlay-cell
+              .image-overlay-text-center
+                %h1= post.title
+                %h3= post.additional_info[:subtitle]

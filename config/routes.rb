@@ -1,10 +1,13 @@
 Rails.application.routes.draw do
   get 'static/landing'
-
   get 'static/about_me'
 
   get 'posts/:category/:file_path', to: 'posts#show', as: :post_cat
   get 'posts/:category/:file_path/comments', to: 'posts#comments', as: :post_comments
+
+  Post::CATEGORIES.each do |c|
+    get "#{c.to_s.pluralize}", to: 'posts#category', as: c.to_s.pluralize.to_sym
+  end
 
   resources :comments
   resources :posts

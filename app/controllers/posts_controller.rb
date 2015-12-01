@@ -32,6 +32,15 @@ class PostsController < ApplicationController
   def edit
   end
 
+  def category
+    path = URI.parse(request.original_url).path
+    path.gsub! '/', ''
+
+    # get all posts with this category
+    @posts = Post.where category: path.singularize
+    @category =  path.singularize.to_sym
+  end
+
   # POST /posts
   # POST /posts.json
   def create

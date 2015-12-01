@@ -10,7 +10,7 @@ class Post
 
   FILE_PATH = "posts/sources/"
   IMAGE_PATH = "/img/posts/"
-  CATEGORIES = [:review, :project, :thought, :testing]
+  CATEGORIES = [:project, :thought, :review, :testing]
   ADDITIONAL_INFO_KEYS = [:splash_img, :subtitle]
 
   def self.path_to_post(path)

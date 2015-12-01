@@ -1,4 +1,9 @@
 module PostsHelper
+  CATEGORY_DESCRIPTIONS = {project: "cool things I've made",
+                           thought: "an assortment of things that have crossed my mind",
+                           review: "neat (or not so neat) things that I wrote about",
+                           testing: "debugging my website (congrats on finding this)"}
+
   class StubComment
     def temp_comments
       @temp_comments ||= []
@@ -91,5 +96,13 @@ module PostsHelper
     end
     # puts "found_comments.length: #{found_comments.length}"
     comment_list
+  end
+
+  def get_description(category)
+    CATEGORY_DESCRIPTIONS[category.to_sym]
+  end
+
+  def post_cat_path_fallback(post)
+    "posts/#{post.category}/#{post[:file_path]}"
   end
 end
