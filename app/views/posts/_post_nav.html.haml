@@ -1,11 +1,11 @@
 #post-nav
-  %div
-    %ul.side-nav
-      %li
-        %a(href="#") Link 1
-      %li
-        %a(href="#") Link 2
-      %li
-        %a(href="#") Link 3
-      %li
-        %a(href="#") Link 4
+  %span= @post.category.singularize.capitalize unless @post.nil?
+  %ul.side-nav
+    %li
+      %a(href="#") Link 1
+    %li
+      %a(href="#") Link 2
+    %li
+      %a(href="#") Link 3
+    %li
+      %a(href="#") Link 4

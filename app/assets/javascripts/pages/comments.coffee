@@ -49,13 +49,14 @@ add_box = (parent, type, data) ->
 
   # Ajax submit this form
   comment_form = jdat.find '.new-coment-form'
-  comment_form.submit (ev) ->
+  comment_form.submit((ev) ->
     ev.preventDefault()
     return if !validate_form $(this)
     # add the parent comment if it's a reply
     add_additional_info this, if type == cc.type_enum.REPLY then parent else null
     # send the comment along
     cc.ajax_send_comment comment_form, parent
+  )
 
   if type == cc.type_enum.NEW
     # save the new link comment to stick it back
@@ -85,7 +86,7 @@ validate_form = ($form) ->
   form = $form[0]
   textarea = form["#{COMMENT_PARAM}[#{BODY_PARAM}]"]
   if !$.trim textarea.value
-    notie.alert 3, "comments can't be empty", 2
+    $(textarea).notify "comments can't be empty", className: 'error', position: 'top right', autoHideDelay: 2000, arrowShow: false
     false
   else
     true

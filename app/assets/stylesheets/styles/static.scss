@@ -1,3 +1,54 @@
-// Place all the styles related to the static controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+@import '../base/themes';
+@import 'foundation/functions';
+
+$header-height: rem-calc(72);
+
+.image-container {
+  position: relative;
+}
+
+.post-image {
+}
+
+.image-overlay-text {
+  background-color: rgba(#1A1A1A, 0.6);
+  display: block;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  @for $i from 1 through 6 {
+    h#{$i} {
+      color: $bg-color;
+      font-weight: normal;
+    }
+  }
+}
+
+.image-overlay-table {
+  height: 100%;
+  width: 100%;
+  display: table;
+}
+
+.image-overlay-cell {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.image-overlay-text-center {
+  display: table;
+  margin: 0 auto;
+  @media only screen and (max-width: 40em) {
+    padding-left: 1em;
+  }
+}
+
+#header {
+  height: $header-height;
+}
+
+#site-content {
+
+}

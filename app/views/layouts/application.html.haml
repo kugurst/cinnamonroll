@@ -34,29 +34,6 @@
     = yield :head
 
   %body
-    = Gon::Base.render_data
     = yield :body
-    %nav#nav-bar.top-bar(data-topbar role="navigation")
-      %section.top-bar-section
-        .row.collapse
-          .small-5.columns
-            %ul.left
-              %li
-                %a(href="#") Left Nav Button
-
-          .small-2.columns
-            %ul.title-area
-              %li.name
-                %h1
-                  %a{href: root_path} Cinnamonroll
-
-          .small-5.columns
-            %ul.right
-              %li.has-dropdown
-                %a(href="#") Right Button Dropdown
-                %ul.dropdown
-                  %li
-                    %a(href="#") First link in dropdown
-                  %li.active
-                    %a(href="#") Active link in dropdown
     = yield
+    = Gon::Base.render_data

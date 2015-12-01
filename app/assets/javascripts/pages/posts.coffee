@@ -7,10 +7,10 @@
 BEGIN_EASING_PERCENTAGE = 0.15
 HOVER_SHOW_TIMEOUT = 250
 HOVER_OUT_TIMEOUT = 500
-SIDE_BAR_PEEK_PERCENTAGE = '-4.5%'
-SIDE_BAR_HIDE_PERCENTAGE = '-9%'
 
 # instance variables #
+side_bar_peek_point = '-4.5%'
+side_bar_hide_point = '-9%'
 eased_in = false
 shown = false
 show_timeout = null
@@ -19,6 +19,9 @@ body_height = $('body').height()
 $post_nav = null
 
 # instance/helper methods #
+reload_body_dim = () ->
+  body_width = $('body').width()
+  body_height = $('body').height()
 
 # module functions #
 @cinnamonroll.posts.show_side_bar = () ->
@@ -33,7 +36,7 @@ $post_nav = null
 @cinnamonroll.posts.peek_side_bar = () ->
   $post_nav.velocity("stop", true)
   $post_nav.velocity {
-    left: SIDE_BAR_PEEK_PERCENTAGE
+    left: side_bar_peek_point
   }, {
     easing: 'easeInSine'
     duration: 50
@@ -42,7 +45,7 @@ $post_nav = null
 @cinnamonroll.posts.hide_side_bar = () ->
   $post_nav.velocity("stop", true)
   $post_nav.velocity {
-    left: SIDE_BAR_HIDE_PERCENTAGE
+    left: side_bar_hide_point
   }, {
     easing: 'easeInSine'
     duration: 50
@@ -50,9 +53,12 @@ $post_nav = null
 
 # static code
 $(window).resize ->
-  body_width = $('body').width()
-  body_height = $('body').height()
+  reload_body_dim()
 
+@cinnamonroll.on_page_load ->
+  reload_body_dim()
+
+# Mouse movement over the post_nav
 @cinnamonroll.on_page_load ->
   $post_nav = $('#post-nav')
   $post_nav.mouseenter((ev) ->
@@ -90,12 +96,14 @@ $(window).resize ->
       $post_nav.trigger 'mouseleave'
   )
 
-  pn_wid = $post_nav.width()
-  console.log pn_wid
+  pn_wid = $post_nav.outerWidth()
+  $post_nav.css 'left', -(pn_wid + 1)
+  side_bar_peek_point = -2 * pn_wid / 3
+  side_bar_hide_point = -(pn_wid + 1)
 
+# Easing event registration
 @cinnamonroll.on_page_load ->
   $(window).mousemove((ev) ->
-    # Breaks in firefox, wtf?
     if ev.buttons & 1 > 0
       return
 
@@ -107,5 +115,6 @@ $(window).resize ->
       cinnamonroll.posts.hide_side_bar()
   )
 
+# Text areas expand as you type
 @cinnamonroll.on_page_load ->
   autosize $('textarea')

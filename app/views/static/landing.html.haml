@@ -1,1 +1,29 @@
-= image_tag @most_recent_post.get_image_path :splash_img
+- content_for :head do
+  = stylesheet_link_tag 'styles/posts', 'data-turbolinks-track' => true
+  = stylesheet_link_tag 'styles/static', 'data-turbolinks-track' => true
+  = javascript_include_tag 'pages/posts', 'data-turbolinks-track' => true
+  = javascript_include_tag 'pages/static', 'data-turbolinks-track' => true
+- content_for :body do
+  = render 'posts/post_nav'
+
+%span#header
+
+.image-container
+  = image_tag @posts[0].get_image_path(:splash_img), class: 'post-image'
+  .image-overlay-text
+    .image-overlay-table
+      .image-overlay-cell
+        .image-overlay-text-center
+          %h1= @posts[0].title
+          %h3= @posts[0].additional_info[:subtitle]
+
+#site-content
+
+.image-container
+  = image_tag @posts[0].get_image_path(:splash_img), class: 'post-image'
+  .image-overlay-text
+    .image-overlay-table
+      .image-overlay-cell
+        .image-overlay-text-center
+          %h1= @posts[0].title
+          %h3= @posts[0].additional_info[:subtitle]
