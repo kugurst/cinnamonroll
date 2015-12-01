@@ -1,21 +1,13 @@
 @import '../base/themes';
+@import '../base/mixins';
 @import 'foundation/functions';
 
 $header-height: rem-calc(72);
+$offset: rem-calc(30);
 
 @mixin horizontal-center-contents {
   display: table;
   margin: 0 auto;
-}
-
-$fast-transition: 0.1s;
-$medium-transition: $fast-transition*2;
-
-@mixin ease-transition($speed) {
-  -webkit-transition: all $speed ease;
-  -moz-transition: all $speed ease;
-  -o-transition: all $speed ease;
-  transition: all $speed ease;
 }
 
 $browser-clear: rem-calc(72);
@@ -28,9 +20,40 @@ $browser-clear: rem-calc(72);
   // border-color: mix($header-color, $alt-bg-color, 15%);
 }
 
+$post-block-width: 90%;
+$post-block-margin: 5%;
+
+@mixin post-block-offset {
+  margin-left: $post-block-margin;
+  width: $post-block-width;
+}
+
 .post-container {
-  width: 90%;
-  margin-left: 5%;
+  @include post-block-offset;
+}
+
+.post-date {
+  @include post-block-offset;
+
+  text-align: center;
+  margin-top: $browser-clear/3;
+  margin-bottom: $browser-clear/4;
+}
+
+.post-date-separator {
+  width: $post-block-width - 2%;
+  margin-left: $post-block-margin + 1%;
+  margin-bottom: $browser-clear*3/8;
+  border-width: 2px;
+}
+
+$badge-color: saturate(lighten($header-color, 15%), 5%);
+
+@for $i from 1 through 4 {
+  $rotation: ($i - 1)*90;
+  .pd-separator-#{$i} {
+    border-color: lighten(adjust-hue($badge-color, $rotation), 10%);
+  }
 }
 
 // .image-container-last {
@@ -107,11 +130,10 @@ $browser-clear: rem-calc(72);
   padding-top: $browser-clear/3;
 }
 
-$badge-color: saturate(lighten($header-color, 15%), 5%);
+// $font-size: 3em;
+// $border-width: 0.08em;
 
-.circle {
-  $font-size: 3em;
-  $border-width: 0.08em;
+@mixin circle-badge($font-size, $border-width) {
   display: inline-block;
   padding: $font-size/4*2/3 - $border-width/2;
   text-align: center;
@@ -135,6 +157,23 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
     color: $bg-color;
     background-color: $badge-color;
   }
+}
+
+.circle {
+  @include circle-badge(3em, 0.08em);
+}
+
+.circle-small {
+  @include circle-badge(2.5em, 0.08em);
+  margin-left: auto;
+  margin-right: auto;
+  border-color: $bg-color;
+  color: $bg-color;
+  background-color: $badge-color;
+}
+
+.circle-center {
+  @include horizontal-center-contents;
 }
 
 #cat-1 {
@@ -172,10 +211,15 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
 }
 
 .perma-circle {
+  @extend .perma-circle-no-margin;
+
+  margin-top: $browser-clear/2;
+  margin-bottom: $browser-clear/2;
+}
+
+.perma-circle-no-margin {
   @extend .circle;
   @extend .circle:hover;
 
   margin-left: 0;
-  margin-top: $browser-clear/2;
-  margin-bottom: $browser-clear/2;
 }

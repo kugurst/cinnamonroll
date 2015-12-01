@@ -25,3 +25,7 @@ NUM_CATS = 4
       $desc.velocity 'stop', true
       $desc.velocity 'fadeOut', duration: 100, easing: 'ease'
     )
+
+@cinnamonroll.before_unload ->
+  for num in [1..NUM_CATS]
+    $("#cat-#{num}-desc").css 'display', 'none'

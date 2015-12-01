@@ -24,13 +24,14 @@ reload_body_dim = () ->
   body_height = $('body').height()
 
 # module functions #
-@cinnamonroll.posts.show_side_bar = () ->
+@cinnamonroll.posts.show_side_bar = (callback) ->
   $post_nav.velocity("stop", true)
   $post_nav.velocity {
     left: '0'
   }, {
     easing: 'easeInSine'
     duration: 100
+    complete: callback if callback?
   }
 
 @cinnamonroll.posts.peek_side_bar = () ->
@@ -105,6 +106,20 @@ $(window).resize ->
   $post_nav.css 'left', -(pn_wid + 1)
   side_bar_peek_point = -2 * pn_wid / 3
   side_bar_hide_point = -(pn_wid + 1)
+
+  shown = true
+  eased_in = true
+  show_timeout = null
+  $post_nav.velocity("stop", true)
+  cinnamonroll.posts.show_side_bar ->
+    clearTimeout show_timeout unless show_timeout == null
+    show_timeout = setTimeout(() ->
+      shown = false
+      eased_in = false
+      show_timeout = null
+      $post_nav.velocity("stop", true)
+      cinnamonroll.posts.hide_side_bar()
+    , HOVER_OUT_TIMEOUT * 4)
 
 # Easing event registration
 @cinnamonroll.on_page_load ->

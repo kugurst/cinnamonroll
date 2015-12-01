@@ -15,7 +15,9 @@ class PostsController < ApplicationController
   # GET /posts/1.json
   def show
     @comment_list = PostsHelper.tree_comments @post
-    gon.push logged_in: logged_in?
+    @posts = Post.where category: @post[:category]
+    @category = @post[:category]
+    # gon.push logged_in: logged_in?
   end
 
   def comments

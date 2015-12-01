@@ -103,6 +103,6 @@ module PostsHelper
   end
 
   def post_cat_path_fallback(post)
-    "posts/#{post.category}/#{post[:file_path]}"
+    "/posts/#{post.category}/#{post[:file_path]}"
   end
 end

@@ -1,11 +1,23 @@
+- cat_index = Post::CATEGORIES.index(@category) + 1
+
 #post-nav
-  %span= @post.category.singularize.capitalize unless @post.nil?
+  %span
+    %h1(class="circle-small header-badge-color-#{cat_index}")= @post.nil? ? @category.to_s.capitalize()[0] : @post.category.capitalize()[0]
   %ul.side-nav
-    %li
-      %a(href="#") Link 1
-    %li
-      %a(href="#") Link 2
-    %li
-      %a(href="#") Link 3
-    %li
-      %a(href="#") Link 4
+    - @posts.each do |post|
+      %li(id="#{post == @post ? 'current-post-' + cat_index.to_s : ''}" class="header-badge-link-#{cat_index}")
+        - if post == @post
+          %a= post.title
+        - else
+          %a(href="#{post_cat_path_fallback(post)}")= post.title
+    - unless @posts.empty?
+      %hr/
+    %li.bold-link.static-link
+      %a(href="/") Home
+    %li.bold-link.static-link
+      %a(href="#{about_me_path}") About Me
+    - Post::CATEGORIES.each do |c|
+      - unless c == @category
+        - cat_index = Post::CATEGORIES.index(c) + 1
+        %li(class="header-badge-link-#{cat_index} bold-link")
+          %a(href="/#{c.to_s.pluralize}")= c.to_s.pluralize.capitalize

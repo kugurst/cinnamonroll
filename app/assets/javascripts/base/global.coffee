@@ -46,4 +46,8 @@ jQuery.fn.preventDoubleSubmission = ->
   $(document).ready -> func()
   $(document).on 'page:load', -> func()
 
+@cinnamonroll.before_unload = (func) ->
+  $(window).unload -> func()
+  $(document).on 'page:before-unload', -> func()
+
 # static code #

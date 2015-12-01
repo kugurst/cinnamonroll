@@ -1,0 +1,15 @@
+- current_page = URI.parse(request.original_url).path
+
+#post-nav
+  %span
+    %h1.circle-small= static_link_name(current_page)[0]
+  %ul.side-nav
+    - get_static_links.each do |k, v|
+      - unless k == current_page
+        %li.bold-link.static-link
+          %a(href="#{k}")= v
+    - Post::CATEGORIES.each do |c|
+      - unless c == @category
+        - cat_index = Post::CATEGORIES.index(c) + 1
+        %li(class="header-badge-link-#{cat_index} bold-link")
+          %a(href="/#{c.to_s.pluralize}")= c.to_s.pluralize.capitalize

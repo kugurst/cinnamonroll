@@ -1,4 +1,5 @@
 @import '../base/themes';
+@import '../base/mixins';
 @import 'foundation/functions';
 
 $margin: 0.9375rem;
@@ -93,16 +94,28 @@ $image-outer-margin: rem-calc(72);
 
   span {
     position: absolute;
-    margin-left: -1em;
     text-align: center;
     width: 100%;
+    left: 0;
+    top: 12.5%;
+    transform: translateY(-25%);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    color: $bg-color;
+    font-size: 1.25rem;
   }
 
-  ul {
+  a:hover {
+    background-color: $alt-bg-color;
+  }
+
+  .side-nav {
     position: relative;
+    max-height: 50%;
     top: 50%;
     transform: translateY(-50%);
     width: 100%;
+    text-align: center;
   }
 
   div {
@@ -129,4 +142,56 @@ $browser-clear: rem-calc(72);
 
 .header-buffer {
   padding-bottom: $browser-clear/2;
+}
+
+$badge-color: saturate(lighten($header-color, 15%), 5%);
+
+@for $i from 1 through 4 {
+  $rotation: ($i - 1)*90;
+  .header-badge-color-#{$i} {
+    background-color: lighten(adjust-hue($badge-color, $rotation), 10%) !important;
+  }
+  .header-badge-link-#{$i} {
+    a {
+      @include ease-transition($fast-transition);
+    }
+    a:hover {
+      background-color: lighten(adjust-hue($badge-color, $rotation), 10%) !important;
+      color: $bg-color !important;
+    }
+  }
+}
+
+.nav-cat-posts {
+  background-color: transparent !important;
+}
+
+.bold-link {
+  font-weight: bold !important;
+}
+
+.header-span {
+  background-color: saturate(lighten($header-color, 10%), 10%) !important;
+}
+
+.static-link {
+  a {
+    @include ease-transition($fast-transition);
+  }
+  a:hover {
+    background-color: saturate(lighten($header-color, 10%), 10%) !important;
+    color: $bg-color !important;
+  }
+}
+
+@for $i from 1 through 4 {
+  $rotation: ($i - 1)*90;
+  #current-post-#{$i} {
+    background-color: lighten(adjust-hue($badge-color, $rotation), 10%) !important;
+    a {
+      color: $bg-color !important;
+      font-weight: bold !important;
+      cursor: default;
+    }
+  }
 }

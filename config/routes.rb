@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  get 'static/landing'
-  get 'static/about_me'
+  get 'landing', to: 'static#landing'
+  get 'about_me', to: 'static#about_me'
 
   get 'posts/:category/:file_path', to: 'posts#show', as: :post_cat
   get 'posts/:category/:file_path/comments', to: 'posts#comments', as: :post_comments
@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   end
 
   resources :comments
-  resources :posts
+  # resources :posts
   resources :users
 
   post 'security/post_rsa_key', to: 'security#post_rsa_key'
