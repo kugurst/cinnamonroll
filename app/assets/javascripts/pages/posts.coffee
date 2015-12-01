@@ -7,6 +7,8 @@
 BEGIN_EASING_PERCENTAGE = 0.15
 HOVER_SHOW_TIMEOUT = 250
 HOVER_OUT_TIMEOUT = 500
+SHOWN_KEY = 'shown_bar'
+SHOWN_VALUE = 'true'
 
 # instance variables #
 side_bar_peek_point = '-4.5%'
@@ -22,6 +24,22 @@ $post_nav = null
 reload_body_dim = () ->
   body_width = $('body').width()
   body_height = $('body').height()
+
+initial_showing = (func) ->
+  shown = true
+  eased_in = true
+  show_timeout = null
+  $post_nav.velocity "stop", true
+  cinnamonroll.posts.show_side_bar ->
+    clearTimeout show_timeout unless show_timeout == null
+    show_timeout = setTimeout(() ->
+      shown = false
+      eased_in = false
+      show_timeout = null
+      $post_nav.velocity "stop", true
+      cinnamonroll.posts.hide_side_bar()
+    , HOVER_OUT_TIMEOUT * 4)
+    func() if func?
 
 # module functions #
 @cinnamonroll.posts.show_side_bar = (callback) ->
@@ -107,19 +125,16 @@ $(window).resize ->
   side_bar_peek_point = -2 * pn_wid / 3
   side_bar_hide_point = -(pn_wid + 1)
 
-  shown = true
-  eased_in = true
-  show_timeout = null
-  $post_nav.velocity("stop", true)
-  cinnamonroll.posts.show_side_bar ->
-    clearTimeout show_timeout unless show_timeout == null
-    show_timeout = setTimeout(() ->
-      shown = false
-      eased_in = false
-      show_timeout = null
-      $post_nav.velocity("stop", true)
-      cinnamonroll.posts.hide_side_bar()
-    , HOVER_OUT_TIMEOUT * 4)
+  if cinnamonroll.storage_available_with_key_set_to 'sessionStorage', SHOWN_KEY, SHOWN_VALUE
+    shown = false
+    eased_in = false
+    show_timeout = null
+    $post_nav.velocity("stop", true)
+    cinnamonroll.posts.hide_side_bar()
+  else
+    initial_showing ->
+      if cinnamonroll.storage_available 'sessionStorage'
+        sessionStorage.setItem SHOWN_KEY, SHOWN_VALUE
 
 # Easing event registration
 @cinnamonroll.on_page_load ->

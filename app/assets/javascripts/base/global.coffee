@@ -50,4 +50,24 @@ jQuery.fn.preventDoubleSubmission = ->
   $(window).unload -> func()
   $(document).on 'page:before-unload', -> func()
 
+@cinnamonroll.storage_available = (type) ->
+  try
+    storage = window[type]
+    x = '__storage_test__'
+    storage.setItem x, x
+    storage.removeItem x
+    true
+  catch
+    false
+
+@cinnamonroll.storage_available_with_key_set_to = (type, key, value) ->
+  if cinnamonroll.storage_available(type)
+    storage = window[type]
+    if storage.getItem(key) == value
+      true
+    else
+      false
+  else
+    false
+
 # static code #

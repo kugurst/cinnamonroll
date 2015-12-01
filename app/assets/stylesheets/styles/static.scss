@@ -223,3 +223,13 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
 
   margin-left: 0;
 }
+
+$static-badge-color: saturate(lighten($header-color, 10%), 10%);
+
+.badge-border-bottom {
+  border-bottom-color: $static-badge-color !important;
+}
+
+.badge-background {
+  background-color: $static-badge-color !important;
+}
