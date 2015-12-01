@@ -11,9 +11,23 @@
     %h1#message= greeting_message
     %h3#explanation pick a category below to explore, or scroll down to view my recent posts
   #category-row
-    %h1#first-cat.circle P
-    %h1.circle T
-    %h1.circle R
+    %a#cat-1.circle(href="projects") P
+    %a#cat-2.circle(href="thoughts") T
+    %a#cat-3.circle(href="reviews") R
+    %a#cat-4.circle(href="testings") T
+  .category-description-container
+    #cat-1-desc.category-description
+      %h4 Projects
+      %p cool things I've made
+    #cat-2-desc.category-description
+      %h4 Thoughts
+      %p an assortment of things that have crossed my mind
+    #cat-3-desc.category-description
+      %h4 Reviews
+      %p neat (or not so neat) things that I decided to write about
+    #cat-4-desc.category-description
+      %h4 Testing
+      %p debugging my website (congrats on finding this)
 
 .image-container
   = image_tag @posts[0].get_image_path(:splash_img), class: 'post-image'

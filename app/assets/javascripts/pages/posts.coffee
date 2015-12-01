@@ -55,6 +55,11 @@ reload_body_dim = () ->
 $(window).resize ->
   reload_body_dim()
 
+  pn_wid = $post_nav.outerWidth()
+  $post_nav.css 'left', -(pn_wid + 1)
+  side_bar_peek_point = -2 * pn_wid / 3
+  side_bar_hide_point = -(pn_wid + 1)
+
 @cinnamonroll.on_page_load ->
   reload_body_dim()
 
@@ -117,4 +122,4 @@ $(window).resize ->
 
 # Text areas expand as you type
 @cinnamonroll.on_page_load ->
-  autosize $('textarea')
+  autosize $('textarea') if autosize?
