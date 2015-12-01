@@ -6,7 +6,7 @@ end
 
 class Post
   include Mongoid::Document
-  include Mongoid::Timestamps::Short
+  include Mongoid::Timestamps
 
   FILE_PATH = "posts/sources/"
   IMAGE_PATH = "/img/posts/"
@@ -49,6 +49,14 @@ class Post
     FILE_PATH + category + "/" + super
   end
 
+  def c_at
+    File.ctime abs_file_path
+  end
+
+  def u_at
+    File.mtime abs_file_path
+  end
+
   def get_image_path(key)
     "#{IMAGE_PATH}#{category}/#{self[:file_path]}/#{additional_info[key]}"
   end
@@ -63,5 +71,15 @@ class Post
 
   def add_self_to_child(post)
     post.related_posts << self unless post.related_posts.include? self
+  end
+
+  private
+
+  def abs_file_path
+    path = Rails.root.join 'app', 'views', FILE_PATH, category, "_#{self[:file_path]}.html.haml"
+    return path if File.file? path
+    path = Rails.root.join 'app', 'views', FILE_PATH, category, "_#{self[:file_path]}.html.erb"
+    return path if File.file? path
+    return nil
   end
 end
