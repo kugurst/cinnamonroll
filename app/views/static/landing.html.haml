@@ -13,17 +13,20 @@
   #category-row
     - i = 1
     - Post::CATEGORIES.each do |c|
+      - next if banned_category c
       %a.circle(id="cat-#{i}" href="#{c.to_s.pluralize}")= c.to_s.capitalize()[0]
       - i += 1
   .category-description-container
     - i = 1
     - Post::CATEGORIES.each do |c|
+      - next if banned_category c
       .category-description(id="cat-#{i}-desc")
         %h4= c.to_s.pluralize.capitalize
         %p= get_description(c)
       - i += 1
 
 - @posts.each_with_index do |post, i|
+  - next if banned_category post[:category]
   .post-cat-badge
     %h1(class="perma-circle cat-#{Post::CATEGORIES.index(post[:category]) + 1}-perma")= post.category.capitalize()[0]
   .post-container

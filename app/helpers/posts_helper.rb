@@ -105,4 +105,8 @@ module PostsHelper
   def post_cat_path_fallback(post)
     "/posts/#{post.category}/#{post[:file_path]}"
   end
+
+  def banned_category(cat)
+    cat == :testing && Rails.env == "production"
+  end
 end

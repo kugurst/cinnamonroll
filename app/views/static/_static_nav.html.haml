@@ -9,7 +9,7 @@
         %li.bold-link.static-link
           %a(href="#{k}")= v
     - Post::CATEGORIES.each do |c|
-      - unless c == @category
+      - unless c == @category || banned_category(c)
         - cat_index = Post::CATEGORIES.index(c) + 1
         %li(class="header-badge-link-#{cat_index} bold-link")
           %a(href="/#{c.to_s.pluralize}")= c.to_s.pluralize.capitalize
