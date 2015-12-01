@@ -6,7 +6,14 @@
 - content_for :body do
   = render 'posts/post_nav'
 
-%span#header
+#site-content
+  #greeting
+    %h1#message= greeting_message
+    %h3#explanation pick a category below to explore, or scroll down to view my recent posts
+  #category-row
+    %h1#first-cat.circle P
+    %h1.circle T
+    %h1.circle R
 
 .image-container
   = image_tag @posts[0].get_image_path(:splash_img), class: 'post-image'
@@ -16,8 +23,6 @@
         .image-overlay-text-center
           %h1= @posts[0].title
           %h3= @posts[0].additional_info[:subtitle]
-
-#site-content
 
 .image-container
   = image_tag @posts[0].get_image_path(:splash_img), class: 'post-image'

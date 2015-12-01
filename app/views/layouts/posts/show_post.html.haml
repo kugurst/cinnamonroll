@@ -1,3 +1,5 @@
+- content_for :title do
+  = @post.title
 - content_for :head do
   = stylesheet_link_tag 'styles/posts', 'data-turbolinks-track' => true
   = stylesheet_link_tag 'styles/comments', 'data-turbolinks-track' => true

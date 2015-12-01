@@ -3,6 +3,11 @@
 
 $header-height: rem-calc(72);
 
+@mixin horizontal-center-contents {
+  display: table;
+  margin: 0 auto;
+}
+
 .image-container {
   position: relative;
 }
@@ -11,13 +16,14 @@ $header-height: rem-calc(72);
 }
 
 .image-overlay-text {
-  background-color: rgba(#1A1A1A, 0.6);
+  background-color: rgba(#1A1A1A, 0.3);
   display: block;
   position: absolute;
   height: 100%;
   width: 100%;
   top: 0;
   left: 0;
+  text-shadow: 0px 0px 0.33em #000000;
   @for $i from 1 through 6 {
     h#{$i} {
       color: $bg-color;
@@ -38,8 +44,7 @@ $header-height: rem-calc(72);
 }
 
 .image-overlay-text-center {
-  display: table;
-  margin: 0 auto;
+  @include horizontal-center-contents;
   @media only screen and (max-width: 40em) {
     padding-left: 1em;
   }
@@ -49,6 +54,57 @@ $header-height: rem-calc(72);
   height: $header-height;
 }
 
-#site-content {
+$browser-clear: rem-calc(72);
 
+#site-content {
+  background-color: $alt-bg-color;
+  margin-top: $browser-clear;
+}
+
+#greeting {
+  @include horizontal-center-contents;
+  text-align: center;
+  padding-top: $browser-clear/2;
+}
+
+#category-row {
+  @include horizontal-center-contents;
+  padding-bottom: $browser-clear;
+  padding-top: $browser-clear/3;
+}
+
+.circle {
+  $badge-color: saturate(lighten($header-color, 15%), 5%);
+  $font-size: 3em;
+  $border-width: 0.08em;
+  display: inline-block;
+  padding: $font-size/4*2/3 - $border-width/2;
+  text-align: center;
+  line-height: $font-size/2*2/3 - $border-width;
+  border-radius: 50%;
+  border-style: double;
+  border-width: $border-width;
+  border-color: $font-color;
+  height: $font-size*2/3;
+  width: $font-size*2/3;
+  font-weight: bold;
+  background-color: adjust-hue($alt-bg-color, -30deg); // #d73d33;
+  font-size: $font-size !important;
+  margin-left: 1rem;
+  cursor: pointer;
+  cursor: hand;
+  -webkit-transition: all 0.1s ease;
+  -moz-transition: all 0.1s ease;
+  -o-transition: all 0.1s ease;
+  transition: all 0.1s ease;
+
+  &:hover {
+    border-color: $bg-color;
+    color: $bg-color;
+    background-color: $badge-color;
+  }
+}
+
+#first-cat {
+  margin-left: 0;
 }

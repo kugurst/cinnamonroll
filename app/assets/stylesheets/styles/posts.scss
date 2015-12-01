@@ -78,7 +78,7 @@ $image-outer-margin: rem-calc(72);
 
 #post-nav {
   z-index: 1000;
-  background-color: $bg-color;
+  background-color: rgba($bg-color, 0.75);
   top: 0;
   -webkit-box-shadow: 5px 0px 10px -5px rgba(0,0,0,0.1);
   -moz-box-shadow: 5px 0px 10px -5px rgba(0,0,0,0.1);
