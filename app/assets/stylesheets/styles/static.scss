@@ -169,7 +169,7 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
   margin-right: auto;
   border-color: $bg-color;
   color: $bg-color;
-  background-color: $badge-color;
+  background-color: rgba($badge-color, 1);
 }
 
 .circle-center {
@@ -232,4 +232,66 @@ $static-badge-color: saturate(lighten($header-color, 10%), 10%);
 
 .badge-background {
   background-color: $static-badge-color !important;
+}
+
+$menu-offset: rem-calc(30);
+
+#menu-container {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  width: 96px;
+  height: 96px;
+  font-size: 0;
+  text-indent: -9999px;
+  appearance: none;
+  box-shadow: none;
+  border-radius: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+#menu-container:focus {
+  outline: none;
+}
+
+#menu-container span::before,
+#menu-container span::after {
+  position: absolute;
+  display: block;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  color: $font-color;
+  content: "";
+}
+
+#menu-container span::before {
+  top: -20px;
+}
+
+#menu-container span::after {
+  bottom: -20px;
+}
+
+#menu {
+  position: fixed;
+  z-index: 500;
+  left: $menu-offset;
+  top: 0.75em;
+  background-color: $alt-bg-color;
+}
+#menu:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.25em;
+  width: 1.5em;
+  height: 0.25em;
+  background: black;
+  box-shadow:
+    0 0.45em 0 0 black,
+    0 0.9em 0 0 black;
 }

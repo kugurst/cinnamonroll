@@ -34,6 +34,8 @@
     = yield :head
 
   %body
+    %button#menu-container
+      %span toggle menu
     = yield :body
     = yield
     = Gon::Base.render_data

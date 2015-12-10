@@ -83,12 +83,14 @@ $image-outer-margin: rem-calc(72);
 #post-nav {
   z-index: 1000;
   background-color: rgba($bg-color, 0.75);
+  @media only screen and (max-width: 40em) {
+    background-color: $bg-color;
+  }
   top: 0;
   -webkit-box-shadow: 5px 0px 10px -5px rgba(0,0,0,0.1);
   -moz-box-shadow: 5px 0px 10px -5px rgba(0,0,0,0.1);
   box-shadow: 5px 0px 10px -5px rgba(0,0,0,0.1);
   position: fixed;
-  max-width: 10%;
   left: -10%;
   overflow: hidden;
   padding-right: 1em;
@@ -156,14 +158,14 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
 @for $i from 1 through 4 {
   $rotation: ($i - 1)*90;
   .header-badge-color-#{$i} {
-    background-color: lighten(adjust-hue($badge-color, $rotation), 10%) !important;
+    background-color: rgba(lighten(adjust-hue($badge-color, $rotation), 10%), 1) !important;
   }
   .header-badge-link-#{$i} {
     a {
       @include ease-transition($fast-transition);
     }
     a:hover {
-      background-color: lighten(adjust-hue($badge-color, $rotation), 10%) !important;
+      background-color: rgba(lighten(adjust-hue($badge-color, $rotation), 10%), 1) !important;
       color: $bg-color !important;
     }
   }
