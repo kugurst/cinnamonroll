@@ -19,13 +19,4 @@
   .post-date
     %h2= format_time_just_calendar(post.u_at)
   %hr(class="post-date-separator pd-separator-#{cat_index}")/
-  .post-container
-    %a.post-link(href="#{post_cat_path_fallback(post)}")
-      .image-container
-        = image_tag post.get_image_path(:splash_img), class: 'post-image'
-        .image-overlay-text
-          .image-overlay-table
-            .image-overlay-cell
-              .image-overlay-text-center
-                %h1= post.title
-                %h3= post.additional_info[:subtitle]
+  = render "posts/category_post_item", post: post

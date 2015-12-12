@@ -14,7 +14,10 @@
     - i = 1
     - Post::CATEGORIES.each do |c|
       - next if banned_category c
-      %a.circle(id="cat-#{i}" href="#{c.to_s.pluralize}")= c.to_s.capitalize()[0]
+      - cat_str = c.to_s.pluralize.capitalize
+      %a.circle(id="cat-#{i}" href="#{c.to_s.pluralize}")= cat_str[0]
+      %span.mobile-circle-desc= cat_str[1, cat_str.length]
+      %br
       - i += 1
   .category-description-container
     - i = 1
@@ -29,13 +32,4 @@
   - next if banned_category post[:category]
   .post-cat-badge
     %h1(class="perma-circle cat-#{Post::CATEGORIES.index(post[:category]) + 1}-perma")= post.category.capitalize()[0]
-  .post-container
-    %a.post-link(href="#{post_cat_path_fallback(post)}")
-      .image-container
-        = image_tag post.get_image_path(:splash_img), class: 'post-image'
-        .image-overlay-text
-          .image-overlay-table
-            .image-overlay-cell
-              .image-overlay-text-center
-                %h1= post.title
-                %h3= post.additional_info[:subtitle]
+  = render 'posts/category_post_item', post: post

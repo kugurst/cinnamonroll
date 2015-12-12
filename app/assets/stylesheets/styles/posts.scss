@@ -52,6 +52,9 @@ $image-outer-margin: rem-calc(72);
 
 #title-row-container {
   margin-top: $image-outer-margin*3/4;
+  @media only screen and (max-width: 40em) {
+    margin-top: 0;
+  }
 }
 
 #title-container {
@@ -62,6 +65,7 @@ $image-outer-margin: rem-calc(72);
   position: relative;
   z-index: 5;
   padding-left: $offset*2;
+  padding-right: $offset*2;
   margin-right: -$offset;
   margin-left: -$offset;
   padding-top: $offset*2;
@@ -71,6 +75,9 @@ $image-outer-margin: rem-calc(72);
   border-radius: $radius $radius 0px 0px;
   -moz-border-radius: $radius $radius 0px 0px;
   -webkit-border-radius: $radius $radius 0px 0px;
+  @media only screen and (max-width: 40em) {
+    padding-top: $offset*3/2;
+  }
 }
 
 #title-container-no-bottom {
@@ -93,8 +100,8 @@ $image-outer-margin: rem-calc(72);
   position: fixed;
   left: -10%;
   overflow: hidden;
-  padding-right: 1em;
-  padding-left: 1em;
+  padding-right: 1rem;
+  padding-left: 1rem;
   height: 100%;
 
   span {
@@ -102,8 +109,12 @@ $image-outer-margin: rem-calc(72);
     text-align: center;
     width: 100%;
     left: 0;
-    top: 12.5%;
-    transform: translateY(-25%);
+    top: 7.5%;
+    transform: translateY(-15%);
+    @media only screen and (max-width: 40em) {
+      top: 5%;
+      transform: translateY(-10%);
+    }
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     color: $bg-color;

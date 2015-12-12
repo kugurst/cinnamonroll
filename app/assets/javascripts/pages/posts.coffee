@@ -19,6 +19,8 @@ show_timeout = null
 body_width = $('body').width()
 body_height = $('body').height()
 $post_nav = null
+pn_wid = null
+triggered = false
 
 # instance/helper methods #
 reload_body_dim = () ->
@@ -91,6 +93,7 @@ $(window).resize ->
       shown = true
       eased_in = true
       show_timeout = null
+      triggered = false
       $post_nav.velocity("stop", true)
       cinnamonroll.posts.show_side_bar()
     , HOVER_SHOW_TIMEOUT)
@@ -98,9 +101,12 @@ $(window).resize ->
   $post_nav.mouseleave((ev) ->
     clearTimeout show_timeout unless show_timeout == null
     show_timeout = setTimeout(() ->
+      # don't trigger if we're still over the element (perfect scroll)
+      return if ev.clientX >= 0 && ev.clientX <= pn_wid
       shown = false
       eased_in = false
       show_timeout = null
+      triggered = false
       $post_nav.velocity("stop", true)
       cinnamonroll.posts.hide_side_bar()
     , HOVER_OUT_TIMEOUT)
@@ -119,11 +125,19 @@ $(window).resize ->
     if ev.clientX < 0 || ev.clientY < 0 || ev.clientY > body_height
       $post_nav.trigger 'mouseleave'
   )
+  # If a user holds and drags the scroll bar, the side nav isn't hidden. Hide it on mouse move
+  $(window).mousemove((ev) ->
+    if shown && !triggered && ev.clientX > pn_wid
+      triggered = true
+      $post_nav.trigger 'mouseleave'
+  )
 
   pn_wid = $post_nav.outerWidth()
   $post_nav.css 'left', -(pn_wid + 1)
   side_bar_peek_point = -2 * pn_wid / 3
   side_bar_hide_point = -(pn_wid + 1)
+
+  $post_nav.perfectScrollbar()
 
   if cinnamonroll.storage_available_with_key_set_to 'sessionStorage', SHOWN_KEY, SHOWN_VALUE
     shown = false

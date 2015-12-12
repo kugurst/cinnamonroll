@@ -28,8 +28,14 @@ $post-block-margin: 5%;
   width: $post-block-width;
 }
 
+$mobile-h1-size: 2.125rem*3/4;
+$mobile-post-margin-top: $mobile-h1-size*2;
+
 .post-container {
   @include post-block-offset;
+  @media only screen and (max-width: 40em) {
+    margin-top: $mobile-post-margin-top;
+  }
 }
 
 .post-date {
@@ -41,10 +47,10 @@ $post-block-margin: 5%;
 }
 
 .post-date-separator {
-  width: $post-block-width - 2%;
-  margin-left: $post-block-margin + 1%;
+  width: $post-block-width + 3%;
+  margin-left: $post-block-margin - 1.5%;
   margin-bottom: $browser-clear*3/8;
-  border-width: 2px;
+  border-width: 0.125rem;
 }
 
 $badge-color: saturate(lighten($header-color, 15%), 5%);
@@ -67,17 +73,30 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
   background-color: rgba(#1A1A1A, 0.3);
   display: block;
   position: absolute;
-  height: 100%;
   width: 100%;
+  height: 100%;
   top: 0;
   left: 0;
   text-shadow: 0px 0px 0.33em #000000;
+
+  @media only screen and (max-width: 40em) {
+    height: auto;
+    top: -$mobile-post-margin-top*7/8;
+    background-color: transparent;
+    text-shadow: none;
+    h1 {
+      font-size: $mobile-h1-size;
+    }
+  }
 
   @include ease-transition($medium-transition);
 
   @for $i from 1 through 6 {
     h#{$i} {
       color: $bg-color;
+      @media only screen and (max-width: 40em) {
+        color: $font-color;
+      }
       font-weight: normal;
     }
   }
@@ -87,6 +106,9 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
   &:hover {
     .image-overlay-text {
       background-color: rgba(#1A1A1A, 0.5);
+      @media only screen and (max-width: 40em) {
+        background-color: transparent;
+      }
     }
   }
 }
@@ -105,7 +127,9 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
 .image-overlay-text-center {
   @include horizontal-center-contents;
   @media only screen and (max-width: 40em) {
-    padding-left: 1em;
+    h3 {
+      display: none;
+    }
   }
 }
 
@@ -116,6 +140,9 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
 #site-content {
   background-color: $alt-bg-color;
   margin-top: $browser-clear;
+  @media only screen and (max-width: 40em) {
+    margin-top: 0;
+  }
 }
 
 #greeting {
@@ -128,6 +155,12 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
   @include horizontal-center-contents;
   // padding-bottom: $browser-clear;
   padding-top: $browser-clear/3;
+  br {
+    display: none;
+    @media only screen and (max-width: 40em) {
+      display: inline;
+    }
+  }
 }
 
 // $font-size: 3em;
@@ -159,12 +192,28 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
   }
 }
 
+$mobile-badge-font-size: 2.25em;
+$mobile-badge-border-size: 0.045em;
+
 .circle {
   @include circle-badge(3em, 0.08em);
+  @media only screen and (max-width: 40em) {
+    @include circle-badge($mobile-badge-font-size, $mobile-badge-border-size);
+    margin-left: 0;
+    margin-bottom: 1rem;
+  }
 }
 
 .circle-small {
   @include circle-badge(2.5em, 0.08em);
+  @media only screen and (max-width: 40em) {
+    @include circle-badge($mobile-badge-font-size, $mobile-badge-border-size);
+    margin-left: auto;
+    margin-right: auto;
+    border-color: $bg-color;
+    color: $bg-color;
+    background-color: rgba($badge-color, 1);
+  }
   margin-left: auto;
   margin-right: auto;
   border-color: $bg-color;
@@ -176,6 +225,15 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
   @include horizontal-center-contents;
 }
 
+.mobile-circle-desc {
+  display: none;
+  font-size: $mobile-badge-font-size*3/5;
+  margin-left: $mobile-badge-border-size;
+  @media only screen and (max-width: 40em) {
+    display: inline;
+  }
+}
+
 #cat-1 {
   margin-left: 0;
 }
@@ -185,6 +243,11 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
   #cat-#{$i} {
     &:hover {
       background-color: adjust-hue($badge-color, $rotation);
+    }
+    @media only screen and (max-width: 40em) {
+      background-color: adjust-hue($badge-color, $rotation);
+      border-color: $bg-color;
+      color: $bg-color;
     }
   }
   .cat-#{$i}-perma {
@@ -234,64 +297,6 @@ $static-badge-color: saturate(lighten($header-color, 10%), 10%);
   background-color: $static-badge-color !important;
 }
 
-$menu-offset: rem-calc(30);
-
-#menu-container {
-  display: block;
-  position: relative;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  width: 96px;
-  height: 96px;
-  font-size: 0;
-  text-indent: -9999px;
-  appearance: none;
-  box-shadow: none;
-  border-radius: none;
-  border: none;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-#menu-container:focus {
-  outline: none;
-}
-
-#menu-container span::before,
-#menu-container span::after {
-  position: absolute;
-  display: block;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  color: $font-color;
-  content: "";
-}
-
-#menu-container span::before {
-  top: -20px;
-}
-
-#menu-container span::after {
-  bottom: -20px;
-}
-
-#menu {
-  position: fixed;
-  z-index: 500;
-  left: $menu-offset;
-  top: 0.75em;
-  background-color: $alt-bg-color;
-}
-#menu:before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.25em;
-  width: 1.5em;
-  height: 0.25em;
-  background: black;
-  box-shadow:
-    0 0.45em 0 0 black,
-    0 0.9em 0 0 black;
+.ps-scrollbar-y, .ps-scrollbar-x {
+  background-color: lighten($font-color, 66.7%) !important;
 }
