@@ -42,15 +42,24 @@ $mobile-post-margin-top: $mobile-h1-size*2;
   @include post-block-offset;
 
   text-align: center;
-  margin-top: $browser-clear/3;
-  margin-bottom: $browser-clear/4;
+  margin-top: $browser-clear/2;
+  // margin-bottom: $browser-clear/4;
+  h2 {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
 }
 
 .post-date-separator {
   width: $post-block-width + 3%;
   margin-left: $post-block-margin - 1.5%;
-  margin-bottom: $browser-clear*3/8;
-  border-width: 0.125rem;
+  margin-top: $browser-clear/2;
+  margin-bottom: $browser-clear*2/3;
+  @media only screen and (max-width: 40em) {
+    margin-bottom: $browser-clear*5/9;
+  }
+  border-width: 0.188rem;
+  border-top-style: none;
 }
 
 $badge-color: saturate(lighten($header-color, 15%), 5%);
@@ -81,7 +90,7 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
 
   @media only screen and (max-width: 40em) {
     height: auto;
-    top: -$mobile-post-margin-top*7/8;
+    top: -$mobile-post-margin-top*11/12;
     background-color: transparent;
     text-shadow: none;
     h1 {
@@ -138,12 +147,27 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
 }
 
 #site-content {
+  padding-left: 1em;
+  padding-right: 1em;
   background-color: $alt-bg-color;
   margin-top: $browser-clear;
   @media only screen and (max-width: 40em) {
     margin-top: 0;
-    margin-bottom: $mobile-post-margin-top*2;
   }
+  h3 {
+    font-weight: lighter;
+  }
+}
+
+#site-content-separator {
+  display: none;
+  border-style: none;
+  @media only screen and (max-width: 40em) {
+    margin-top: $browser-clear*2/3;
+    margin-bottom: $browser-clear*2/3;
+    display: block;
+  }
+  height: 3rem + $browser-clear*2/3;
 }
 
 #greeting {
@@ -185,6 +209,7 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
   font-weight: bold;
   background-color: adjust-hue($alt-bg-color, -30deg); // #d73d33;
   font-size: $font-size !important;
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif !important;
   color: $font-color;
   margin-left: 1rem;
 
@@ -263,7 +288,7 @@ $mobile-badge-border-size: 0.045em;
 .alt-bg-ribbon {
   @media only screen and (max-width: 40em) {
     background-color: $alt-bg-color;
-    margin-top: $mobile-post-margin-top*2/3;
+    margin-top: $mobile-post-margin-top/3;
   }
   width: 100%;
 }
@@ -319,4 +344,11 @@ $static-badge-color: saturate(lighten($header-color, 10%), 10%);
 
 .ps-scrollbar-y, .ps-scrollbar-x {
   background-color: lighten($font-color, 66.7%) !important;
+}
+
+@for $i from 1 through 4 {
+  $rotation: ($i - 1)*90;
+  .cat-background-#{$i} {
+    background-color: adjust-hue($badge-color, $rotation);
+  }
 }

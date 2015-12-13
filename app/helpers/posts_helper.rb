@@ -1,8 +1,11 @@
 module PostsHelper
   CATEGORY_DESCRIPTIONS = {project: "cool things I've made",
-                           thought: "an assortment of things that have crossed my mind",
-                           review: "neat (or not so neat) things that I wrote about",
+                           thought: "miscellaneous topics",
+                           review: "neat (or not so neat) works that I write about",
                            testing: "debugging this website"}
+
+  SORT_DEFAULTS = { order: :ascending,
+                    sort: :date }
 
   class StubComment
     def temp_comments
@@ -13,24 +16,53 @@ module PostsHelper
     end
   end
 
+  def self.add_to_comment_list(list, com, opts = {})
+    opts = SORT_DEFAULTS.merge opts
+
+    # default behavior, insert at the end of the list
+    insert_pos = list.length
+    if opts[:sort] == :date
+      if opts[:order] == :ascending
+        list.each_with_index do |e, i|
+          if com.c_at < e.c_at
+            insert_pos = i
+            break
+          end
+        end
+      elsif opts[:order] == :descending
+        list.each_with_index do |e, i|
+          if com.c_at > e.c_at
+            insert_pos = i
+            break
+          end
+        end
+      end
+    end
+    list.insert insert_pos, com
+  end
+
   def self.tree_comments(post)
     PostsHelper.tree_comments_2_pass post
   end
 
-  def self.tree_comments_2_pass(post)
+  def self.tree_comments_2_pass(post, opts = {})
     found_comments = {}
     comment_list = []
     post.comments.each do |c|
       # add this element to the scanned list
       found_comments[c.id] = c
-      comment_list << c if c.nesting_level == 0
+      # add this comment to the top-level list if it is a top level comment
+      if c.nesting_level == 0
+        PostsHelper.add_to_comment_list comment_list, c, opts
+      end
     end
     # parent all comments
     found_comments.each do |k, v|
       # Get our parent
       if v.parent_comment_id
         parent = found_comments[v.parent_comment_id]
-        parent.temp_comments << v
+        # parent.temp_comments << v
+        PostsHelper.add_to_comment_list parent.temp_comments, v, opts
       end
     end
     # puts "found_comments.length: #{found_comments.length}"

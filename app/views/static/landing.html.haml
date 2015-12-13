@@ -27,10 +27,13 @@
         %h4= c.to_s.pluralize.capitalize
         %p= get_description(c)
       - i += 1
+%hr#site-content-separator.badge-background
 
 - @posts.each_with_index do |post, i|
   - next if banned_category post[:category]
+  - cat_index = Post::CATEGORIES.index(post[:category]) + 1
+  -# %div(class="alt-bg-ribbon cat-background-#{cat_index}")
   .alt-bg-ribbon
     .post-cat-badge
-      %h1(class="perma-circle cat-#{Post::CATEGORIES.index(post[:category]) + 1}-perma")= post.category.capitalize()[0]
+      %h1(class="perma-circle cat-#{cat_index}-perma")= post.category.capitalize()[0]
   = render 'posts/category_post_item', post: post

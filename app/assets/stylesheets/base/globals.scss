@@ -6,12 +6,20 @@ $nav-bar-height: rem-calc(72);
 @for $i from 1 through 6 {
   h#{$i} {
     color: $header-font-color;
+    font-family:  "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    @if $i == 3 {
+    }
   }
 }
 
 body {
   color: $font-color;
   background-color: $bg-color;
+  // font-family: 'Titillium Web', "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+
+p, ul, a {
+  font-size: 1.125rem;
 }
 
 .first-header {

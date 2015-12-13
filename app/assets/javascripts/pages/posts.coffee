@@ -52,6 +52,17 @@ fit_side_nav = () ->
     $post_nav.height body_height+56
     $post_nav.perfectScrollbar 'update'
 
+show_on_swipe =  (ev) ->
+  shown = true
+  eased_in = true
+  triggered = false
+  cinnamonroll.posts.show_side_bar()
+hide_on_swipe = (ev) ->
+  shown = true
+  eased_in = true
+  triggered = false
+  cinnamonroll.posts.hide_side_bar()
+
 # module functions #
 @cinnamonroll.posts.show_side_bar = (callback) ->
   $post_nav.velocity("stop", true)
@@ -189,16 +200,9 @@ $(window).resize ->
       eased_in = false
       cinnamonroll.posts.hide_side_bar()
   )
-  $('body').on "swiperight", (ev) ->
-    shown = true
-    eased_in = true
-    triggered = false
-    cinnamonroll.posts.show_side_bar()
-  $('body').on "swipeleft", (ev) ->
-    shown = true
-    eased_in = true
-    triggered = false
-    cinnamonroll.posts.hide_side_bar()
+
+  $('body').on "swiperight", show_on_swipe
+  $('body').on "swipeleft", hide_on_swipe
 
 
 # Text areas expand as you type
