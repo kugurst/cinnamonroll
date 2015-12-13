@@ -11,7 +11,9 @@
 // about supported directives.
 //
 //= require jquery
+//= require jquery.turbolinks
 //= require jquery_ujs
+// require jquery.mobile
 //= require jquery-ui/effect.all
 // require foundation
 // require angular

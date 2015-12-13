@@ -21,11 +21,14 @@ body_height = $('body').height()
 $post_nav = null
 pn_wid = null
 triggered = false
+small_screen = false
 
 # instance/helper methods #
 reload_body_dim = () ->
   body_width = $('body').width()
   body_height = $('body').height()
+  small_screen = body_width <= 640
+  # $.event.special.swipe.horizontalDistanceThreshold = body_width/3
 
 initial_showing = (func) ->
   shown = true
@@ -42,6 +45,12 @@ initial_showing = (func) ->
       cinnamonroll.posts.hide_side_bar()
     , HOVER_OUT_TIMEOUT * 4)
     func() if func?
+
+fit_side_nav = () ->
+  # fixes the weird issue where the post_nav is sometimes longer than the page in posts on webkit
+  if $post_nav.height() != body_height
+    $post_nav.height body_height
+    $post_nav.perfectScrollbar 'update'
 
 # module functions #
 @cinnamonroll.posts.show_side_bar = (callback) ->
@@ -109,7 +118,7 @@ $(window).resize ->
       triggered = false
       $post_nav.velocity("stop", true)
       cinnamonroll.posts.hide_side_bar()
-    , HOVER_OUT_TIMEOUT)
+    , if small_screen then 0 else HOVER_OUT_TIMEOUT)
   )
   $post_nav.click((ev) ->
     shown = true
@@ -156,13 +165,18 @@ $(window).resize ->
     if ev.buttons & 1 > 0
       return
 
-    if !eased_in && ev.clientX / body_width < BEGIN_EASING_PERCENTAGE
+    if !small_screen && !eased_in && ev.clientX / body_width < BEGIN_EASING_PERCENTAGE
       eased_in = true
       cinnamonroll.posts.peek_side_bar()
     else if eased_in && !shown && ev.clientX / body_width > BEGIN_EASING_PERCENTAGE
       eased_in = false
       cinnamonroll.posts.hide_side_bar()
   )
+  $(window).on "swipe", (ev) ->
+    console.log 'swipped'
+    shown = true
+    eased_in = true
+    cinnamonroll.posts.show_side_bar()
 
 # Text areas expand as you type
 @cinnamonroll.on_page_load ->

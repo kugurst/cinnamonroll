@@ -30,6 +30,7 @@
 
 - @posts.each_with_index do |post, i|
   - next if banned_category post[:category]
-  .post-cat-badge
-    %h1(class="perma-circle cat-#{Post::CATEGORIES.index(post[:category]) + 1}-perma")= post.category.capitalize()[0]
+  .alt-bg-ribbon
+    .post-cat-badge
+      %h1(class="perma-circle cat-#{Post::CATEGORIES.index(post[:category]) + 1}-perma")= post.category.capitalize()[0]
   = render 'posts/category_post_item', post: post

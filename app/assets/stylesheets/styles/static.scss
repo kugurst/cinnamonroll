@@ -142,6 +142,7 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
   margin-top: $browser-clear;
   @media only screen and (max-width: 40em) {
     margin-top: 0;
+    margin-bottom: $mobile-post-margin-top*2;
   }
 }
 
@@ -155,6 +156,10 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
   @include horizontal-center-contents;
   // padding-bottom: $browser-clear;
   padding-top: $browser-clear/3;
+  @media only screen and (max-width: 40em) {
+    padding-top: $browser-clear/4;
+    padding-bottom: $browser-clear/3;
+  }
   br {
     display: none;
     @media only screen and (max-width: 40em) {
@@ -255,11 +260,22 @@ $mobile-badge-border-size: 0.045em;
   }
 }
 
+.alt-bg-ribbon {
+  @media only screen and (max-width: 40em) {
+    background-color: $alt-bg-color;
+    margin-top: $mobile-post-margin-top*2/3;
+  }
+  width: 100%;
+}
+
 .category-description-container {
   position: relative;
   padding-bottom: 5.5rem + $browser-clear/2;
   padding-top: 0.5rem;
   width: 100%;
+  @media only screen and (max-width: 40em) {
+    display: none;
+  }
 }
 
 .category-description {
@@ -278,6 +294,10 @@ $mobile-badge-border-size: 0.045em;
 
   margin-top: $browser-clear/2;
   margin-bottom: $browser-clear/2;
+  @media only screen and (max-width: 40em) {
+    margin-top: $browser-clear/3;
+    margin-bottom: $browser-clear/3;
+  }
 }
 
 .perma-circle-no-margin {

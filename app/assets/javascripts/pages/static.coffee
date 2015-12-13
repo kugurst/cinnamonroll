@@ -15,6 +15,7 @@ NUM_CATS = 4
 
 # static code #
 @cinnamonroll.on_page_load ->
+  small_screen = $('.mobile-circle-desc').css('display') != 'none'
   for num in [1..NUM_CATS]
     $("#cat-#{num}").hover(->
       $desc = $("##{$(this).attr 'id'}-desc")
