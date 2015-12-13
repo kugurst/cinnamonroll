@@ -22,7 +22,7 @@
     %meta(name="msapplication-TileImage" content="/mstile-144x144.png?v=2bbn0XjPar")/
     %meta(name="theme-color" content="#ffffff")/
     %meta(charset="utf-8")/
-    %meta(name="viewport" content="width=device-width, initial-scale=1.0")/
+    %meta(name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no, maximum-scale=1")/
 
     = stylesheet_link_tag "application"
     = stylesheet_link_tag '/css/perfect-scrollbar.min.css', 'data-turbolinks-track' => true
@@ -32,6 +32,7 @@
     = javascript_include_tag "/js/jquery.visible.min.js", 'data-turbolinks-track' => true
     = javascript_include_tag "/js/velocity.min.js", 'data-turbolinks-track' => true
     = javascript_include_tag "/js/perfect-scrollbar.jquery.js", 'data-turbolinks-track' => true
+    -# javascript_include_tag "/js/hammer.min.js", 'data-turbolinks-track' => true
     = javascript_include_tag "/js/jquery.mobile.custom.min.js", 'data-turbolinks-track' => true
     = csrf_meta_tags
     = yield :head

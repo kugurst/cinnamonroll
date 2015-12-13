@@ -28,7 +28,7 @@ reload_body_dim = () ->
   body_width = $('body').width()
   body_height = $('body').height()
   small_screen = body_width <= 640
-  # $.event.special.swipe.horizontalDistanceThreshold = body_width/3
+  $.event.special.swipe.horizontalDistanceThreshold = body_width/4
 
 initial_showing = (func) ->
   shown = true
@@ -49,7 +49,7 @@ initial_showing = (func) ->
 fit_side_nav = () ->
   # fixes the weird issue where the post_nav is sometimes longer than the page in posts on webkit
   if $post_nav.height() != body_height
-    $post_nav.height body_height
+    $post_nav.height body_height+56
     $post_nav.perfectScrollbar 'update'
 
 # module functions #
@@ -172,11 +172,22 @@ $(window).resize ->
       eased_in = false
       cinnamonroll.posts.hide_side_bar()
   )
-  $(window).on "swipe", (ev) ->
+  $('body').on "swiperight", (ev) ->
     console.log 'swipped'
     shown = true
     eased_in = true
+    triggered = false
     cinnamonroll.posts.show_side_bar()
+  $('body').on "swipeleft", (ev) ->
+    console.log 'swipped'
+    shown = true
+    eased_in = true
+    triggered = false
+    cinnamonroll.posts.hide_side_bar()
+  window.onscroll = (e) ->
+    if $post_nav.height() != $(window).height()
+      $post_nav.height $(window).height()
+
 
 # Text areas expand as you type
 @cinnamonroll.on_page_load ->

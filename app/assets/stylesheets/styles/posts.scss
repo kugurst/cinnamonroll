@@ -87,21 +87,26 @@ $image-outer-margin: rem-calc(72);
   padding-bottom: 0;
 }
 
+$browser-clear: rem-calc(72);
+
 #post-nav {
   z-index: 1000;
   background-color: rgba($bg-color, 0.75);
-  @media only screen and (max-width: 40em) {
-    background-color: $bg-color;
-  }
-  top: 0;
   -webkit-box-shadow: 5px 0px 10px -5px rgba(0,0,0,0.1);
   -moz-box-shadow: 5px 0px 10px -5px rgba(0,0,0,0.1);
   box-shadow: 5px 0px 10px -5px rgba(0,0,0,0.1);
+  @media only screen and (max-width: 40em) {
+    background-color: $bg-color;
+    -webkit-box-shadow: 0px 100px 0px 0px $bg-color;
+    -moz-box-shadow: 0px 100px 0px 0px $bg-color;
+    box-shadow: 0px 100px 0px 0px $bg-color;
+  }
   position: fixed;
   left: -10%;
   overflow: hidden;
   padding-right: 1rem;
   padding-left: 1rem;
+  top:0;
   height: 100%;
 
   span {
@@ -157,8 +162,6 @@ $image-outer-margin: rem-calc(72);
   margin-top: $offset*2;
   padding: $offset/4 $offset $offset/4 $offset+$border-width;
 }
-
-$browser-clear: rem-calc(72);
 
 .header-buffer {
   padding-bottom: $browser-clear/2;
