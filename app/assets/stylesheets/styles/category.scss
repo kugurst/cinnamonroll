@@ -1,0 +1,7 @@
+$browser-clear: rem-calc(72);
+
+#site-content {
+  @media only screen and (max-width: 40em) {
+    margin-bottom: 0;
+  }
+}

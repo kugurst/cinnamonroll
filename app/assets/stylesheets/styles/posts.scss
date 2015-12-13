@@ -57,11 +57,18 @@ $image-outer-margin: rem-calc(72);
   }
 }
 
+.title-rule {
+  margin-top: 0;
+  margin-bottom: 0;
+  background-color: $header-color;
+  height: 2rem;
+  border-style: none;
+  margin-left: -$offset - $margin/3;
+  margin-right: -$offset - $margin/3;
+}
+
 #title-container {
   background-color: $alt-bg-color;
-  border-bottom-style: solid;
-  border-bottom-color: $header-color;
-  border-bottom-width: 2rem;
   position: relative;
   z-index: 5;
   padding-left: $offset*2;
@@ -104,6 +111,9 @@ $browser-clear: rem-calc(72);
   position: fixed;
   left: -10%;
   overflow: hidden;
+  @media only screen and (max-width: 40em) {
+    overflow-y: auto;
+  }
   padding-right: 1rem;
   padding-left: 1rem;
   top:0;
@@ -175,6 +185,7 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
     background-color: rgba(lighten(adjust-hue($badge-color, $rotation), 10%), 1) !important;
   }
   .header-badge-link-#{$i} {
+    text-align: center;
     a {
       @include ease-transition($fast-transition);
     }

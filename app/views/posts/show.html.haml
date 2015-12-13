@@ -4,10 +4,10 @@
       #title-container
         %h1.first-header= @post.title
         %h3.last-header= @post.additional_info[:subtitle]
-      %hr.title-rule
+      .title-rule
 
 .row(data-turbolinks-permanent)
   .small-10.small-offset-1.large-12.large-offset-0.columns#main-content
-    -# render @post.file_path
+    = render @post.file_path
 
 = render "posts/show_comments"

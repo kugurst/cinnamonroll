@@ -19,6 +19,7 @@ show_timeout = null
 body_width = $('body').width()
 body_height = $('body').height()
 $post_nav = null
+ps_destroyed = true
 pn_wid = null
 triggered = false
 small_screen = false
@@ -28,7 +29,6 @@ reload_body_dim = () ->
   body_width = $('body').width()
   body_height = $('body').height()
   small_screen = body_width <= 640
-  $.event.special.swipe.horizontalDistanceThreshold = body_width/4
 
 initial_showing = (func) ->
   shown = true
@@ -90,6 +90,19 @@ $(window).resize ->
   side_bar_peek_point = -2 * pn_wid / 3
   side_bar_hide_point = -(pn_wid + 1)
 
+  $.event.special.swipe.horizontalDistanceThreshold = body_width/4
+  # remove the perfect scrollbar on a transition to a small screen
+  if small_screen && !ps_destroyed
+    $post_nav.perfectScrollbar 'destroy'
+    ps_destroyed = true
+  # recreate the perfect scrollbar on a transition to a large screen
+  else if !small_screen && ps_destroyed
+    $post_nav.perfectScrollbar()
+    ps_destroyed = false
+  # update the perfect scrollbar as the size of the container has changed
+  else if !small_screen
+    $post_nav.perfectScrollbar 'update'
+
 @cinnamonroll.on_page_load ->
   reload_body_dim()
 
@@ -146,7 +159,9 @@ $(window).resize ->
   side_bar_peek_point = -2 * pn_wid / 3
   side_bar_hide_point = -(pn_wid + 1)
 
-  $post_nav.perfectScrollbar()
+  if !small_screen
+    $post_nav.perfectScrollbar()
+    ps_destroyed = false
 
   if cinnamonroll.storage_available_with_key_set_to 'sessionStorage', SHOWN_KEY, SHOWN_VALUE
     shown = false
@@ -165,7 +180,9 @@ $(window).resize ->
     if ev.buttons & 1 > 0
       return
 
-    if !small_screen && !eased_in && ev.clientX / body_width < BEGIN_EASING_PERCENTAGE
+    return if small_screen
+
+    if !eased_in && ev.clientX / body_width < BEGIN_EASING_PERCENTAGE
       eased_in = true
       cinnamonroll.posts.peek_side_bar()
     else if eased_in && !shown && ev.clientX / body_width > BEGIN_EASING_PERCENTAGE
@@ -173,20 +190,15 @@ $(window).resize ->
       cinnamonroll.posts.hide_side_bar()
   )
   $('body').on "swiperight", (ev) ->
-    console.log 'swipped'
     shown = true
     eased_in = true
     triggered = false
     cinnamonroll.posts.show_side_bar()
   $('body').on "swipeleft", (ev) ->
-    console.log 'swipped'
     shown = true
     eased_in = true
     triggered = false
     cinnamonroll.posts.hide_side_bar()
-  window.onscroll = (e) ->
-    if $post_nav.height() != $(window).height()
-      $post_nav.height $(window).height()
 
 
 # Text areas expand as you type
