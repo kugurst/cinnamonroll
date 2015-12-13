@@ -1,6 +1,9 @@
+@import 'foundation/functions';
+
 $browser-clear: rem-calc(72);
 
 #site-content {
+  margin-bottom: $browser-clear*5/8;
   @media only screen and (max-width: 40em) {
     margin-bottom: 0;
   }

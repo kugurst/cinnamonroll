@@ -2,7 +2,7 @@ module PostsHelper
   CATEGORY_DESCRIPTIONS = {project: "cool things I've made",
                            thought: "an assortment of things that have crossed my mind",
                            review: "neat (or not so neat) things that I wrote about",
-                           testing: "debugging my website (congrats on finding this)"}
+                           testing: "debugging this website"}
 
   class StubComment
     def temp_comments
