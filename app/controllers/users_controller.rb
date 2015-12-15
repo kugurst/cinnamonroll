@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
   include SessionHelper
+  include UsersHelper
 
-    before_action :set_user, only: [:show, :edit, :update, :destroy, :confirm]
+    before_action :set_user, only: [:show, :edit, :update, :destroy, :confirm, :send_confirm]
 
   # GET /users
   # GET /users.json
@@ -39,9 +40,9 @@ class UsersController < ApplicationController
       if @user.save
         log_in @user
         remember @user if remember_me == '1'
-        puts 'remembering user' if remember_me == '1'
+        send_confirmation_email_to @user
         format.html { redirect_to @user, notice: 'User was successfully created.' }
-        format.json { render json: { url: return_point_if_none(root_path), notice: 'user created successfully' }, status: :created }
+        format.json { render json: { url: return_point_if_none(root_path), notice: 'user created successfully<br>check your email for a confirmation email' }, status: :created }
       else
         format.html { render :new }
         format.json { render json: { error: @user.errors }, status: :unprocessable_entity }
@@ -57,6 +58,21 @@ class UsersController < ApplicationController
       redirect_to root_path
     else
       render nothing: true, status: :gone
+    end
+  end
+
+  def send_confirm
+    begin
+      set_return_point URI(request.referer).path
+    rescue
+    end
+    if @user.nil?
+      session[:notice_error] = 'user not found'
+      redirect_to return_point_if_none root_path
+    else
+      send_confirmation_email_to @user
+      session[:notice] = 'confirmation email sent'
+      redirect_to return_point_if_none root_path
     end
   end
 
@@ -87,7 +103,15 @@ class UsersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = User.find_by name: params[:id]
+      begin
+        @user = User.find_by name: params[:id]
+      rescue Mongoid::Errors::DocumentNotFound
+        begin
+          @user = User.find_by email: params[:id]
+        rescue Mongoid::Errors::DocumentNotFound
+          @user = nil
+        end
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

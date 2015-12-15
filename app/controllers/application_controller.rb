@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
+  before_action :add_notice
 
   def hello
     render text: "hello, world!"
@@ -31,6 +32,17 @@ class ApplicationController < ActionController::Base
   ActionController::Parameters.action_on_unpermitted_parameters = false
 
   private
+    def add_notice
+      if session.has_key? :notice
+        gon.push notice: session[:notice]
+        session.delete :notice
+      end
+      if session.has_key? :notice_error
+        gon.push notice_error: session[:notice_error]
+        session.delete :notice_error
+      end
+    end
+
     def set_return_point(path, overwrite = false)
       if overwrite or session[:return_point].blank?
         session[:return_point] = path
@@ -103,9 +115,13 @@ class ApplicationController < ActionController::Base
       head :failed_dependency
     end
 
-    def head_if_true(status, test)
+    def head_if_true(status, test, msg = nil)
+      msg = status.to_s if msg.nil?
       return false unless test
-      head status
+      respond_to do |format|
+        format.html { head status }
+        format.json { render json: { error: msg }, status: status }
+      end
       true
     end
 end

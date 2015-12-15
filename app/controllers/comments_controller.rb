@@ -29,7 +29,7 @@ class CommentsController < ApplicationController
   def create
     # require a referer and user
     return if head_if_true(:forbidden, post_params.blank?)
-    return if head_if_true :unauthorized, !logged_in?
+    return if head_if_true :unauthorized, !logged_in?, 'you must be logged in to comment'
 
     return request_aes_key if decrypt_sym!(:comment).nil?
     decrypt_sym! :post

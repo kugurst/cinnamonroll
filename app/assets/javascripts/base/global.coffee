@@ -20,6 +20,9 @@ notie_notice = () ->
   notice = gon.notice
   if !!notice
     notie.alert 1, notice, 2
+  notice = gon.notice_error
+  if !!notice
+    notie.alert 3, notice, 2
 
 jQuery.fn.preventDoubleSubmission = ->
   $(this).on 'submit', (e) ->

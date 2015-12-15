@@ -4,6 +4,11 @@ class NameNotLikeEmailValidator < ActiveModel::Validator
                             if record.name =~ /.+@.+\..+/i
   end
 end
+class PasswordCheckValidator < ActiveModel::Validator
+  def validate(record)
+    record.errors[:password] << "your password is too weak" if !record.good_password
+  end
+end
 
 class User
   include Mongoid::Document
@@ -37,14 +42,24 @@ class User
   validates :password, presence: true
   validates :email, :name, uniqueness: true, presence: true, case_sensitive: false
   validates_length_of :remember_hash, maximum: 10
-  validates_with NameNotLikeEmailValidator
+  validates_with NameNotLikeEmailValidator, PasswordCheckValidator
 
   before_validation :trim_remember_hash, on: :update
 
   index name: 1, email: 1
 
+  attr_accessor :good_password
+  def good_password
+    if @good_password.nil?
+      true
+    else
+      @good_password
+    end
+  end
+
   # Automatically encrypt the password on save
   def password=(pass)
+    @good_password = false if system("look \"#{pass.downcase}\" > /dev/null 2>&1")
     super Encrypt::Password.createHash pass
   end
 

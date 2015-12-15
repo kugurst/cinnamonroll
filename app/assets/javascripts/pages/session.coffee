@@ -11,6 +11,8 @@ SUBSTITUTE_ERROR_NAMES = {
   "name": "username"
 }
 CONFIRM_PREFIX = "confirm_"
+RESEND_TEXT_FIELD_ID = "session_email_or_username"
+MINIMUM_PASSWORD_LENGTH = 8
 
 # instance variables #
 $login_create_form = null
@@ -22,6 +24,18 @@ get_input_label_name = ($form, $input) ->
   $label = $form.find "label[for='#{$input.attr 'id'}']"
   $label.html()
 
+validate_password = (password_str) ->
+  errors = ""
+  if password_str.length < MINIMUM_PASSWORD_LENGTH
+    errors += "password too short<br>"
+  $username = $("input[name*='name']").not("[name^='#{CONFIRM_PREFIX}']")
+  if password_str == $username.val()
+    errors += "password cannot be the same as your username nor email"
+  $email = $("input[name*='email']").not("[name^='#{CONFIRM_PREFIX}']")
+  if password_str == $email.val()
+    errors += "password cannot be the same as your username nor email"
+  errors
+
 validate_form = ($form) ->
   $inputs = $form.find '.sec_field'
   bad_value_found = false
@@ -29,13 +43,18 @@ validate_form = ($form) ->
   $inputs.each((i) ->
     $this = $(this)
     if !$.trim $this.val()
-      # $this.notify "can't be empty", className: 'error', position: 'right', autoHideDelay: 2000, arrowShow: false
       errors += "#{get_input_label_name $form, $this} can't be empty<br>"
       bad_value_found = true
     # If this input's id begins with confirm, seek out what it's confirming and ensure they match
     else if this.name.startsWith CONFIRM_PREFIX
       # Seek out the field it's confirming
       $to_confirm = $form.find("input[name*='#{this.name.replace CONFIRM_PREFIX, ""}']").not("[name^='#{CONFIRM_PREFIX}']")
+      # validate the password
+      if $to_confirm.attr('id').indexOf('password') >= 0
+        password_errors = validate_password $to_confirm.val()
+        if !!password_errors
+          errors += password_errors
+          bad_value_found = true
       if $to_confirm.val() != $this.val()
         errors += "#{get_input_label_name $form, $to_confirm} must match<br>"
         bad_value_found = true
@@ -83,3 +102,12 @@ substitute_error_name = (error_name) ->
     return if !validate_form $(this)
     cs.ajax_send_form $(this)
   )
+
+# Set the href of the resend confirmation link
+@cinnamonroll.on_page_load ->
+  $resend = $('#resend-confirmation')
+  $email_field = $("##{RESEND_TEXT_FIELD_ID}")
+  if $resend.length > 0 && $email_field.length > 0
+    $email_field.change((ev) ->
+      $resend[0].href = Routes.send_confirm_user_path $email_field.val()
+    )
