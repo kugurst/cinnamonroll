@@ -186,6 +186,9 @@ replacePageContent = (content) ->
   .appendTo attachedForm
   true
 
+@cinnamonroll.sec.already_encrypted_form = (form) ->
+  $(form).find('input[id^=enc]').length != 0
+
 @cinnamonroll.sec.encrypt_and_ajax_submit = (attachedForm, ev) ->
   cs.encrypt_form attachedForm
 
@@ -207,7 +210,7 @@ replacePageContent = (content) ->
   ev.preventDefault()
 
 @cinnamonroll.sec.encrypt_and_ajax_submit_form_expect_json = (form, done_func, fail_func, always_func, attempt = 1) ->
-  cs.encrypt_form form
+  cs.encrypt_form form if !cs.already_encrypted_form form
 
   $.ajax {
     type: form.method
@@ -265,4 +268,4 @@ if !@cinnamonroll.sec.aes_key
 @cinnamonroll.on_page_load ->
   $('form').preventDoubleSubmission().submit (ev) ->
     # cs.encrypt_and_ajax_submit this, ev
-    cs.encrypt_form this
+    # cs.encrypt_form this

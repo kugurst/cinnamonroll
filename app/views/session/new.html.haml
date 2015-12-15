@@ -1,0 +1,42 @@
+- provide :title, "Log In"
+- content_for :head do
+  = stylesheet_link_tag 'styles/posts', 'data-turbolinks-track' => true
+  = stylesheet_link_tag 'styles/static', 'data-turbolinks-track' => true
+  = javascript_include_tag 'pages/posts', 'data-turbolinks-track' => true
+  = javascript_include_tag 'pages/static', 'data-turbolinks-track' => true
+  = javascript_include_tag "/js/notify.js", 'data-turbolinks-track' => true
+  = javascript_include_tag 'pages/session', 'data-turbolinks-track' => true
+- content_for :body do
+  = render 'static/static_nav'
+
+.row
+  .small-11.large-7.small-centered.columns
+    %h2.text-center Log In
+- if flash[:error]
+  .row
+    .small-11.large-7.small-centered.columns
+      %label.error= flash[:error]
+
+.row.collapse
+  .small-11.large-7.small-centered.columns
+    = form_for(:session, url: login_path) do |f|
+      .form-div
+        .form-div-row
+          .form-div-cell
+            = f.label :email_or_username, "email/username", class: 'prefix form-label'
+          .form-div-cell.full-width
+            = f.text_field :email_or_username, placeholder: 'example@example.com', class: "sec_field no-border"
+        .form-div-row
+          .form-div-cell
+            = f.label :password, "password", class: "prefix form-label"
+          .form-div-cell.full-width
+            = f.password_field :password, class: "sec_field no-border"
+      .row.collapse.form-font
+        = f.label(:remember_me, class: "left") do
+          = f.check_box :remember_me
+          %span Remember me
+        = f.submit "Log In", class: "button small right form-button badge-background"
+
+.row.form-font
+  .small-11.large-7.small-centered.columns.no-right-padding
+    %p.right= "New user? #{link_to "Sign up now!", new_user_path}".html_safe

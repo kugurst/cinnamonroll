@@ -86,7 +86,8 @@ validate_form = ($form) ->
   form = $form[0]
   textarea = form["#{COMMENT_PARAM}[#{BODY_PARAM}]"]
   if !$.trim textarea.value
-    $(textarea).notify "comments can't be empty", className: 'error', position: 'top right', autoHideDelay: 2000, arrowShow: false
+    notie.alert 3, "comments can't be empty", 2
+    # $(textarea).notify "comments can't be empty", className: 'error', position: 'top right', autoHideDelay: 2000, arrowShow: false
     false
   else
     true

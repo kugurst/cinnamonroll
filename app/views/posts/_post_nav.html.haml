@@ -4,6 +4,15 @@
   %span
     %h1(class="circle-small header-badge-color-#{cat_index}")= @post.nil? ? @category.to_s.capitalize()[0] : @post.category.capitalize()[0]
   %ul.side-nav
+    - if logged_in?
+      %li.bold-link.static-link
+        %a= "@" + current_user.name
+      %li.static-link
+        = link_to "Log Out", logout_path, method: :delete
+    - else
+      %li.bold-link.static-link
+        %a(href="#{login_path}") Log In
+    %hr/
     - @posts.each do |post|
       %li(id="#{post == @post ? 'current-post-' + cat_index.to_s : ''}" class="header-badge-link-#{cat_index}")
         - if post == @post

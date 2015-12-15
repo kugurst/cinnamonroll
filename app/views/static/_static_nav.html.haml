@@ -2,10 +2,20 @@
 
 #post-nav
   %span
-    %h1.circle-small= static_link_name(current_page)[0]
+    %h1.circle-small= static_link_name(current_page).try :at, 0
   %ul.side-nav
+    - if current_page != login_path
+      - if logged_in?
+        %li.bold-link.static-link
+          %a= "@" + current_user.name
+        %li.static-link
+          = link_to "Log Out", logout_path, method: :delete
+      - else
+        %li.bold-link.static-link
+          %a(href="#{login_path}") Log In
+      %hr/
     - get_static_links.each do |k, v|
-      - unless k == current_page
+      - unless k == current_page || k == login_path || k == new_user_path
         %li.bold-link.static-link
           %a(href="#{k}")= v
     - Post::CATEGORIES.each do |c|

@@ -27,17 +27,24 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     return request_aes_key if decrypt_sym!(:user).nil?
+    remember_me = if enc_active?
+                    Encrypt::AES.decrypt_from_base64 params[:enc][:remember_me], aes_params[IV_PARAM], session[AES_KEY_PARAM]
+                  else
+                    params[:remember_me]
+                  end
     up = user_params
     @user = User.new(up)
 
     respond_to do |format|
       if @user.save
         log_in @user
+        remember @user if remember_me == '1'
+        puts 'remembering user' if remember_me == '1'
         format.html { redirect_to @user, notice: 'User was successfully created.' }
-        format.json { render :show, status: :created, location: @user }
+        format.json { render json: { url: return_point_if_none(root_path), notice: 'user created successfully' }, status: :created }
       else
         format.html { render :new }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+        format.json { render json: { error: @user.errors }, status: :unprocessable_entity }
       end
     end
   end

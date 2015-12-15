@@ -2,13 +2,14 @@
 @import 'foundation/functions';
 
 $nav-bar-height: rem-calc(72);
+$h-weights: 600 500 400 400 300 300;
 
 @for $i from 1 through 6 {
   h#{$i} {
     color: $header-font-color;
-    font-family:  "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-    @if $i == 3 {
-    }
+    font-family: "Hind", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    // font-weight: 500 - floor(($i - 1)/2) * 100;
+    font-weight: nth($h-weights, $i);
   }
 }
 
@@ -28,4 +29,14 @@ p, ul, a {
 
 .last-header {
   margin-bottom: 0;
+}
+
+.no-bottom-margin {
+  input {
+    margin-bottom: 0;
+  }
+}
+
+.no-right-padding {
+  padding-right: 0;
 }

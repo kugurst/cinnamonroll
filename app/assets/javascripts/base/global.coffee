@@ -8,7 +8,15 @@
 
 # Instance variables #
 
+# module variables #
+@cinnamonroll.store = null
+
 # instance/helper methods #
+notie_notice = () ->
+  notice = cinnamonroll.store.get 'notice'
+  if !!notice
+    cinnamonroll.store.remove 'notice'
+    notie.alert 1, notice, 2
 
 jQuery.fn.preventDoubleSubmission = ->
   $(this).on 'submit', (e) ->
@@ -25,7 +33,6 @@ jQuery.fn.preventDoubleSubmission = ->
   this
 
 # module functions #
-
 @cinnamonroll.add_attr_to_form = (scope, param, value, form) ->
   $('<input type="hidden">').attr {
     id: "#{scope}_#{param}"
@@ -71,3 +78,8 @@ jQuery.fn.preventDoubleSubmission = ->
     false
 
 # static code #
+@cinnamonroll.on_page_load ->
+  cinnamonroll.store = new Persist.Store('cinnamonroll')
+
+@cinnamonroll.on_page_load ->
+  notie_notice()

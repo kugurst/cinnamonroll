@@ -90,7 +90,7 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
 
   @media only screen and (max-width: 40em) {
     height: auto;
-    top: -$mobile-post-margin-top*11/12;
+    top: -$mobile-post-margin-top*11/13;
     background-color: transparent;
     text-shadow: none;
     h1 {
@@ -155,7 +155,7 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
     margin-top: 0;
   }
   h3 {
-    font-weight: lighter;
+    // font-weight: lighter;
   }
 }
 
@@ -194,22 +194,23 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
 
 // $font-size: 3em;
 // $border-width: 0.08em;
+//line-height: $font-size/2*2/3 - $border-width;
 
 @mixin circle-badge($font-size, $border-width) {
   display: inline-block;
   padding: $font-size/4*2/3 - $border-width/2;
   text-align: center;
-  line-height: $font-size/2*2/3 - $border-width;
   border-radius: 50%;
   border-style: double;
   border-width: $border-width;
   border-color: $font-color;
+  line-height: $font-size/3 + $border-width;
   height: $font-size*2/3;
   width: $font-size*2/3;
   font-weight: bold;
   background-color: adjust-hue($alt-bg-color, -30deg); // #d73d33;
   font-size: $font-size !important;
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif !important;
+  font-family: "Hind", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif !important;
   color: $font-color;
   margin-left: 1rem;
 
@@ -229,6 +230,8 @@ $mobile-badge-border-size: 0.045em;
   @include circle-badge(3em, 0.08em);
   @media only screen and (max-width: 40em) {
     @include circle-badge($mobile-badge-font-size, $mobile-badge-border-size);
+    line-height: $mobile-badge-font-size/3 + $mobile-badge-border-size*3;
+    padding-left: $mobile-badge-font-size/4*9/14;
     margin-left: 0;
     margin-bottom: 1rem;
   }
@@ -238,6 +241,8 @@ $mobile-badge-border-size: 0.045em;
   @include circle-badge(2.5em, 0.08em);
   @media only screen and (max-width: 40em) {
     @include circle-badge($mobile-badge-font-size, $mobile-badge-border-size);
+    line-height: $mobile-badge-font-size/3 + $mobile-badge-border-size*3;
+    padding-left: $mobile-badge-font-size/4*9/14;
     margin-left: auto;
     margin-right: auto;
     border-color: $bg-color;
@@ -342,6 +347,10 @@ $static-badge-color: saturate(lighten($header-color, 10%), 10%);
   background-color: $static-badge-color !important;
 }
 
+.badge-color {
+  color: $alt-bg-color !important;
+}
+
 .ps-scrollbar-y, .ps-scrollbar-x {
   background-color: lighten($font-color, 66.7%) !important;
 }
@@ -351,4 +360,57 @@ $static-badge-color: saturate(lighten($header-color, 10%), 10%);
   .cat-background-#{$i} {
     background-color: adjust-hue($badge-color, $rotation);
   }
+}
+
+.form-font {
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+.form-button {
+  @extend .form-font;
+  font-size: 1em !important;
+  color: $bg-color;
+}
+.form-div {
+  display: table;
+  width: 100%;
+  @extend .form-font;
+}
+.form-div-row {
+  display: table-row;
+}
+.form-div-cell {
+  display: table-cell;
+  padding-top: 0;
+  vertical-align: top;
+  input, label {
+    margin-bottom: 0;
+    @media only screen and (max-width: 40em) {
+      width: 100%;
+    }
+  }
+  @media only screen and (max-width: 40em) {
+    width: 100%;
+    display: block;
+  }
+}
+.form-label {
+  padding-left: 1em;
+  padding-right: 1em;
+  background-color: $static-badge-color !important;
+  color: $bg-color !important;
+  border-style: none;
+}
+.form-label-middle {
+  @extend .form-label;
+  border-bottom-style: solid;
+  border-top-style: solid;
+  @media only screen and (max-width: 40em) {
+    border-style: none;
+  }
+}
+.no-border {
+  border-style: none !important;
+}
+.full-width {
+  width: 100%;
 }

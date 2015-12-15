@@ -7,7 +7,7 @@ module StaticHelper
   end
 
   def get_static_links
-    { "/" => "Home", "#{about_me_path}" => "About Me" }
+    { "/" => "Home", "#{about_me_path}" => "About Me", "#{login_path}" => "Log In", "#{new_user_path}" => "Sign Up" }
   end
 
   def static_link_name(path)

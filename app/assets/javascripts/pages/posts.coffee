@@ -57,11 +57,21 @@ show_on_swipe =  (ev) ->
   eased_in = true
   triggered = false
   cinnamonroll.posts.show_side_bar()
+
 hide_on_swipe = (ev) ->
   shown = true
   eased_in = true
   triggered = false
   cinnamonroll.posts.hide_side_bar()
+
+shadow_notice_logout = () ->
+  $as = $post_nav.find "a:contains('Log Out')"
+  $as.each((index) ->
+    if this.pathname == Routes.logout_path()
+      $(this).click((ev) ->
+        cinnamonroll.store.set 'notice', 'log out successful'
+      )
+  )
 
 # module functions #
 @cinnamonroll.posts.show_side_bar = (callback) ->
@@ -208,3 +218,6 @@ $(window).resize ->
 # Text areas expand as you type
 @cinnamonroll.on_page_load ->
   autosize $('textarea') if autosize?
+
+@cinnamonroll.on_page_load ->
+  shadow_notice_logout()

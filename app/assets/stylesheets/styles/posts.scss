@@ -103,7 +103,7 @@ $browser-clear: rem-calc(72);
   -moz-box-shadow: 5px 0px 10px -5px rgba(0,0,0,0.1);
   box-shadow: 5px 0px 10px -5px rgba(0,0,0,0.1);
   a {
-    font-family:  "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-family: "Hind", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
     font-size: 1.125rem;
   }
   @media only screen and (max-width: 40em) {
@@ -123,9 +123,10 @@ $browser-clear: rem-calc(72);
   top:0;
   height: 100%;
 
+  text-align: center;
+
   span {
     position: absolute;
-    text-align: center;
     width: 100%;
     left: 0;
     top: 7.5%;
@@ -150,7 +151,6 @@ $browser-clear: rem-calc(72);
     top: 50%;
     transform: translateY(-50%);
     width: 100%;
-    text-align: center;
   }
 
   div {
@@ -165,7 +165,7 @@ $browser-clear: rem-calc(72);
     h#{$i} {
       color: $bg-color;
       margin-bottom: 0;
-      margin-top: 0;
+      margin-top: 0.125rem;
     }
   }
 
@@ -189,7 +189,6 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
     background-color: rgba(lighten(adjust-hue($badge-color, $rotation), 10%), 1) !important;
   }
   .header-badge-link-#{$i} {
-    text-align: center;
     a {
       @include ease-transition($fast-transition);
     }

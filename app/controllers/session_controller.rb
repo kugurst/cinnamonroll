@@ -2,6 +2,8 @@ class SessionController < ApplicationController
   layout 'session/session'
   include SessionHelper
 
+  BAD_COMBO_MSG = "Username/email and password combination not found"
+
   def new
     begin
       set_return_point URI(request.referer).path
@@ -23,8 +25,16 @@ class SessionController < ApplicationController
       begin
         user = User.find_by name: lp[:email_or_username]
       rescue Mongoid::Errors::DocumentNotFound
-        flash.now[:error] = "Username/email and password combination not found"
-        render 'new', status: :not_found
+        respond_to do |format|
+          format.html do
+            flash.now[:error] = BAD_COMBO_MSG
+            render 'new', status: :not_found
+          end
+          format.json do
+            msg = { error: BAD_COMBO_MSG }
+            render json: msg, status: :not_found
+          end
+        end
         return
       end
     end
@@ -33,17 +43,34 @@ class SessionController < ApplicationController
       # Log the user in and redirect to the user's show page.
       log_in user
       remember user if lp[:remember_me] == '1'
-      flash[:notice] = "Log in successful!"
-      redirect_to return_point_if_none user
+      respond_to do |format|
+        format.html do
+          flash[:notice] = "Log in successful!"
+          redirect_to return_point_if_none user
+        end
+        format.json do
+          msg = { url: return_point_if_none(user), notice: 'logged in successfully' }
+          render json: msg
+        end
+      end
     else
-      flash[:error] = "Email/username and password combination not found"
-      render 'new', status: :not_found
+      respond_to do |format|
+        format.html do
+          flash[:error] = BAD_COMBO_MSG
+          render 'new', status: :not_found
+        end
+        format.json do
+          msg = { error: BAD_COMBO_MSG }
+          render json: msg, status: :not_found
+        end
+      end
     end
   end
 
   def destroy
+    set_return_point URI(request.referer).path
     log_out if logged_in?
-    redirect_to root_url
+    redirect_to return_point_if_none root_url
   end
 
   private
