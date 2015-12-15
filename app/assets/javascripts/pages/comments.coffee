@@ -22,7 +22,7 @@ CATEGORY_POS = 2
 FILE_PATH_POS = 3
 
 # instance variables #
-current_reply = null
+$current_reply = null
 write_a_comment = null
 
 # module variables #
@@ -73,12 +73,12 @@ add_box = (parent, type, data) ->
         e.preventDefault()
         $textarea.submit()
     )
-    current_reply = $(parent).find '.new-comment-box'
+    $current_reply = $(parent).find '.new-comment-box'
     if type == cc.type_enum.NEW
       # Add an id to make it easy to identify this particular box
-      current_reply.attr 'id', COMMENT_ID
+      $current_reply.attr 'id', COMMENT_ID
     if !$textarea.visible()
-      current_reply.velocity("scroll")
+      $current_reply.velocity("scroll")
     $textarea.focus()
 
 validate_form = ($form) ->
@@ -114,7 +114,14 @@ validate_form = ($form) ->
           $('html,body').animate scrollTop: $new_comment.offset().top
         cinnamonroll.comments.activate_links()
     , (jq, status, e) ->
-      return
+      json = JSON.parse jq.responseText
+      if typeof json.error == 'string' || json.error instanceof String
+        notie.alert 3, $.trim(json.error), 2
+      else
+        errors = ""
+        for error, value of json.error
+          errors += "#{error} #{value}<br>"
+        notie.alert 3, $.trim(errors), 2
     , (dj, status, je) ->
       if status != 'success'
         # re-enable the form
@@ -141,18 +148,18 @@ validate_form = ($form) ->
     url: if type == cc.type_enum.REPLY then Routes.comments_box_reply_path() else Routes.comments_box_new_path()
   }
   .done (data, status, jq) ->
-    if current_reply != null
-      $(current_reply).slideUp duration: SLIDE_UP_DURATION, done: ->
-        $(current_reply).remove()
+    if $current_reply != null
+      $current_reply.slideUp duration: SLIDE_UP_DURATION, done: ->
+        $current_reply.remove()
         # Stick back the "Write a comment" link if we removed it
-        if $(current_reply).attr('id') == COMMENT_ID
+        if $current_reply.attr('id') == COMMENT_ID
           $('#new-link-container').append write_a_comment[0]
           $(write_a_comment).slideDown duration: SLIDE_DOWN_DURATION
           # Stick back the new box comment
           $(write_a_comment).click ->
             cinnamonroll.comments.get_comment_box this, cc.type_enum.NEW
             false
-        current_reply = null
+        $current_reply = null
         add_box $parent, type, data
     else
       add_box $parent, type, data

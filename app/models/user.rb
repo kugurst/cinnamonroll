@@ -26,6 +26,8 @@ class User
   # searchable do
     field :name, type: String
     field :email, type: String
+    field :email_confirmed, type: Boolean, default: false
+    field :confirmation_token, type: String, default: -> { SecureRandom.urlsafe_base64 64 }
     has_many :comments, dependent: :destroy
   # end
   # The password will be stored as a base64 hash

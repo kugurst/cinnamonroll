@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   resources :comments
   # resources :posts
+  get 'users/:id/confirm/:confirmation_token', to: 'users#confirm', as: :confirm_user
   resources :users
 
   post 'security/post_rsa_key', to: 'security#post_rsa_key'

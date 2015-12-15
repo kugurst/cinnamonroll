@@ -11,6 +11,6 @@
           .small-12.columns
             = f.text_area :body, id: 'new-comment-textarea'
         .row.collapse
-          = f.submit 'Submit', class: 'button postfix badge-background form-button-hover'
+          = f.submit 'submit', class: 'button postfix badge-background form-button-hover'
   - else
     %p.text-center You must be #{link_to "logged in", login_path} in order to comment. New user? #{link_to "Sign up!", new_user_path}

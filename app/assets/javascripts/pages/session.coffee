@@ -10,6 +10,7 @@ cs = @cinnamonroll.session
 SUBSTITUTE_ERROR_NAMES = {
   "name": "username"
 }
+CONFIRM_PREFIX = "confirm_"
 
 # instance variables #
 $login_create_form = null
@@ -17,15 +18,30 @@ $login_create_form = null
 # module variables #
 
 # instance/helper methods #
+get_input_label_name = ($form, $input) ->
+  $label = $form.find "label[for='#{$input.attr 'id'}']"
+  $label.html()
+
 validate_form = ($form) ->
   $inputs = $form.find '.sec_field'
-  empty_value_found = false
+  bad_value_found = false
+  errors = ""
   $inputs.each((i) ->
-    if !$.trim $(this).val()
-      $(this).notify "can't be empty", className: 'error', position: 'right', autoHideDelay: 2000, arrowShow: false
-      empty_value_found = true
+    $this = $(this)
+    if !$.trim $this.val()
+      # $this.notify "can't be empty", className: 'error', position: 'right', autoHideDelay: 2000, arrowShow: false
+      errors += "#{get_input_label_name $form, $this} can't be empty<br>"
+      bad_value_found = true
+    # If this input's id begins with confirm, seek out what it's confirming and ensure they match
+    else if this.name.startsWith CONFIRM_PREFIX
+      # Seek out the field it's confirming
+      $to_confirm = $form.find("input[name*='#{this.name.replace CONFIRM_PREFIX, ""}']").not("[name^='#{CONFIRM_PREFIX}']")
+      if $to_confirm.val() != $this.val()
+        errors += "#{get_input_label_name $form, $to_confirm} must match<br>"
+        bad_value_found = true
   )
-  !empty_value_found
+  notie.alert 3, $.trim(errors), 2 if bad_value_found
+  !bad_value_found
 
 substitute_error_name = (error_name) ->
   if error_name of SUBSTITUTE_ERROR_NAMES
@@ -43,16 +59,16 @@ substitute_error_name = (error_name) ->
     , (jq, status, e) ->
       json = JSON.parse jq.responseText
       if typeof json.error == 'string' || json.error instanceof String
-        notie.alert 3, $.trim json.error, 2
+        notie.alert 3, $.trim(json.error), 2
         # $('.button').notify json.error, className: 'error', position: 'bottom', autoHideDelay: 2000, arrowShow: false
       else
         errors = ""
         for error, value of json.error
-          $input = $form.find("input[name*='#{error}']")
+          # $input = $form.find("input[name*='#{error}']")
           errors += "#{substitute_error_name error} #{value}<br>"
           # console.log $input[0]
           # $input.notify value, className: 'error', position: 'right', autoHideDelay: 2000, arrowShow: false if $input.length > 0
-        notie.alert 3, $.trim errors, 2
+        notie.alert 3, $.trim(errors), 2
     , (dj, status, je) ->
       if status != 'success'
         # re-enable the form

@@ -54,7 +54,16 @@ class CommentsController < ApplicationController
     @comment = Comment.new(cp)
 
     respond_to do |format|
-      if @comment.valid?
+      if !current_user.email_confirmed
+        format.html do
+          flash[:notice] = "you must confirm your email before you can comment"
+          redirect_to return_point_if_none root_path
+        end
+        format.json do
+          msg = { error: "you must confirm your email before you can comment" }
+          render json: msg, status: :unauthorized
+        end
+      elsif @comment.valid?
         @parent_comment.comments << @comment if @parent_comment
         @comment.save
         com = ""

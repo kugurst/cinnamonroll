@@ -17,6 +17,9 @@ notie_notice = () ->
   if !!notice
     cinnamonroll.store.remove 'notice'
     notie.alert 1, notice, 2
+  notice = gon.notice
+  if !!notice
+    notie.alert 1, notice, 2
 
 jQuery.fn.preventDoubleSubmission = ->
   $(this).on 'submit', (e) ->

@@ -33,9 +33,19 @@
             = f.text_field :email, placeholder: 'example@example.com', class: "sec_field no-border"
         .form-div-row
           .form-div-cell
-            = f.label :password, "password", class: "prefix form-label"
+            = label_tag :confirm_email, "confirm&nbsp;email".html_safe, class: 'prefix form-label'
+          .form-div-cell.full-width
+            = text_field_tag :confirm_email, nil, placeholder: 'example@example.com', class: "sec_field no-border"
+        .form-div-row
+          .form-div-cell
+            = f.label :password, "password", class: "prefix form-label-middle"
           .form-div-cell.full-width
             = f.password_field :password, class: "sec_field no-border"
+        .form-div-row
+          .form-div-cell
+            = label_tag :confirm_password, "confirm&nbsp;password".html_safe, class: 'prefix form-label'
+          .form-div-cell.full-width
+            = password_field_tag :confirm_password, nil, class: "sec_field no-border"
       .row.collapse.form-font
         = label_tag(:remember_me, class: "left") do
           = check_box_tag :remember_me

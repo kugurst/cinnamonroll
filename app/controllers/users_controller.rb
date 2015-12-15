@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   include SessionHelper
 
-    before_action :set_user, only: [:show, :edit, :update, :destroy]
+    before_action :set_user, only: [:show, :edit, :update, :destroy, :confirm]
 
   # GET /users
   # GET /users.json
@@ -46,6 +46,17 @@ class UsersController < ApplicationController
         format.html { render :new }
         format.json { render json: { error: @user.errors }, status: :unprocessable_entity }
       end
+    end
+  end
+
+  def confirm
+    if params[:confirmation_token] == @user.confirmation_token
+      @user.set email_confirmed: true
+      @user.set confirmation_token: SecureRandom.urlsafe_base64(64)
+      session[:notice] = "successfully confirmed email"
+      redirect_to root_path
+    else
+      render nothing: true, status: :gone
     end
   end
 
