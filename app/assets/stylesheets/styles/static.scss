@@ -363,12 +363,21 @@ $static-badge-color: saturate(lighten($header-color, 10%), 10%);
 }
 
 .form-font {
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-family: "Hind", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+.form-button-hover {
+  &:hover {
+    background-color: darken($static-badge-color, 6.67%) !important;
+  }
 }
 .form-button {
   @extend .form-font;
+  @extend .form-button-hover;
   font-size: 1em !important;
   color: $bg-color;
+  $padding: 0.563rem;
+  padding-top: $padding !important;
+  padding-bottom: $padding !important;
 }
 .form-div {
   display: table;

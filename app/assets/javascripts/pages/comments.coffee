@@ -22,7 +22,6 @@ CATEGORY_POS = 2
 FILE_PATH_POS = 3
 
 # instance variables #
-
 current_reply = null
 write_a_comment = null
 
@@ -74,12 +73,12 @@ add_box = (parent, type, data) ->
         e.preventDefault()
         $textarea.submit()
     )
-    $current_reply = $(parent).find '.new-comment-box'
+    current_reply = $(parent).find '.new-comment-box'
     if type == cc.type_enum.NEW
       # Add an id to make it easy to identify this particular box
-      $current_reply.attr 'id', COMMENT_ID
+      current_reply.attr 'id', COMMENT_ID
     if !$textarea.visible()
-      $current_reply.velocity("scroll")
+      current_reply.velocity("scroll")
     $textarea.focus()
 
 validate_form = ($form) ->
