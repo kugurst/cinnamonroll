@@ -6,6 +6,7 @@ module UsersHelper
   def send_confirmation_email_to(user)
     UsersHelper.generate_user_confirmation_token user
 
-    UsersMailer.confirm_email(user).deliver_now
+    # MailWorker.perform_async user.id.to_s
+    UsersMailer.delay.confirm_email(user)
   end
 end

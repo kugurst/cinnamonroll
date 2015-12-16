@@ -4,8 +4,6 @@
     %meta(content='text/html; charset=UTF-8' http-equiv='Content-Type')/
 
   %body
-    - puts "User name: \"#{@user.name}\", user email: \"#{@user.email}\""
-    %h1 Welcome to Mark Aligbe.com, @#{@user.name}
-    %p I'm excited that you decided to sign up. Your confirmation code is: <code>#{@user.confirmation_token}</code>.
-    %p To confirm your email, simply visit #{confirm_user_url @user, @user.confirmation_token} or click on <a href="#{confirm_user_url @user, @user.confirmation_token}">this link</a>.
-    %p Welcome to the community!
+    %p <b>Welcome to markaligbe.com, @#{@user.name}!</b>
+    %p I'm excited that you decided to sign up. <br> To confirm your email, simply visit #{confirm_user_url @user, @user.confirmation_token} or click on <a href="#{confirm_user_url @user, @user.confirmation_token}">this link</a>. <br> Thanks again!
+    %p - Mark Aligbe

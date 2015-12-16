@@ -6,7 +6,7 @@
   - else
     .row
       .small-10.small-offset-1.large-8.large-offset-2.columns.text-right#comment-announce
-        %h4 comments
+        %h4 comments (#{@post.comments.length})
     - @comment_list.each do |c|
       .row
         .small-10.small-offset-1.large-8.large-offset-2.columns.comment-thread.comment-thread-ping

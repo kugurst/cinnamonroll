@@ -61,6 +61,7 @@ end
 group :production do
   # Sprockts for compressing data
   gem 'sprockets-rails', require: 'sprockets/railtie'
+  gem 'passenger'
 end
 
 group :development, :test do

@@ -8,7 +8,7 @@ require "active_job/railtie"
 require "action_controller/railtie"
 require "action_mailer/railtie"
 require "action_view/railtie"
-# require "sprockets/railtie"
+require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 require 'susy'
 
@@ -35,9 +35,11 @@ module Cinnamonroll
     # config.autoload_paths << Rails.root.join('vendor/assets')
     config.autoload_paths << Rails.root.join('lib')
     config.autoload_paths << Rails.root.join('vendor')
+    # config.autoload_paths << Rails.root.join('app', 'workers')
     # config.eager_load_paths += ["#{Rails.root}/lib}"]
     config.log_level = :warn
     Mongoid.logger.level = Logger::INFO
     config.active_job.queue_adapter = :sidekiq
+    ActionMailer::Base.default from: "markaligbe.com <bot.markaligbe+noreply@gmail.com>", return_path: 'bot.markaligbe+noreply@gmail.com'
   end
 end

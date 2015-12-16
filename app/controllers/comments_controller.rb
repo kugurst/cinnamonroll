@@ -71,6 +71,7 @@ class CommentsController < ApplicationController
           com = render_to_string layout: false
         else
           @comment_list = PostsHelper.tree_comments post
+          @post = post
           com = render_to_string 'post_comments', layout: false
         end
 

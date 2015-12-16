@@ -11,7 +11,9 @@ class SessionController < ApplicationController
     end
     if logged_in?
       flash[:notice] = "Already logged in"
-      redirect_to return_point_if_none root_path
+      rp = return_point_if_none root_path
+      rp = root_path if rp == login_path
+      redirect_to rp
     end
   end
 
