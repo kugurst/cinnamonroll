@@ -16,8 +16,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :add_notice
 
-  def hello
-    render text: "hello, world!"
+  def default_url_options
+    { host: "markaligbe.com" }
   end
 
   def not_found

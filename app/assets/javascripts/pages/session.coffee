@@ -109,5 +109,9 @@ substitute_error_name = (error_name) ->
   $email_field = $("##{RESEND_TEXT_FIELD_ID}")
   if $resend.length > 0 && $email_field.length > 0
     $email_field.change((ev) ->
-      $resend[0].href = Routes.send_confirm_user_path $email_field.val()
+      email_str = $email_field.val()
+      if !!email_str
+        $resend[0].href = Routes.send_confirm_user_path $email_field.val()
+      else
+        $resend[0].href = ''
     )

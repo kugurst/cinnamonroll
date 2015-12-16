@@ -88,4 +88,6 @@ jQuery.fn.preventDoubleSubmission = ->
   cinnamonroll.store = new Persist.Store('cinnamonroll')
 
 @cinnamonroll.on_page_load ->
-  notie_notice()
+  setTimeout(() ->
+    notie_notice()
+  , 100)

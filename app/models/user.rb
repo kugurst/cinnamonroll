@@ -9,6 +9,12 @@ class PasswordCheckValidator < ActiveModel::Validator
     record.errors[:password] << "your password is too weak" if !record.good_password
   end
 end
+class NotDeletedUserValidator < ActiveModel::Validator
+  def validate(record)
+    record.errors[:name] << "nice try" if record.name.downcase == User::DELETED_NAME
+    record.errors[:email] << "nice try" if record.email == User::DELETED_EMAIL
+  end
+end
 
 class User
   include Mongoid::Document
@@ -42,7 +48,7 @@ class User
   validates :password, presence: true
   validates :email, :name, uniqueness: true, presence: true, case_sensitive: false
   validates_length_of :remember_hash, maximum: 10
-  validates_with NameNotLikeEmailValidator, PasswordCheckValidator
+  validates_with NameNotLikeEmailValidator, PasswordCheckValidator, NotDeletedUserValidator
 
   before_validation :trim_remember_hash, on: :update
 

@@ -6,5 +6,6 @@ module UsersHelper
   def send_confirmation_email_to(user)
     UsersHelper.generate_user_confirmation_token user
 
+    UsersMailer.confirm_email(user).deliver_now
   end
 end

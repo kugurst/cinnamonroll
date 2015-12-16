@@ -28,7 +28,14 @@ module SessionHelper
 
   def current_user
     if (user_id = session[:user_id])
-      @current_user ||= User.find_by(id: user_id)
+      begin
+        @current_user ||= User.find_by(id: user_id)
+      rescue Mongoid::Errors::DocumentNotFound
+        session.delete :user_id
+        cookies.delete(:user_id)
+        cookies.delete(:remember_token)
+        @current_user = nil
+      end
     elsif (user_id = cookies.signed[:user_id])
       user = User.find_by(id: user_id)
       if user && user.valid_rem?(cookies.signed[:remember_token])
