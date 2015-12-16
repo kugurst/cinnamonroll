@@ -60,6 +60,8 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.10.0)
+    concurrent-ruby (1.0.0)
+    connection_pool (2.2.0)
     daemons (1.2.3)
     database_cleaner (1.5.1)
     debug_inspector (0.0.2)
@@ -166,6 +168,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
     rdoc (4.2.0)
+    redis (3.2.2)
     request_store (1.2.1)
     rsolr (1.0.13)
       builder (>= 2.1.2)
@@ -200,6 +203,11 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
+    sidekiq (4.0.1)
+      concurrent-ruby (~> 1.0)
+      connection_pool (~> 2.2, >= 2.2.0)
+      json (~> 1.0)
+      redis (~> 3.2, >= 3.2.1)
     slop (3.6.0)
     spring (1.4.0)
     sprockets (3.4.1)
@@ -277,6 +285,7 @@ DEPENDENCIES
   rspec-rails
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
+  sidekiq
   spring (= 1.4.0)
   sprockets-rails
   sunspot_mongo

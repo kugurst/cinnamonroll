@@ -39,6 +39,9 @@ gem 'haml'
 # Simplify URLs
 # gem 'friendly_id', '~> 5.1.0', require: false
 
+# sending emails
+gem 'sidekiq'
+
 # transferring data to the javascript
 gem 'gon'
 

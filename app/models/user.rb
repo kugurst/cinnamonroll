@@ -19,6 +19,7 @@ end
 class User
   include Mongoid::Document
   include Sunspot::Mongo
+  include GlobalID::Identification
 
   MAX_REMEMBERED_DEVICES = 10
 

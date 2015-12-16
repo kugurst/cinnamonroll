@@ -38,5 +38,6 @@ module Cinnamonroll
     # config.eager_load_paths += ["#{Rails.root}/lib}"]
     config.log_level = :warn
     Mongoid.logger.level = Logger::INFO
+    config.active_job.queue_adapter = :sidekiq
   end
 end
