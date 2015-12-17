@@ -60,12 +60,12 @@ add_box = (parent, type, data) ->
   if type == cc.type_enum.NEW
     # save the new link comment to stick it back
     write_a_comment = $('#new-link')
-    $(write_a_comment).slideUp duration: SLIDE_UP_DURATION, done: ->
+    $(write_a_comment).velocity "slideUp", duration: SLIDE_UP_DURATION, complete: ->
       $(write_a_comment).remove()
 
   # Stick the box directly under the comment
   $(parent).append jdat[0]
-  $(jdat).slideDown duration: SLIDE_DOWN_DURATION, done: ->
+  $(jdat).velocity "slideDown", duration: SLIDE_DOWN_DURATION, complete: ->
     $textarea = jdat.find '#new-comment-textarea'
     autosize $textarea
     $textarea.keydown((e) ->
@@ -106,12 +106,13 @@ validate_form = ($form) ->
   $form.find('.button').prop 'disabled', true
   cinnamonroll.sec.encrypt_and_ajax_submit_form_expect_json(form
     , (data, status, jq) ->
-      $html = $(data.html).hide()
+      $html = $(data.html).css 'opacity', 0
       $new_comment = $html.find "[data-id=\"#{data.id}\"]"
-      $('#all-comments').fadeOut 175, ->
+      $('#all-comments').velocity "fadeOut", duration: 175, complete: ->
         $(this).replaceWith $html
-        $('#all-comments').fadeIn 130, ->
-          $('html,body').animate scrollTop: $new_comment.offset().top
+        $('#all-comments').velocity "fadeIn", duration: 130, complete: ->
+          $new_comment.velocity "scroll"
+          $current_reply = null
         cinnamonroll.comments.activate_links()
     , (jq, status, e) ->
       json = JSON.parse jq.responseText
@@ -149,12 +150,12 @@ validate_form = ($form) ->
   }
   .done (data, status, jq) ->
     if $current_reply != null
-      $current_reply.slideUp duration: SLIDE_UP_DURATION, done: ->
+      $current_reply.velocity "slideUp", duration: SLIDE_UP_DURATION, complete: ->
         $current_reply.remove()
         # Stick back the "Write a comment" link if we removed it
         if $current_reply.attr('id') == COMMENT_ID
           $('#new-link-container').append write_a_comment[0]
-          $(write_a_comment).slideDown duration: SLIDE_DOWN_DURATION
+          $(write_a_comment).velocity "slideDown", duration: SLIDE_DOWN_DURATION
           # Stick back the new box comment
           $(write_a_comment).click ->
             cinnamonroll.comments.get_comment_box this, cc.type_enum.NEW

@@ -14,7 +14,7 @@
 // require jquery.turbolinks
 //= require jquery_ujs
 // require jquery.mobile
-//= require jquery-ui/effect.all
+// require jquery-ui/effect.all
 // require foundation
 // require angular
 // require angular-animate
@@ -23,9 +23,9 @@
 //= require base/global
 //= require base/encrypt
 //= require vendor/modernizr
-//= require foundation
+//= require foundation/foundation
 // require_tree .
 
-// $(document).foundation();
+$(document).foundation();
 
-$(function(){ $(document).foundation(); });
+// $(function(){ $(document).foundation(); });

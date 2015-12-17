@@ -1467,4 +1467,9 @@ $topbar-link-color: $alt-bg-color;
 // $include-table-visibility-classes: true;
 // $include-legacy-visibility-classes: true;
 
-@import 'foundation';
+@import 'foundation/components/grid';
+@import 'foundation/components/forms';
+@import 'foundation/components/buttons';
+@import 'foundation/components/side-nav';
+@import 'foundation/components/type';
+@import 'foundation/components/labels';

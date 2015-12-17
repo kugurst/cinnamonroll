@@ -3,7 +3,10 @@ module CommentsHelper
     haml_tag :div, class: 'comment', 'data-level' => level, 'data-id' => com.id do
       haml_tag :div, class: 'row' do
         haml_tag :div, class: 'small-5 columns' do
-          haml_tag :span, link_to("@#{com.user.name}", com.user)
+          # haml_tag :span, link_to("@#{com.user.name}", com.user)
+          haml_tag :span do
+            haml_tag :a, "@#{com.user.name}"
+          end
         end
         if logged_in?
           haml_tag :div, class: 'small-5 columns text-right' do

@@ -223,6 +223,8 @@ replacePageContent = (content) ->
   .fail (jq, status, e) ->
     if jq.status == NO_KEY_STATUS
       cs.req_aes_key ->
+        cs.reenable_form form
+        cs.encrypt_form form
         cs.encrypt_and_ajax_submit_form_expect_json form, done_func, fail_func, always_func
     else
       if attempt < cinnamonroll.MAX_AJAX_ATTEMPTS
@@ -266,6 +268,6 @@ if !@cinnamonroll.sec.aes_key
 # Encrypt all forms on the page on submit
 # onPageLoad -> $('form').attr 'onsubmit', "return cinnamonroll.sec.encrypt_form(this)"
 @cinnamonroll.on_page_load ->
-  $('form').preventDoubleSubmission().submit (ev) ->
+  # $('form').preventDoubleSubmission().submit (ev) ->
     # cs.encrypt_and_ajax_submit this, ev
     # cs.encrypt_form this
