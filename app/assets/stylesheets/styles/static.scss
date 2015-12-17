@@ -423,3 +423,12 @@ $static-badge-color: saturate(lighten($header-color, 10%), 10%);
 .full-width {
   width: 100%;
 }
+
+$categories: project, thought, review, testing;
+
+@for $i from 1 through 4 {
+  $rotation: ($i - 1)*90;
+  .bg-#{nth($categories, $i)} {
+    background-color: adjust-hue($badge-color, $rotation);
+  }
+}
