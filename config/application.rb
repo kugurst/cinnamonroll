@@ -35,7 +35,7 @@ module Cinnamonroll
     # config.autoload_paths << Rails.root.join('vendor/assets')
     config.autoload_paths << Rails.root.join('lib')
     config.autoload_paths << Rails.root.join('vendor')
-    # config.autoload_paths << Rails.root.join('app', 'workers')
+    config.autoload_paths << Rails.root.join('app', 'workers')
     # config.eager_load_paths += ["#{Rails.root}/lib}"]
     config.log_level = :warn
     Mongoid.logger.level = Logger::INFO
