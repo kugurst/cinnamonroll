@@ -14,8 +14,9 @@ Rails.application.routes.draw do
   get 'users/:id/confirm/:confirmation_token', to: 'users#confirm', as: :confirm_user
   get 'users/:id/send_confirm', to: 'users#send_confirm', as: :send_confirm_user
   if Rails.env == 'production'
-    post 'comments', to: 'comments#create', as: :new_comment
-    post 'users', to: 'users#create', as: :new_user
+    post 'comments', to: 'comments#create' # , as: :new_comment
+    post 'users', to: 'users#create' # , as: :new_user
+    get  'users/new', to: 'users#new', as: :new_user
   else
     resources :comments
     resources :users
