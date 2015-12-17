@@ -124,4 +124,8 @@ class ApplicationController < ActionController::Base
       end
       true
     end
+
+    def set_return_point_to_referrer(overwrite = false)
+      set_return_point URI(request.referer).path, overwrite
+    end
 end

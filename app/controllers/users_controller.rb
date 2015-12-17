@@ -17,6 +17,7 @@ class UsersController < ApplicationController
 
   # GET /users/new
   def new
+    set_return_point_to_referrer
     @user = User.new
   end
 
@@ -66,13 +67,15 @@ class UsersController < ApplicationController
       set_return_point URI(request.referer).path
     rescue
     end
+    rp = return_point_if_none root_path
+    rp = root_path if rp == new_user_path
     if @user.nil?
       session[:notice_error] = 'user not found'
-      redirect_to return_point_if_none root_path
+      redirect_to rp
     else
       send_confirmation_email_to @user
       session[:notice] = 'confirmation email sent'
-      redirect_to return_point_if_none root_path
+      redirect_to rp
     end
   end
 
