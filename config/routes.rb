@@ -6,14 +6,20 @@ Rails.application.routes.draw do
   get 'posts/:category/:file_path/comments', to: 'posts#comments', as: :post_comments
 
   Post::CATEGORIES.each do |c|
+    next if PostsHelper.banned_category c
     get "#{c.to_s.pluralize}", to: 'posts#category', as: c.to_s.pluralize.to_sym
   end
 
-  resources :comments
   # resources :posts
   get 'users/:id/confirm/:confirmation_token', to: 'users#confirm', as: :confirm_user
   get 'users/:id/send_confirm', to: 'users#send_confirm', as: :send_confirm_user
-  resources :users
+  if Rails.env == 'production'
+    post 'comments', to: 'comments#create'
+    post 'users', to: 'users#create'
+  else
+    resources :comments
+    resources :users
+  end
 
   post 'security/post_rsa_key', to: 'security#post_rsa_key'
   get 'security/get_aes_key', to: 'security#get_aes_key'

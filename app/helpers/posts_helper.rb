@@ -139,6 +139,10 @@ module PostsHelper
   end
 
   def banned_category(cat)
+    PostsHelper.banned_category cat
+  end
+
+  def self.banned_category(cat)
     cat == :testing && Rails.env == "production"
   end
 end
