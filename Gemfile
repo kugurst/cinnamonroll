@@ -55,6 +55,8 @@ gem 'rake-compiler'
 # currently used for creating posts in production
 gem 'factory_girl'
 gem 'factory_girl_rails'
+# generate fake data
+gem 'forgery'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -81,8 +83,6 @@ group :development, :test do
 
   # a standalone Sunspot server
   gem 'sunspot_solr'
-  # generate fake data
-  gem 'forgery'
 
   # testing
   gem 'capybara'
