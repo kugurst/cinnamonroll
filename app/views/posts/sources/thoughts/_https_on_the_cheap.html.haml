@@ -4,12 +4,62 @@
 
     CoffeeScript promo aside, we're talking about encryption.
 
-%section
-  :markdown
     ## The Inception ##
 
     I worked on a research project involving RSA, so I had (and still have) RSA on the brains. I definitely wanted this site to be secure; anything less would be unacceptable... or just less than ideal. Since I was also testing my site remotely, I wanted any sensitive data I sent to be secure. I could just go with a super cheap [certificate](https://www.namecheap.com/security/ssl-certificates/comodo/positivessl.aspx) (and just recently, [free](https://letsencrypt.org/)), or I could implement HTTPS myself. Well, not all of HTTPS, just the important bits. And not really implement it myself, just hack together an encryption system using stuff other people wrote and debugged already.
 
     ### The Important Bits ###
 
-    HTTPS is just HTTP through SSL/TLS. There's a fascinating history behind SSL/TLS which I won't cover here because [Wikipedia](https://en.wikipedia.org/wiki/Transport_Layer_Security) exists. Since this is a thought, we're going to dive straight into the thick of things. TLS does two things for you; in addition to securing the data between a client and server, it also proves the authenticity of the server to the client. We're stuck in a catch 22 if we try to prove that we are who we say we are, thus the existance of the necessary evil that are certificate authorities. Remember those scenes in shows where some evil doppleganger appears and pretends to be a protagonist, and the protagonist's companion has to figure out which one is fake and which one is real based on some prior experience with the real one? Without CAs, that's basically the best we could do.
+    HTTPS is just HTTP through SSL/TLS. There's a fascinating history behind SSL/TLS which I won't cover here because [Wikipedia](https://en.wikipedia.org/wiki/Transport_Layer_Security) exists. Since this is a thought, we're going to dive straight into the thick of things. TLS does two things for you; in addition to securing the data between a client and server, it also proves the authenticity of the server to the client. We're stuck in a catch 22 if we try to prove that we are who we say we are, thus the existence of the necessary evil that are certificate authorities. Remember those scenes in shows where some evil doppelganger appears and pretends to be the protagonist, and then the protagonist's companion has to figure out which one is real or fake based on some prior experience with the real one? Without CAs, that's basically the best we could do.
+
+    But, I can at least still encrypt your data. The Wikipedia article describes two methods for establishing a session key, the Diffie-Hellman key exchange and asymmetric encryption. We'll go with the latter.
+
+  %aside
+    :markdown
+      *In asymmetric cryptography, data is secured using a public key, a key you share with the world, and decrypted with a key you share with no one, a private key. Contrast this with symmetric keys, which are used for both encryption and decryption.*
+
+  :markdown
+    The idea here is that we use a onetime asymmetric key pair to generate a symmetric key, which we then use for the rest of the session. Typically, asymmetric keys aren't used for the entire session because encryption/decryption is computationally expensive compared to symmetric keys, which offer *good enough* protection against cracking when the key is unknown. You can probably guess which asymmetric key algorithm I chose, RSA. I chose another standard algorithm, AES for symmetric encryption.
+
+    ### Communication is Key ###
+
+    So now that I had my algorithm choices (or rather, *had* them from the get go), the question became, who initiates the key exchange? The original idea was to have the server do some of the heavy lifting by generating the RSA keys, have the client generate and encrypt the AES key, and then continue communications. But in terms of round trips, this process is expensive. Let's assume the client doesn't have an AES key and wants to send some data:
+
+    1. Client doesn't have an AES key; it asks the server for a public key
+    2. The server sends a public key.
+    3. The client generates, encrypts, and sends an AES key
+    4. The server receives the key, sends an acknowledgement
+    5. Client sends the encrypted data
+
+    Now, let's try this scenario again, but instead, the client generates the asymmetric keys:
+
+    1. Client doesn't have an AES key. It assumes the server doesn't have a public key, and sends one over.
+    2. The server realizes the client could only want one thing by sending over a public key. It generates, encrypts and sends an AES key.
+    3. Client receives the AES key, decrypts it, and sends the encrypted data.
+
+    We shaved an entire round trip off our exchange in the second scenario. But, now there's another scenario. What happens when the server doesn't have an AES key but the client, thinking everything is fine, does (maybe I reset my server)?
+
+    1. Client sends the encrypted data
+    2. Server responds saying I have no idea what you're talking about
+    3. Client apologizes, and sends over the public key.
+    4. Server accepts apology, and sends over an encrypted AES key.
+    5. Client re-encrypts the data and sends it over.
+
+    Well, we're back to the same number of trips. But when would each scenario arise? The frequency of visitors with a "clean" browser (cleared session, first time visiting, etc) probably far outweighs how often I restart my server/website, so we'll optimize for the second case. In truth, there's another motivation for picking the second approach, and that is our library support and practicality.
+
+    #### Counseling ####
+
+    The first approach was nice from the point of view of encrypting *everything* the server sends out. The server doesn't wait on the client to encrypt, it assumes that the client has an AES key, and if this assumption is false, it'll pay the penalty. But how exactly does the browser inform the server that it messed up? A client's browser is just going to ACK the response. I would have to make every hyperlink an AJAX query and manually load in the page once I negotiate the correct data with the server. This of course, ignores how getting the first page would work in the first place.
+
+  %aside
+    :markdown
+      **EDIT: It occurs to me that I could send the necessary content to perform decryption in cleartext, and encrypted the rest of the page and stick the ciphertext in a `<script>` variable.**
+
+  :markdown
+    The next issue is library support. I need both a JavaScript and Ruby library to perform encryption. Thankfully, Ruby provides a convenient wrapper around OpenSSL, and setting the variables for RSA public encryption is pretty [straightforward](https://github.com/kugurst/cinnamonroll/blob/2880e5bafef02f8ffeff446752523bf75f2d6a11/lib/encrypt.rb#L76). However, doing the same on the JavaScript side is not so simple. At least from a cursory glance, [the](http://travistidwell.com/jsencrypt/) [libraries](https://kjur.github.io/jsrsasign/) I [found](https://github.com/digitalbazaar/forge) needed the keys to be in a sensible form before using them, but that's a whole bunch of unnecessary conversion and formatting from their Base64 representation on the client's side. Comparatively, it was simpler to have the server deal with reconstructing a key.
+
+    ### The Ruby forge ###
+
+    So, the final plan was to have the client generate the RSA key, and have the server generate the AES key. I would be using both RSA and AES, so it made sense to go with [forge](https://github.com/digitalbazaar/forge), which also offers a nice API (it's part of the motivation behind the layout of my CoffeeScript). Since I was (am) still new to CoffeeScript at the time, I decided to start of [simple](https://github.com/kugurst/cinnamonroll/blob/master/app/assets/javascripts/base/encrypt.coffee). Basically, I would just encrypt all forms before submitting them. There are some nitty-gritty implementation details, but there always are. Ruby on Rails tags on some data to every form it sends out, and we don't want to mess with that. Also, how do we guard against multiple submissions and make our implementation idempotent? You can see how in my implementation over at [GitHub](https://github.com/kugurst/cinnamonroll), but it's not our focus here.
+
+    This plan worked very well, and it is in fact what goes when you login or sign up on this site (unless you're using https. The encryption system disables itself if it detects you're accessing the site over https because there's *absolutely* no point). Disabling inputs is not only great visual feedback that you pressed the darn button, but it also prevents multiple accidental submissions. Empty input is correctly preserved, and you can have as much whitespace as you want in your passwords (as long as they are 8 characters or longer and aren't a dictionary word). So, even without that `https://` at the front of that URL bar, you can be sure that the same password you use for every site doesn't get leaked here. You can also be sure the horrible and disgusting comments you post and would never want associated with your real life persona are kept safe from eavesdropping... Except that encryption currently isn't duplex, so someone eavesdropping on your connection can always snoop at the server output. So, maybe it's like *half* HTTPS on the cheap, but shelling out $9/yr sounds a lot better than implementing the other half.

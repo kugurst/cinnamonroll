@@ -396,6 +396,7 @@ $static-badge-color: saturate(lighten($header-color, 10%), 10%);
   padding-top: 0;
   vertical-align: top;
   input, label {
+    font-size: 1rem;
     margin-bottom: 0;
     @media only screen and (max-width: 40em) {
       width: 100%;
@@ -412,6 +413,7 @@ $static-badge-color: saturate(lighten($header-color, 10%), 10%);
   background-color: $static-badge-color !important;
   color: $bg-color !important;
   border-style: none;
+  font-size: 1rem;
 }
 .form-label-middle {
   @extend .form-label;

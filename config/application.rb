@@ -16,6 +16,17 @@ require 'susy'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+module Haml::Filters
+  remove_filter("Markdown") #remove the existing Markdown filter
+  module Markdown
+    include Haml::Filters::Base
+
+    def render(text)
+      Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(fenced_code_blocks: true)).render(text)
+    end
+  end
+end
+
 module Cinnamonroll
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
