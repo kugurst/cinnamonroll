@@ -52,6 +52,10 @@ gem 'redcarpet'
 gem 'test-unit'
 gem 'rake-compiler'
 
+# currently used for creating posts in production
+gem 'factory_girl'
+gem 'factory_girl_rails'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -81,8 +85,6 @@ group :development, :test do
   gem 'forgery'
 
   # testing
-  gem 'factory_girl'
-  gem 'factory_girl_rails'
   gem 'capybara'
   gem "capybara-webkit"
   gem 'rspec-rails'
