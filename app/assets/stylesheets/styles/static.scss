@@ -14,6 +14,10 @@ $browser-clear: rem-calc(72);
 
 .image-container {
   position: relative;
+  padding: $browser-clear/4 $browser-clear/2 $browser-clear/4 $browser-clear/2;
+  @media only screen and (max-width: 40em) {
+    padding: 0;
+  }
 
   // border-style: solid;
   // border-width: 0.25em;
@@ -62,8 +66,6 @@ $mobile-post-margin-top: $mobile-h1-size*2;
   border-top-style: none;
 }
 
-$badge-color: saturate(lighten($header-color, 15%), 5%);
-
 @for $i from 1 through 4 {
   $rotation: ($i - 1)*90;
   .pd-separator-#{$i} {
@@ -76,6 +78,8 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
 // }
 
 .post-image {
+  display: block;
+  margin: 0 auto;
 }
 
 .image-overlay-text {

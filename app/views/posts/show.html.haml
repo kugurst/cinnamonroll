@@ -1,13 +1,15 @@
-#title-row-container
-  .row(data-turbolinks-permanent)
-    .small-10.small-offset-1.large-12.large-offset-0.columns
-      #title-container
-        %h1.first-header= @post.title
-        %h3.last-header= @post.additional_info[:subtitle]
-      .title-rule
+%article
+  #title-row-container
+    .row(data-turbolinks-permanent)
+      .small-10.small-offset-1.large-12.large-offset-0.columns
+        #title-container
+          %section
+            %h1.first-header= @post.title
+            %h3.last-header= @post.additional_info[:subtitle]
+        %hr(class="title-rule bg-#{@post[:category].to_s}")
 
-.row(data-turbolinks-permanent)
-  .small-10.small-offset-1.large-12.large-offset-0.columns#main-content
-    = render @post.file_path
+  .row(data-turbolinks-permanent)
+    .small-10.small-offset-1.large-12.large-offset-0.columns#main-content
+      = render @post.file_path
 
 = render "posts/show_comments"

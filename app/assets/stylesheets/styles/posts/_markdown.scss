@@ -1,0 +1,26 @@
+@import '../../base/themes';
+@import 'foundation/functions';
+
+$margin: 0.9375rem;
+$offset: rem-calc(30)/2;
+$border-width: 0.5rem;
+$main-padding: $offset*2;
+
+@mixin header-style-color($color) {
+  @for $i from 1 through 6 {
+    #main-content h#{$i} {
+      background-color: $color;
+      color: $bg-color;
+      margin-bottom: 0;
+      margin-top: 0.125rem;
+
+      margin-left: -$main-padding - $border-width;
+      // margin-left: -$offset*2 - $border-width;
+      margin-right: -$main-padding - $border-width;
+      margin-bottom: $offset;
+      margin-top: $offset*2;
+      // Hind needs a bigger top offset to look centered
+      padding: $offset/2 $offset $offset/4 $offset+$border-width;
+    }
+  }
+}

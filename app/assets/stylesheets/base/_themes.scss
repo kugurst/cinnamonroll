@@ -99,6 +99,8 @@ $cinnamon-roll-theme: (
   $comment-ping-color: if(map-has-key($theme, comment-ping-color), map-get($theme, comment-ping-color), adjust-hue($bg-color, -30deg)) !global;
   $comment-pong-color: if(map-has-key($theme, comment-pong-color), map-get($theme, comment-pong-color), adjust-hue($bg-color, 30deg)) !global;
   $comment-border-color: if(map-has-key($theme, comment-border-color), map-get($theme, comment-border-color), mix($alt-bg-color, $comment-ping-color, 50%)) !global;
+  $badge-color: if(map-has-key($theme, badge-color), map-get($theme, badge-color), saturate(lighten($header-color, 15%), 5%)) !global;
 };
+
 
 @include apply-theme($cinnamon-roll-theme);

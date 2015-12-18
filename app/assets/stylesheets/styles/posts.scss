@@ -240,3 +240,7 @@ $badge-color: saturate(lighten($header-color, 15%), 5%);
 .bullet-less-list {
   list-style-type: none;
 }
+
+section, article, aside, footer, header, nav, hgroup {
+  display:block;
+}

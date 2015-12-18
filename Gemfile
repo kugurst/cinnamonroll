@@ -25,7 +25,7 @@ gem 'jquery-ui-rails'
 gem 'jquery_mobile_rails'
 gem 'jquery-turbolinks'
 # Use jquery for easier dynamic behaviour
-gem 'angularjs-rails'
+# gem 'angularjs-rails'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
@@ -44,6 +44,13 @@ gem 'sidekiq'
 
 # transferring data to the javascript
 gem 'gon'
+
+# syntax highlighting
+gem 'coderay'
+# markdown support
+gem 'redcarpet'
+gem 'test-unit'
+gem 'rake-compiler'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

@@ -1,0 +1,15 @@
+%section
+  :markdown
+    There's really no better way to learn a language than to implement a project in it. This website was my way of learning Ruby and Ruby on Rails, and within building it there were many other languages to learn. Perhaps my favorite of the languages learned is [CoffeeScript](http://coffeescript.org/). JavaScript hasn't historically been an enjoyable language for me to use, but CoffeeScript really works _for me_. After learning some of the [quirks](http://raganwald.com/2013/07/27/Ive-always-been-mad.html) of the language, it's really grown on me, and I don't see myself switching back to vanilla JavaScript in the future.
+
+    CoffeeScript promo aside, we're talking about encryption.
+
+%section
+  :markdown
+    ## The Inception ##
+
+    I worked on a research project involving RSA, so I had (and still have) RSA on the brains. I definitely wanted this site to be secure; anything less would be unacceptable... or just less than ideal. Since I was also testing my site remotely, I wanted any sensitive data I sent to be secure. I could just go with a super cheap [certificate](https://www.namecheap.com/security/ssl-certificates/comodo/positivessl.aspx) (and just recently, [free](https://letsencrypt.org/)), or I could implement HTTPS myself. Well, not all of HTTPS, just the important bits. And not really implement it myself, just hack together an encryption system using stuff other people wrote and debugged already.
+
+    ### The Important Bits ###
+
+    HTTPS is just HTTP through SSL/TLS. There's a fascinating history behind SSL/TLS which I won't cover here because [Wikipedia](https://en.wikipedia.org/wiki/Transport_Layer_Security) exists. Since this is a thought, we're going to dive straight into the thick of things. TLS does two things for you; in addition to securing the data between a client and server, it also proves the authenticity of the server to the client. We're stuck in a catch 22 if we try to prove that we are who we say we are, thus the existance of the necessary evil that are certificate authorities. Remember those scenes in shows where some evil doppleganger appears and pretends to be a protagonist, and the protagonist's companion has to figure out which one is fake and which one is real based on some prior experience with the real one? Without CAs, that's basically the best we could do.
