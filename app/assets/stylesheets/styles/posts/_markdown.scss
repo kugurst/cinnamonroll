@@ -6,6 +6,16 @@ $offset: rem-calc(30)/2;
 $border-width: 0.5rem;
 $main-padding: $offset*2;
 
+// compute the color from this loop:
+// $categories: project, thought, review, testing;
+// @for $i from 1 through 4 {
+//   $rotation: ($i - 1)*90;
+//   .bg-#{nth($categories, $i)} {
+//     background-color: adjust-hue($badge-color, $rotation);
+//   }
+// }
+// color statically computed from the above
+
 @mixin header-style-color($color) {
   @for $i from 1 through 6 {
     #main-content h#{$i} {

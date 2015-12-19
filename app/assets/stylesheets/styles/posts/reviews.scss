@@ -1,0 +1,15 @@
+@import '../../base/themes';
+@import 'markdown';
+@import 'foundation/functions';
+
+// $categories: project, thought, review, testing;
+// @for $i from 1 through 4 {
+//   $rotation: ($i - 1)*90;
+//   .bg-#{nth($categories, $i)} {
+//     background-color: adjust-hue($badge-color, $rotation);
+//   }
+// }
+// color statically computed from the above
+$color: adjust-hue($badge-color, 180deg);
+
+@include header-style-color($color);

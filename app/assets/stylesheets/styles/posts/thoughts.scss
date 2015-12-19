@@ -2,6 +2,7 @@
 @import 'markdown';
 @import 'foundation/functions';
 
+// $categories: project, thought, review, testing;
 // @for $i from 1 through 4 {
 //   $rotation: ($i - 1)*90;
 //   .bg-#{nth($categories, $i)} {
