@@ -47,10 +47,7 @@ $paragraph-margin: rem-calc(20);
 aside {
   margin-left: $offset*2;
   p {
-    font-size: 1rem;
-    @media only screen and (max-width: 40em) {
-      font-size: 0.875rem;
-    }
+    font-size: 0.875rem;
   }
 }
 
