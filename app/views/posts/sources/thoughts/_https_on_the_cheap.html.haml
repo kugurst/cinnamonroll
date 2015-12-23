@@ -1,8 +1,8 @@
 %section
   :markdown
-    There's really no better way to learn a language than to implement a project in it. This website was my way of learning Ruby and Ruby on Rails, and within building it there were many other languages to learn. Perhaps my favorite of the languages learned is [CoffeeScript](http://coffeescript.org/). JavaScript hasn't historically been an enjoyable language for me to use, but CoffeeScript really works _for me_. After learning some of the [quirks](http://raganwald.com/2013/07/27/Ive-always-been-mad.html) of the language, it's really grown on me, and I don't see myself switching back to vanilla JavaScript in the future.
+    There's really no better way to learn a language than to implement a project in it. This website was my way of learning Ruby and Ruby on Rails, and within building it there were many other languages to learn. Perhaps my favorite of the languages learned is [CoffeeScript](http://coffeescript.org/). JavaScript hasn't historically been an enjoyable language for me to use, but CoffeeScript really grew on me. After learning some of the [quirks](http://raganwald.com/2013/07/27/Ive-always-been-mad.html) of the language, it's really grown on me, and I don't see myself switching back to vanilla JavaScript in the future.
 
-    CoffeeScript promo aside, we're talking about encryption.
+    CoffeeScript promo aside, this post is about encryption.
 
     ## The Inception ##
 
@@ -56,7 +56,7 @@
       **EDIT: It occurs to me that I could send the necessary content to perform decryption in cleartext, and encrypted the rest of the page and stick the ciphertext in a `<script>` variable.**
 
   :markdown
-    The next issue is library support. I need both a JavaScript and Ruby library to perform encryption. Thankfully, Ruby provides a convenient wrapper around OpenSSL, and setting the variables for RSA public encryption is pretty [straightforward](https://github.com/kugurst/cinnamonroll/blob/2880e5bafef02f8ffeff446752523bf75f2d6a11/lib/encrypt.rb#L76). However, doing the same on the JavaScript side is not so simple. At least from a cursory glance, [the](http://travistidwell.com/jsencrypt/) [libraries](https://kjur.github.io/jsrsasign/) I [found](https://github.com/digitalbazaar/forge) needed the keys to be in a sensible form before using them, but that's a whole bunch of unnecessary conversion and formatting from their Base64 representation on the client's side. Comparatively, it was simpler to have the server deal with reconstructing a key.
+    The next issue is library support. I need both a JavaScript and Ruby library to perform encryption. Thankfully, Ruby provides a convenient wrapper around OpenSSL, and setting the variables for RSA public encryption is pretty [straightforward](https://github.com/kugurst/cinnamonroll/blob/2880e5bafef02f8ffeff446752523bf75f2d6a11/lib/encrypt.rb#L76). However, doing the same on the JavaScript side is not so simple. At least from a cursory glance, [the](http://travistidwell.com/jsencrypt/) [libraries](https://kjur.github.io/jsrsasign/) [I found](https://github.com/digitalbazaar/forge) needed the keys to be in a sensible format before using them, but that's a whole bunch of unnecessary conversion and formatting from their Base64 representation on the client's side. Comparatively, it was simpler to have the server deal with reconstructing a key.
 
     ### The Ruby forge ###
 
