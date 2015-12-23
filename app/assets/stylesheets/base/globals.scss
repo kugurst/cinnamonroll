@@ -2,12 +2,12 @@
 @import 'foundation/functions';
 
 $nav-bar-height: rem-calc(72);
-$h-weights: 600 500 400 400 300 300;
+$h-weights: 600 300 300 300 300 300;
 
 @for $i from 1 through 6 {
   h#{$i} {
     color: $header-font-color;
-    font-family: "Hind", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-family: "Hind", "Helvetica Neue", Helvetica, sans-serif;
     // font-weight: 500 - floor(($i - 1)/2) * 100;
     font-weight: nth($h-weights, $i);
   }

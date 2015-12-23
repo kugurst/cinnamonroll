@@ -1,3 +1,4 @@
+@import 'compass';
 @import '../base/themes';
 @import '../base/mixins';
 @import 'foundation/functions';
@@ -11,18 +12,6 @@ $offset: rem-calc(30);
 }
 
 $browser-clear: rem-calc(72);
-
-.image-container {
-  position: relative;
-  padding: $browser-clear/4 $browser-clear/2 $browser-clear/4 $browser-clear/2;
-  @media only screen and (max-width: 40em) {
-    padding: 0;
-  }
-
-  // border-style: solid;
-  // border-width: 0.25em;
-  // border-color: mix($header-color, $alt-bg-color, 15%);
-}
 
 $post-block-width: 90%;
 $post-block-margin: 5%;
@@ -59,23 +48,40 @@ $mobile-post-margin-top: $mobile-h1-size*2;
   margin-left: $post-block-margin - 1.5%;
   margin-top: $browser-clear/2;
   margin-bottom: $browser-clear*2/3;
+  // border-width: 2px;
+  border-style: none;
+  height: 0.125rem;
+  // border-top-style: none;
   @media only screen and (max-width: 40em) {
     margin-bottom: $browser-clear*5/9;
   }
-  border-width: 0.188rem;
-  border-top-style: none;
 }
 
 @for $i from 1 through 4 {
   $rotation: ($i - 1)*90;
   .pd-separator-#{$i} {
-    border-color: lighten(adjust-hue($badge-color, $rotation), 10%);
+    $bd-color: lighten(adjust-hue($badge-color, $rotation), 10%);
+    background: $bd-color; /* Old browsers */
+    @media only screen and (min-width: 40.063em) {
+      background: -moz-linear-gradient(left,  $bg-color 0%, $bd-color 1%, $bd-color 99%, $bg-color 100%); /* FF3.6-15 */
+      background: -webkit-linear-gradient(left,  $bg-color 0%,$bd-color 1%,$bd-color 99%,$bg-color 100%); /* Chrome10-25,Safari5.1-6 */
+      background: linear-gradient(to right,  $bg-color 0%,$bd-color 1%,$bd-color 99%,$bg-color 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#{$bg-color}", endColorstr="#{$bg-color}",GradientType=1 ); /* IE6-9 */
+    }
   }
 }
 
-// .image-container-last {
-//   margin-bottom: 0;
-// }
+.image-container {
+  position: relative;
+  padding: $browser-clear/10 $browser-clear/6.2 $browser-clear/10 $browser-clear/6.2;
+  @media only screen and (max-width: 40em) {
+    padding: 0;
+  }
+
+  // border-style: solid;
+  // border-width: 0.25em;
+  // border-color: mix($header-color, $alt-bg-color, 15%);
+}
 
 .post-image {
   display: block;
@@ -83,6 +89,7 @@ $mobile-post-margin-top: $mobile-h1-size*2;
 }
 
 .image-overlay-text {
+  border-radius: 0.25em;
   background-color: rgba(#2A2A2A, 0.2);
   display: block;
   position: absolute;
@@ -268,8 +275,16 @@ $mobile-badge-border-size: 0.045em;
   display: none;
   font-size: $mobile-badge-font-size*3/5;
   margin-left: $mobile-badge-border-size;
+  font-family: "Hind", "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 1.438rem;
   @media only screen and (max-width: 40em) {
     display: inline;
+  }
+}
+
+#explanation {
+  @media only screen and (max-width: 40em) {
+    font-weight: 400;
   }
 }
 
@@ -317,6 +332,9 @@ $mobile-badge-border-size: 0.045em;
   position: absolute;
   text-align: center;
   display: none;
+  h5 {
+    font-size: 1.25rem;
+  }
 }
 
 .post-cat-badge {

@@ -14,23 +14,28 @@ $main-padding: $offset*2;
 //     background-color: adjust-hue($badge-color, $rotation);
 //   }
 // }
-// color statically computed from the above
+
+$header-font-sizes: rem-calc(44) rem-calc(37) rem-calc(27) rem-calc(23) rem-calc(18) 1rem;
+$header-font-size-mobile-reduction: rem-calc(10) rem-calc(10) rem-calc(5) rem-calc(5) 0 0;
 
 @mixin header-style-color($color) {
   @for $i from 1 through 6 {
     #main-content h#{$i} {
       background-color: $color;
       color: $bg-color;
-      margin-bottom: 0;
-      margin-top: 0.125rem;
 
       margin-left: -$main-padding - $border-width;
       // margin-left: -$offset*2 - $border-width;
       margin-right: -$main-padding - $border-width;
-      margin-bottom: $offset;
-      margin-top: $offset*2;
+      margin-bottom: 0;
+      margin-top: 0;
       // Hind needs a bigger top offset to look centered
-      padding: $offset/2 $offset $offset/4 $offset+$border-width;
+      padding-top: nth($header-font-sizes, $i)/8;
+      padding-left: $offset+$border-width;
+      padding-right: $offset;
+      @media only screen and (max-width: 40em) {
+        padding-top: (nth($header-font-sizes, $i) - nth($header-font-size-mobile-reduction, $i))/8;
+      }
     }
   }
 }
@@ -40,4 +45,19 @@ aside {
   p {
     font-size: 1rem;
   }
+}
+
+#title-container {
+  @media only screen and (max-width: 40em) {
+    h3 {
+      font-weight: 400;
+    }
+  }
+}
+
+$paragraph-margin: rem-calc(20);
+
+#main-content p {
+  margin-top: $paragraph-margin;
+  margin-bottom: $paragraph-margin;
 }

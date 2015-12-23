@@ -7,7 +7,7 @@
     - if logged_in?
       %li.bold-link.static-link
         %a= "@" + current_user.name
-      %li.static-link
+      %li.bold-link.static-link
         = link_to "Log Out", logout_path, method: :delete
     - else
       %li.bold-link.static-link

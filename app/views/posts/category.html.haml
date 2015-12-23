@@ -4,6 +4,7 @@
   = stylesheet_link_tag 'styles/category', 'data-turbolinks-track' => true
   = javascript_include_tag 'pages/posts', 'data-turbolinks-track' => true
   = javascript_include_tag 'pages/static', 'data-turbolinks-track' => true
+- content_for :title, @category.to_s.pluralize.capitalize
 - content_for :body do
   = render 'posts/post_nav'
 

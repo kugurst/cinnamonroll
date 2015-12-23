@@ -47,5 +47,21 @@
 }
 
 #all-comments {
-  font-family: "Bitter", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  $ff: "Khula", "Hind", "Helvetica Neue", Helvetica, Roboto, sans-serif;
+  font-family: $ff;
+  h4 {
+    font-family: $ff;
+  }
+  p, a, div {
+    font-size: 1.188rem;
+    @media only screen and (max-width: 40em) {
+      font-size: 1rem;
+    }
+  }
+  .comment-written {
+    font-size: 1.063rem;
+    @media only screen and (max-width: 40em) {
+      font-size: 0.813rem;
+    }
+  }
 }
