@@ -9,6 +9,7 @@ HOVER_SHOW_TIMEOUT = 250
 HOVER_OUT_TIMEOUT = 500
 SHOWN_KEY = 'shown_bar'
 SHOWN_VALUE = 'true'
+HEADERS = "h1, h2, h3, h4, h5, h6"
 
 # instance variables #
 side_bar_peek_point = '-4.5%'
@@ -71,6 +72,15 @@ shadow_notice_logout = () ->
       $(this).click((ev) ->
         cinnamonroll.store.set 'notice', 'log out successful'
       )
+  )
+
+squeeze_headers = () ->
+  $("#main-content").find(HEADERS).each((index) ->
+    $this = $(this)
+    $next_elem = $this.next()
+    if $next_elem.is HEADERS
+      $next_elem.css 'margin-top', 0
+      $this.css 'margin-bottom', 0
   )
 
 # module functions #
@@ -221,3 +231,6 @@ $(window).resize ->
 
 @cinnamonroll.on_page_load ->
   shadow_notice_logout()
+
+@cinnamonroll.on_page_load ->
+  squeeze_headers()

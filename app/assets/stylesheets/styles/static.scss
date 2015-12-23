@@ -40,6 +40,9 @@ $mobile-post-margin-top: $mobile-h1-size*2;
   h2 {
     margin-bottom: 0;
     margin-top: 0;
+    @media only screen and (max-width: 40em) {
+      font-weight: 500;
+    }
   }
 }
 
