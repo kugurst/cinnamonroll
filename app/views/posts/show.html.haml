@@ -10,6 +10,7 @@
 
   .row(data-turbolinks-permanent)
     .small-10.small-offset-1.large-12.large-offset-0.columns#main-content
-      = render @post.file_path
+      - cache(@post) do
+        = render @post.file_path
 
 = render "posts/show_comments"

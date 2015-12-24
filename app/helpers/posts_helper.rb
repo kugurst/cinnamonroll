@@ -145,4 +145,8 @@ module PostsHelper
   def self.banned_category(cat)
     cat == :testing && Rails.env == "production"
   end
+
+  def self.load_posts(cat = nil)
+
+  end
 end
