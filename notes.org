@@ -56,3 +56,5 @@
 **** This will allow us to use per controller styles and coffee more easily, but without needing to do a require-tree and thus possibly clobbering files
 ** routes.rb **
 *** Shorten the post pages path by removing post and sticking them in the category loop
+** configuration **
+*** TODO change redis.conf in production to use a socket. Need to trickle changes to sidekiq and cinnamonroll as well

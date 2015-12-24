@@ -105,3 +105,4 @@ config/private_config.rb
 config/redis_config.rb
 config/mongoid.yml
 config/sidekiq.yml
+config/initializers/sidekiq.rb

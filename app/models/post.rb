@@ -36,6 +36,7 @@ class Post
   field :file_path, type: String
   field :category, type: Symbol, default: :testing
   field :additional_info, type: Hash, default: {}
+  field :u_at, type: Time, default: ->{ Time.now }
   has_many :comments, dependent: :delete, autosave: true
   has_and_belongs_to_many :related_posts, class_name: "Post", autosave: true, after_add: :add_self_to_child
 
@@ -50,11 +51,13 @@ class Post
   end
 
   def c_at
-    File.ctime abs_file_path
+    created_at
   end
 
   def u_at
-    File.mtime abs_file_path
+    time = File.mtime abs_file_path
+    set u_at: time if self[:u_at] != time
+    time
   end
 
   def get_image_path(key)

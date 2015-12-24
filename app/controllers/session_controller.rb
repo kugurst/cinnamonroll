@@ -70,7 +70,10 @@ class SessionController < ApplicationController
   end
 
   def destroy
-    set_return_point URI(request.referer).path
+    begin
+      set_return_point URI(request.referer).path
+    rescue
+    end
     log_out if logged_in?
     redirect_to return_point_if_none root_url
   end

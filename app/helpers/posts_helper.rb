@@ -7,6 +7,8 @@ module PostsHelper
   SORT_DEFAULTS = { order: :ascending,
                     sort: :date }
 
+  POST_CAT_CACHE_PATH = '/posts/category'
+
   class StubComment
     def temp_comments
       @temp_comments ||= []
@@ -147,6 +149,7 @@ module PostsHelper
   end
 
   def self.load_posts(cat = nil)
-
+    cat = :all if cat.nil?
+    Rails.cache.fetch(POST_CAT_CACHE_PATH + cat.to_s)
   end
 end

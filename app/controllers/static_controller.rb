@@ -1,8 +1,7 @@
 class StaticController < ApplicationController
   # @posts is never empty. There's no site without posts
   def landing
-    @posts = Post.all
-    @posts = @posts.sort { |a,b| -(a.u_at <=> b.u_at) }
+    @posts = Post.order_by(u_at: 'desc').limit 10
   end
 
   def about_me

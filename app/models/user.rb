@@ -11,7 +11,9 @@ class PasswordCheckValidator < ActiveModel::Validator
 end
 class NotDeletedUserValidator < ActiveModel::Validator
   def validate(record)
-    record.errors[:name] << "nice try" if record.name.downcase == User::DELETED_NAME
+    unless record.name.nil?
+      record.errors[:name] << "nice try" if record.name.downcase == User::DELETED_NAME
+    end
     record.errors[:email] << "nice try" if record.email == User::DELETED_EMAIL
   end
 end

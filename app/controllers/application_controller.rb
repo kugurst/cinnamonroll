@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   before_action :add_notice
 
   def default_url_options
-    { host: "markaligbe.com" }
+    { host: "www.markaligbe.com" }
   end
 
   def not_found

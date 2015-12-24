@@ -17,7 +17,7 @@ class PostsController < ApplicationController
     @comment_list = PostsHelper.tree_comments @post
     @posts = Post.where category: @post[:category]
     @category = @post[:category]
-    # gon.push logged_in: logged_in?
+    puts 'hello'
   end
 
   def comments
@@ -39,7 +39,7 @@ class PostsController < ApplicationController
     path.gsub! '/', ''
 
     # get all posts with this category
-    @posts = Post.where category: path.singularize
+    @posts = Post.order_by(u_at: 'desc').where(category: path.singularize)
     @category =  path.singularize.to_sym
   end
 
