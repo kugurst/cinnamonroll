@@ -459,3 +459,39 @@ $categories: project, thought, review, testing;
     background-color: adjust-hue($badge-color, $rotation);
   }
 }
+
+// Including from markdown.scss due to weird left padding behavior //
+
+$header-font-sizes: rem-calc(44) rem-calc(37) rem-calc(27) rem-calc(23) rem-calc(18) 1rem;
+$header-font-size-mobile-reduction: rem-calc(10) rem-calc(10) rem-calc(5) rem-calc(5) 0 0;
+$offset: rem-calc(30)/2;
+$border-width: 0.5rem;
+$main-padding: $offset*2;
+
+@mixin header-style-color($color) {
+  @for $i from 1 through 6 {
+    #main-content h#{$i} {
+      background-color: $color;
+      color: $bg-color;
+
+      margin-left: -$main-padding - $border-width;
+      // margin-left: -$offset*2 - $border-width;
+      margin-right: -$main-padding - $border-width;
+      margin-bottom: nth($header-font-sizes, $i);
+      margin-top: nth($header-font-sizes, $i);
+      // Hind needs a bigger top offset to look centered
+      padding-top: nth($header-font-sizes, $i)/8;
+      padding-left: $offset+$border-width;
+      padding-right: $offset;
+      @media only screen and (max-width: 40em) {
+        margin-top: (nth($header-font-sizes, $i) - nth($header-font-size-mobile-reduction, $i));
+        margin-bottom: (nth($header-font-sizes, $i) - nth($header-font-size-mobile-reduction, $i));
+        padding-top: (nth($header-font-sizes, $i) - nth($header-font-size-mobile-reduction, $i))/8;
+      }
+    }
+  }
+}
+
+// update from markdown.scss //
+
+@include header-style-color($static-badge-color);

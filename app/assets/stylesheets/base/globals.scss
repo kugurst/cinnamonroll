@@ -25,6 +25,9 @@ body {
 
 .last-header {
   margin-bottom: 0;
+  @media only screen and (max-width: 40em) {
+    font-weight: 400;
+  }
 }
 
 .no-bottom-margin {

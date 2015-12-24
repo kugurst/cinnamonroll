@@ -75,13 +75,21 @@ shadow_notice_logout = () ->
   )
 
 squeeze_headers = () ->
-  $("#main-content").find(HEADERS).each((index) ->
+  $main_content = $("#main-content")
+  # remove the margins separating sequential headers
+  $main_content.find(HEADERS).each((index) ->
     $this = $(this)
     $next_elem = $this.next()
     if $next_elem.is HEADERS
       $next_elem.css 'margin-top', 0
       $this.css 'margin-bottom', 0
   )
+  # remove the title rule and padding on #main-content if the first item is a header
+  $first_header = $main_content.find(HEADERS).first()
+  if $first_header.prev().length == 0
+    $(".title-rule").remove()
+    $main_content.css 'padding-top', 0
+    $first_header.css 'margin-top', 0
 
 # module functions #
 @cinnamonroll.posts.show_side_bar = (callback) ->
