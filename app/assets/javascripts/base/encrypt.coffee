@@ -20,7 +20,7 @@ ACTIVE_PARAM = "active"
 ENC_ACTIVE_PARAM = ENC_PARAM + "_" + ACTIVE_PARAM
 REJECTED_FORM_KEYS = ["commit", "authenticity_token", "utf8", AES_IV_PARAM]
 APPROVED_FORM_ELEMENT_TYPES = ["text", "password", "email", "checkbox", "textarea", "hidden"]
-MAX_ATTEMPTS = 3
+MAX_ATTEMPTS = 2
 NO_KEY_STATUS = 424
 
 # Environment Setup #
