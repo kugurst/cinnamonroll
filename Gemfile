@@ -10,6 +10,8 @@ gem 'foundation-rails', '~> 5.5.1.0'
 # Mongoid for database
 gem 'mongoid', '~> 5.0.0'
 gem 'sunspot_mongo'
+# Redis for memory caching
+gem 'redis-rails'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'

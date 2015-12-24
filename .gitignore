@@ -102,4 +102,5 @@ public/assets*
 *.bak*
 app/assets/stylesheets/base/.sass-cache/*
 config/private_config.rb
+config/redis_config.rb
 config/mongoid.yml

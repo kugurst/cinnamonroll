@@ -52,5 +52,7 @@ module Cinnamonroll
     Mongoid.logger.level = Logger::INFO
     config.active_job.queue_adapter = :sidekiq
     ActionMailer::Base.default from: "markaligbe.com <bot.markaligbe+noreply@gmail.com>", return_path: 'bot.markaligbe+noreply@gmail.com'
+
+    eval File.read(Rails.root.join('config', 'redis_config.rb'))
   end
 end
