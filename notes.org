@@ -63,4 +63,4 @@
 *** Shorten the post pages path by removing post and sticking them in the category loop
 ** configuration **
 *** TODO change redis.conf in production to use a socket. Need to trickle changes to sidekiq and cinnamonroll as well
-*** TODO push comment sorting to mongoid by ordering the comments from the controller
+*** DONE push comment sorting to mongoid by ordering the comments from the controller
