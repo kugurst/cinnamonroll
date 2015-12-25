@@ -9,7 +9,7 @@ module PostsHelper
   SORT_DEFAULTS = { order: :ascending,
                     sort: :date }
 
-  POST_CAT_CACHE_PATH = '/posts/category'
+  POST_CAT_CACHE_PATH = 'posts/category'
   POST_SOURCE_PATH = Rails.root.join "app", "views", Post::FILE_PATH
   POST_SOURCE_FILE_EXTS = ['.haml']
   POST_SOURCE_METADATA = ['title', 'subtitle', 'splash_img', 'splash_img_credit', 'tags']
