@@ -8,3 +8,6 @@
             .image-overlay-text-center
               %h1= post.title
               %h3= post.additional_info[:subtitle]
+  - link = post.additional_info[:splash_img_credit]
+  - unless link.blank?
+    .image-credit image source: <a href="#{link}">#{link}</a>

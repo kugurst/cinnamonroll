@@ -1,4 +1,5 @@
 @import 'foundation/functions';
+@import '../base/themes';
 
 $browser-clear: rem-calc(72);
 
@@ -7,4 +8,10 @@ $browser-clear: rem-calc(72);
   @media only screen and (max-width: 40em) {
     margin-bottom: 0;
   }
+}
+
+.image-credit {
+  font-family: $sans-font;
+  text-align: center;
+  margin-top: $browser-clear/6;
 }
