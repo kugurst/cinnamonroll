@@ -54,6 +54,10 @@ class Post
     FILE_PATH + category.to_s.pluralize + "/" + file_path
   end
 
+  def c_at
+    created_at
+  end
+
   def get_image_path(key)
     "#{IMAGE_PATH}#{category}/#{self[:file_path]}/#{additional_info[key]}"
   end
