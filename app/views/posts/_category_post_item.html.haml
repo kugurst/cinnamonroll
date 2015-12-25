@@ -7,10 +7,7 @@
           .image-overlay-cell
             .image-overlay-text-center
               %h1= post.title
-              - unless (subtitle = post.additional_info[:subtitle]).blank?
-                %h3= subtitle
-  - if !(credit = post.additional_info[:splash_img_credit]).blank?
-    - if credit =~ /\A#{URI::regexp}\z/
-      .image-credit image credit: <a href="#{credit}">#{credit}</a>
-    - else
-      .image-credit image credit: #{credit.html_safe}
+              %h3= post.additional_info[:subtitle]
+  - link = post.additional_info[:splash_img_credit]
+  - unless link.blank?
+    .image-credit image source: <a href="#{link}">#{link}</a>

@@ -9,3 +9,9 @@ $browser-clear: rem-calc(72);
     margin-bottom: 0;
   }
 }
+
+.image-credit {
+  font-family: $sans-font;
+  text-align: center;
+  margin-top: $browser-clear/6;
+}
