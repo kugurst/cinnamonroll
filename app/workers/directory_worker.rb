@@ -11,10 +11,10 @@ class DirectoryWorker
         post = Post.where category: category, file_path: path
         # if it doesn't exist, let's make it
         unless post.exists?
-          PostsHelper.create_post_by_path f
+          PostsHelper.create_post_by_path f, logger
         # if it does, let's update its modification time
         else
-          PostsHelper.update_post_by_path f
+          PostsHelper.update_post_by_path f, logger
         end
       end
     end
