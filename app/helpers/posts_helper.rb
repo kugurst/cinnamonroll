@@ -1,3 +1,5 @@
+require 'render_anywhere'
+
 module PostsHelper
   CATEGORY_DESCRIPTIONS = {project: "cool things I've made",
                            thought: "miscellaneous topics",
@@ -10,6 +12,8 @@ module PostsHelper
   POST_CAT_CACHE_PATH = '/posts/category'
   POST_SOURCE_PATH = Rails.root.join "app", "views", Post::FILE_PATH
   POST_SOURCE_FILE_EXTS = ['.haml']
+  POST_SOURCE_METADATA = ['title', 'subtitle', 'splash_img', 'splash_img_credit', 'tags']
+  POST_TAG_DELIMITER = "\u0001"
 
   listener = Listen.to(Rails.root.join(PostsHelper::POST_SOURCE_PATH)) do |modified, added, removed|
     PostsHelper.dir_watcher modified, added, removed
@@ -194,6 +198,14 @@ module PostsHelper
     [category, file]
   end
 
+  def self.bundle_tags(tags)
+    tags.join POST_TAG_DELIMITER
+  end
+
+  def self.unbundle_tags(tags)
+    tags.split POST_TAG_DELIMITER
+  end
+
   def self.dir_watcher(modified, added, removed)
     [modified, added, removed].each_with_index do |files, index|
       # Rather than writing the code to loop through these arrays three times, we'll loop through them generically and use
@@ -217,20 +229,43 @@ module PostsHelper
   def self.update_post_by_path(path)
     Rails.logger.info "updating: #{path}"
     # Retrieve the post
-    category, path = PostsHelper.path_to_cat_and_file_path path
-    post = Post.where category: category, file_path: path
+    category, file_path = PostsHelper.path_to_cat_and_file_path path
+    post = Post.where category: category, file_path: file_path
     # Guarding against modified files that haven't been created yet
     return unless post.exists?
     post = post.first
 
     # Update the time if necessary
     time = File.mtime post.abs_file_path
-    post.set u_at: time if post[:u_at] != time
+    post.set u_at: time if post.u_at != time
   end
 
   def self.create_post_by_path(path)
     Rails.logger.info "creating: #{path}"
-    category, path = PostsHelper.path_to_cat_and_file_path path
+    category, file_path = PostsHelper.path_to_cat_and_file_path path
+    # get the post info
+    pr = PostRenderer.new
+    jb = pr.render file: path, layout: 'posts/get_post_content_json'
+    post_json = JSON.parse jb
+    post_fields = post_json['post']
+    # fix the tags
+    post_fields['tags'] = self.unbundle_tags post_fields['tags']
+
+    # construct the post hash for creating the object
+    post_obj_hash = { title: post_fields.delete('title'),
+                      tags: post_fields.delete('tags'),
+                      file_path: file_path,
+                      category: category }
+    # create it
+    post = Post.new post_obj_hash
+    # anything left in post_fields is additional_info
+    post.additional_info = post_fields.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
+    # update the u_at time
+    time = File.mtime post.abs_file_path
+    post.u_at = time if post.u_at != time
+    # create the post
+    Rails.logger.info "Inserting: #{post}"
+    post.save!
   end
 
   def self.delete_post_by_path(path)

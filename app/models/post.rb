@@ -50,6 +50,10 @@ class Post
     FILE_PATH + category + "/" + super
   end
 
+  def self.file_path(category, file_path)
+    FILE_PATH + category.to_s.pluralize + "/" + file_path
+  end
+
   def c_at
     created_at
   end

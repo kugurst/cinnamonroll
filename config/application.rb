@@ -48,7 +48,6 @@ module Cinnamonroll
     config.autoload_paths << Rails.root.join('vendor')
     config.autoload_paths << Rails.root.join('app', 'workers')
     # config.eager_load_paths += ["#{Rails.root}/lib}"]
-    config.log_level = :warn
     Mongoid.logger.level = Logger::INFO
     config.active_job.queue_adapter = :sidekiq
     ActionMailer::Base.default from: "markaligbe.com <bot.markaligbe+noreply@gmail.com>", return_path: 'bot.markaligbe+noreply@gmail.com'

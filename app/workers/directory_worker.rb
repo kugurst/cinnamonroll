@@ -1,6 +1,5 @@
 class DirectoryWorker
   include Sidekiq::Worker
-  sidekiq_options queue: :file_system
 
   def perform(dir = nil)
     dir = Rails.root.join PostsHelper::POST_SOURCE_PATH if dir.nil?

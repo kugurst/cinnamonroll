@@ -14,6 +14,7 @@ gem 'sunspot_mongo'
 gem 'redis-rails'
 # Listen to monitor the posts directory
 gem 'listen'
+gem 'render_anywhere', require: false
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
