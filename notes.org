@@ -24,6 +24,11 @@
    + The client decrypts the AES key using its private key, and then encrypts using the key and random IV.
    + Duplex communication is formed by server and client generating their own IV per communication.
 
+* Posts
+** Loading Scheme
+   + A directory watcher monitors file changes, and creates a post object for any added files
+   + A directory watcher monitors file additions, and expires the cache for a given object
+
 * TODO List
 ** TODO Make page changes slide outs and use History.js to udpate the current URL
 ** TODO Investigate the viability of Turbolinks or Turbograft to facilitate page replacement
@@ -58,3 +63,4 @@
 *** Shorten the post pages path by removing post and sticking them in the category loop
 ** configuration **
 *** TODO change redis.conf in production to use a socket. Need to trickle changes to sidekiq and cinnamonroll as well
+*** TODO push comment sorting to mongoid by ordering the comments from the controller

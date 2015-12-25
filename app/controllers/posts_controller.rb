@@ -17,7 +17,6 @@ class PostsController < ApplicationController
     @comment_list = PostsHelper.tree_comments @post
     @posts = Post.where category: @post[:category]
     @category = @post[:category]
-    puts 'hello'
   end
 
   def comments

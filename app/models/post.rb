@@ -54,12 +54,6 @@ class Post
     created_at
   end
 
-  def u_at
-    time = File.mtime abs_file_path
-    set u_at: time if self[:u_at] != time
-    time
-  end
-
   def get_image_path(key)
     "#{IMAGE_PATH}#{category}/#{self[:file_path]}/#{additional_info[key]}"
   end
@@ -75,8 +69,6 @@ class Post
   def add_self_to_child(post)
     post.related_posts << self unless post.related_posts.include? self
   end
-
-  private
 
   def abs_file_path
     path = Rails.root.join 'app', 'views', FILE_PATH, category, "_#{self[:file_path]}.html.haml"

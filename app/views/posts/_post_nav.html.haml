@@ -26,7 +26,8 @@
     %li.bold-link.static-link
       %a(href="#{about_me_path}") About Me
     - Post::CATEGORIES.each do |c|
-      - unless c == @category || banned_category(c)
+      -# We show the link for the current category if it isn't banned under the current environment. We also don't show it if we are currently on the category listing page
+      - unless (c == @category && @post.nil?) || banned_category(c)
         - cat_index = Post::CATEGORIES.index(c) + 1
         %li(class="header-badge-link-#{cat_index} bold-link")
           %a(href="/#{c.to_s.pluralize}")= c.to_s.pluralize.capitalize

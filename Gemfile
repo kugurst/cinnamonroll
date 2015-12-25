@@ -12,6 +12,8 @@ gem 'mongoid', '~> 5.0.0'
 gem 'sunspot_mongo'
 # Redis for memory caching
 gem 'redis-rails'
+# Listen to monitor the posts directory
+gem 'listen'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'

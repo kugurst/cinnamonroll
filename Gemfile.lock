@@ -129,6 +129,9 @@ GEM
       railties (>= 3.2)
       sprockets-rails
     json (1.8.3)
+    listen (3.0.5)
+      rb-fsevent (>= 0.9.3)
+      rb-inotify (>= 0.9)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
@@ -329,6 +332,7 @@ DEPENDENCIES
   jquery-ui-rails
   jquery_mobile_rails
   js-routes
+  listen
   method_source (>= 0.8.2)
   mongoid (~> 5.0.0)
   mongoid-rspec (= 3.0.0)

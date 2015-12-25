@@ -8,6 +8,13 @@ module PostsHelper
                     sort: :date }
 
   POST_CAT_CACHE_PATH = '/posts/category'
+  POST_SOURCE_PATH = Rails.root.join "app", "views", Post::FILE_PATH
+  POST_SOURCE_FILE_EXTS = ['.haml']
+
+  listener = Listen.to(Rails.root.join(PostsHelper::POST_SOURCE_PATH)) do |modified, added, removed|
+    PostsHelper.dir_watcher modified, added, removed
+  end
+  listener.start
 
   class StubComment
     def temp_comments
@@ -148,8 +155,96 @@ module PostsHelper
     cat == :testing && Rails.env == "production"
   end
 
-  def self.load_posts(cat = nil)
-    cat = :all if cat.nil?
-    Rails.cache.fetch(POST_CAT_CACHE_PATH + cat.to_s)
+  ##
+  # Given a file system path (absolute or relative) to a post, returns the category of the post as well as the file_path in the format the Post model expects
+  def self.path_to_cat_and_file_path(path, real_path = false)
+    category = nil
+    file = nil
+    # which costs more, string construction or an if statement?
+    path = path.to_s unless path.is_a? String
+
+    # get the path to the post source folder
+    root = PostsHelper::POST_SOURCE_PATH.to_s
+    # inspect the partition of this path
+    phead, _, ptail = path.partition root
+    # If the head is non-empty, then let's assume we were given a relative path and try again
+    begin
+      return PostsHelper.path_to_cat_and_file_path PostsHelper::POST_SOURCE_PATH.join(path).realpath, true if !phead.empty? && !real_path
+    rescue Errno::ENOENT
+      # the file doesn't exist anyway, so don't bother parsing
+      return [nil, nil]
+    end
+
+    # if we're still here then, let's try parsing the category and path from the tail
+    category, file = ptail.split '/', 2
+    # convert the category to a symbol
+    category = category.try :singularize
+    category = category.try :to_sym
+    # attempt the strip the file of its leading underscore (posts are partials) and extensions
+    actual_file_index = file.try :index, /\/?[^\/]*$/ # /(^_|[^\/]*\/(_))/
+    unless actual_file_index.nil? || file.nil?
+      # find the leading underscore and remove it
+      u_index = file.index '_', actual_file_index
+      file.slice! u_index
+      # to support hidden files (we don't need to, but we can at no cost), we'll look for the extension after the first character of the actual file name, which is two off from actual_file_index, since it points to the '/' directory separator
+      ext_index = file.index '.', actual_file_index + 2
+      file.slice! ext_index, file.length
+    end
+
+    [category, file]
   end
+
+  def self.dir_watcher(modified, added, removed)
+    [modified, added, removed].each_with_index do |files, index|
+      # Rather than writing the code to loop through these arrays three times, we'll loop through them generically and use
+      modding = files.equal? modified
+      adding = files.equal? added
+      removing = files.equal? removed
+
+      files.each do |file|
+        # skip hidden files and emacs garbage
+        leading_char = File.basename(file)[0]
+        next if leading_char == '.' || leading_char == '#'
+
+        # Delegate the actions
+        PostsHelper.update_post_by_path file if modding
+        PostsHelper.create_post_by_path file if adding
+        PostsHelper.delete_post_by_path file if removing
+      end
+    end
+  end
+
+  def self.update_post_by_path(path)
+    Rails.logger.info "updating: #{path}"
+    # Retrieve the post
+    category, path = PostsHelper.path_to_cat_and_file_path path
+    post = Post.where category: category, file_path: path
+    # Guarding against modified files that haven't been created yet
+    return unless post.exists?
+    post = post.first
+
+    # Update the time if necessary
+    time = File.mtime post.abs_file_path
+    post.set u_at: time if post[:u_at] != time
+  end
+
+  def self.create_post_by_path(path)
+    Rails.logger.info "creating: #{path}"
+    category, path = PostsHelper.path_to_cat_and_file_path path
+  end
+
+  def self.delete_post_by_path(path)
+    Rails.logger.info "deleting: #{path}"
+    # Retrieve the post
+    category, path = PostsHelper.path_to_cat_and_file_path path
+    post = Post.where category: category, file_path: path
+    # Guarding against modified files that haven't been created yet
+    return unless post.exists?
+    post = post.first
+
+    post.destroy
+  end
+
+  # load all posts that we may not have in database
+  DirectoryWorker.perform_async
 end
