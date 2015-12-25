@@ -29,44 +29,24 @@ module PostsHelper
     end
   end
 
-  def self.add_to_comment_list(list, com, opts = {})
-    opts = SORT_DEFAULTS.merge opts
-
-    # default behavior, insert at the end of the list
-    insert_pos = list.length
-    if opts[:sort] == :date
-      if opts[:order] == :ascending
-        list.each_with_index do |e, i|
-          if com.c_at < e.c_at
-            insert_pos = i
-            break
-          end
-        end
-      elsif opts[:order] == :descending
-        list.each_with_index do |e, i|
-          if com.c_at > e.c_at
-            insert_pos = i
-            break
-          end
-        end
-      end
-    end
-    list.insert insert_pos, com
-  end
-
   def self.tree_comments(post)
     PostsHelper.tree_comments_2_pass post
   end
 
-  def self.tree_comments_2_pass(post, opts = {})
+  def self.tree_comments_2_pass(post_or_comments, opts = {})
     found_comments = {}
     comment_list = []
-    post.comments.each do |c|
+    # support treeing comments from either a post or a comment list
+    comments = post_or_comments
+    comments = comments.comments if post_or_comments.is_a? Post
+
+    comments.each do |c|
       # add this element to the scanned list
       found_comments[c.id] = c
       # add this comment to the top-level list if it is a top level comment
       if c.nesting_level == 0
-        PostsHelper.add_to_comment_list comment_list, c, opts
+        comment_list << c
+        # PostsHelper.add_to_comment_list comment_list, c, opts
       end
     end
     # parent all comments
@@ -74,18 +54,22 @@ module PostsHelper
       # Get our parent
       if v.parent_comment_id
         parent = found_comments[v.parent_comment_id]
-        # parent.temp_comments << v
-        PostsHelper.add_to_comment_list parent.temp_comments, v, opts
+        parent.temp_comments << v
+        # PostsHelper.add_to_comment_list parent.temp_comments, v, opts
       end
     end
     # puts "found_comments.length: #{found_comments.length}"
     comment_list
   end
 
-  def self.tree_comments_array_placeholder(post)
+  def self.tree_comments_array_placeholder(post_or_comments)
     found_comments = {}
     comment_list = []
-    post.comments.each do |c|
+    # support treeing comments from either a post or a comment list
+    comments = post_or_comments
+    comments = comments.comments if post_or_comments.is_a? Post
+
+    comments.each do |c|
       # parent this element
       unless c.parent_comment_id.nil?
         parent = found_comments[c.parent_comment_id]
@@ -114,10 +98,14 @@ module PostsHelper
     comment_list
   end
 
-  def self.tree_comments_stub_placeholder(post)
+  def self.tree_comments_stub_placeholder(post_or_comments)
     found_comments = {}
     comment_list = []
-    post.comments.each do |c|
+    # support treeing comments from either a post or a comment list
+    comments = post_or_comments
+    comments = comments.comments if post_or_comments.is_a? Post
+
+    comments.each do |c|
       # parent this element
       unless c.parent_comment_id.nil?
         parent = found_comments[c.parent_comment_id]

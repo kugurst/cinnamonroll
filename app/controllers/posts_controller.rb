@@ -14,7 +14,9 @@ class PostsController < ApplicationController
   # GET /posts/1
   # GET /posts/1.json
   def show
-    @comment_list = PostsHelper.tree_comments @post
+    # pre-sorting the comments means that when we tree them, they'll be encountered in the sorted order.
+    comments = @post.comments.sort { |x,y| x.c_at <=> y.c_at }
+    @comment_list = PostsHelper.tree_comments comments
     @posts = Post.where category: @post[:category]
     @category = @post[:category]
   end
