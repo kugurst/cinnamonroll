@@ -287,7 +287,8 @@ module PostsHelper
     return unless post.exists?
     post = post.first
 
-    post.destroy
+    # guarding against multiple fires
+    post.destroy unless post.nil?
   end
 
   # load all posts that we may not have in database
