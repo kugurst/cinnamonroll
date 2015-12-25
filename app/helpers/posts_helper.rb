@@ -9,14 +9,9 @@ module PostsHelper
   SORT_DEFAULTS = { order: :ascending,
                     sort: :date }
 
-  POST_CAT_CACHE_PATH = 'posts/category'
+  POST_CAT_CACHE_PATH = '/posts/category'
   POST_SOURCE_PATH = Rails.root.join "app", "views", Post::FILE_PATH
   POST_SOURCE_FILE_EXTS = ['.haml']
-  POST_SOURCE_METADATA = ['title', 'subtitle', 'splash_img', 'splash_img_credit', 'tags']
-  POST_TAG_DELIMITER = "\u0001"
-
-  # Enforce sequential access to the post modification routines
-  POST_CHANGE_LOCK = Mutex.new
 
   listener = Listen.to(Rails.root.join(PostsHelper::POST_SOURCE_PATH)) do |modified, added, removed|
     PostsHelper.dir_watcher modified, added, removed
@@ -189,14 +184,6 @@ module PostsHelper
     [category, file]
   end
 
-  def self.bundle_tags(tags)
-    tags.join POST_TAG_DELIMITER
-  end
-
-  def self.unbundle_tags(tags)
-    tags.split POST_TAG_DELIMITER
-  end
-
   def self.dir_watcher(modified, added, removed)
     [modified, added, removed].each_with_index do |files, index|
       # Rather than writing the code to loop through these arrays three times, we'll loop through them generically and use
@@ -217,100 +204,35 @@ module PostsHelper
     end
   end
 
-  def self.get_post_info_from_path(path)
-    category, file_path = PostsHelper.path_to_cat_and_file_path path
-    # get the post info
-    post_fields = PostMetadataExtractor.extract_from_path path
-    # fix the tags
-    post_fields[:tags] = self.unbundle_tags post_fields[:tags]
+  def self.update_post_by_path(path)
+    Rails.logger.info "updating: #{path}"
+    # Retrieve the post
+    category, path = PostsHelper.path_to_cat_and_file_path path
+    post = Post.where category: category, file_path: path
+    # Guarding against modified files that haven't been created yet
+    return unless post.exists?
+    post = post.first
 
-    # construct the post hash for creating the object
-    post_obj_hash = { title: post_fields.delete(:title),
-                      tags: post_fields.delete(:tags),
-                      file_path: file_path,
-                      category: category }
-    # anything left in post_fields is additional_info
-    # keys are now already symbols
-    ## convert string keys to symbols
-    ## additional_info = post_fields.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
-
-    [post_obj_hash, post_fields]
+    # Update the time if necessary
+    time = File.mtime post.abs_file_path
+    post.set u_at: time if post[:u_at] != time
   end
 
-  def self.update_post_by_path(path, logger = Rails.logger)
-    POST_CHANGE_LOCK.synchronize do
-      logger.info "updating: #{path}"
-      # Retrieve the post
-      category, file_path = PostsHelper.path_to_cat_and_file_path path
-      post = Post.where category: category, file_path: file_path
-      # Guarding against modified files that haven't been created yet
-      return self.create_post_by_path path, logger unless post.exists?
-      post = post.first
-
-      # Update the time if necessary
-      time = File.mtime post.abs_file_path
-      post.set u_at: time if post.u_at != time
-
-      # Update the other post info if necessary
-
-      # get the post info
-      post_obj_hash, additional_info = get_post_info_from_path path
-      # update those that need to be updated
-      post_obj_hash.each do |k, v|
-        eval %Q(
-        post.set #{k}: v if post.#{k} != v
-      )
-      end
-      # update the additional_info
-      post.set additional_info: post.additional_info.merge(additional_info) if post.additional_info != additional_info
-    end
+  def self.create_post_by_path(path)
+    Rails.logger.info "creating: #{path}"
+    category, path = PostsHelper.path_to_cat_and_file_path path
   end
 
-  def self.create_post_by_path(path, logger = Rails.logger)
-    # we can be called by another, that holds this lock, so let's make sure not to deadlock
-    locked = POST_CHANGE_LOCK.try_lock
+  def self.delete_post_by_path(path)
+    Rails.logger.info "deleting: #{path}"
+    # Retrieve the post
+    category, path = PostsHelper.path_to_cat_and_file_path path
+    post = Post.where category: category, file_path: path
+    # Guarding against modified files that haven't been created yet
+    return unless post.exists?
+    post = post.first
 
-    logger.info "creating: #{path}"
-    # get the post info
-    post_obj_hash, additional_info = get_post_info_from_path path
-
-    post = Post.new post_obj_hash
-    # anything left in post_fields is additional_info
-    post.additional_info = additional_info
-    # update the u_at time
-    time = Time.now
-    begin
-      time = File.mtime post.abs_file_path
-    rescue
-      logger.error "#{$!.message} Backtrace:\n#{$!.backtrace.join "\n"}"
-    end
-    post.u_at = time
-    # create the post
-    logger.info "Inserting: #{post.title}"
-
-    # Guard against a double create
-    begin
-      logger.error "Post with title exists: #{Post.where(title: post.title).exists?}"
-      post.save! unless Post.where(title: post.title).exists?
-    rescue
-      logger.error "#{$!.message} Backtrace:\n#{$!.backtrace.join "\n"}"
-    end
-
-    POST_CHANGE_LOCK.unlock if locked
-  end
-
-  def self.delete_post_by_path(path, logger = Rails.logger)
-    POST_CHANGE_LOCK.synchronize do
-      logger.info "deleting: #{path}"
-      # Retrieve the post
-      category, path = PostsHelper.path_to_cat_and_file_path path
-      post = Post.where category: category, file_path: path
-      # Guarding against modified files that haven't been created yet
-      return unless post.exists?
-      post = post.first
-
-      post.destroy
-    end
+    post.destroy
   end
 
   # load all posts that we may not have in database
