@@ -81,4 +81,8 @@ class Post
     return path if File.file? path
     return nil
   end
+
+  def cache_key
+    "posts/#{category}/#{self[:file_path]}/#{u_at.to_r}"
+  end
 end

@@ -45,6 +45,7 @@ Rails.application.configure do
   config.serve_static_files = true
 
   Mongo::Logger.logger.level = Logger::INFO
+  config.log_level = :warn
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true

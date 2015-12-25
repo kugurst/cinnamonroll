@@ -10,7 +10,8 @@
 
   .row(data-turbolinks-permanent)
     .small-10.small-offset-1.large-12.large-offset-0.columns#main-content
-      - cache(@post) do
-        = render @post.file_path
+      -# The post u_at is updated whenever the post source is changed. Thus, we won't generate a new cache even if the comments change
+      = Rails.cache.fetch(@post.cache_key) do
+        - render @post.file_path
 
 = render "posts/show_comments"
