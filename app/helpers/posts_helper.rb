@@ -291,6 +291,7 @@ module PostsHelper
 
     # Guard against a double create
     begin
+      logger.error "Post with title exists: #{Post.where(title: post.title).exists?}"
       post.save! unless Post.where(title: post.title).exists?
     rescue
       logger.error "#{$!.message} Backtrace:\n#{$!.backtrace.join "\n"}"
