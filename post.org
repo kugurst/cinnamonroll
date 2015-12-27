@@ -1,0 +1,4 @@
+#+TITLE:  How to write a post
+#+AUTHOR: Mark Aligbe
+#+EMAIL:  i.am@markaligbe.com
+#+LANGUAGE: en
