@@ -13,4 +13,4 @@
     - if credit =~ /\A#{URI::regexp}\z/
       .image-credit image credit: <a href="#{credit}">#{credit}</a>
     - else
-      .image-credit image credit: #{credit}
+      .image-credit image credit: #{credit.html_safe}
