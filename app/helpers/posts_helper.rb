@@ -220,22 +220,21 @@ module PostsHelper
   def self.get_post_info_from_path(path)
     category, file_path = PostsHelper.path_to_cat_and_file_path path
     # get the post info
-    pr = PostRenderer.new
-    jb = pr.render file: path, layout: 'posts/get_post_content_json'
-    post_json = JSON.parse jb
-    post_fields = post_json['post']
+    post_fields = PostMetadataExtractor.extract_from_path path
     # fix the tags
-    post_fields['tags'] = self.unbundle_tags post_fields['tags']
+    post_fields[:tags] = self.unbundle_tags post_fields[:tags]
 
     # construct the post hash for creating the object
-    post_obj_hash = { title: post_fields.delete('title'),
-                      tags: post_fields.delete('tags'),
+    post_obj_hash = { title: post_fields.delete(:title),
+                      tags: post_fields.delete(:tags),
                       file_path: file_path,
                       category: category }
     # anything left in post_fields is additional_info
-    additional_info = post_fields.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
+    # keys are now already symbols
+    ## convert string keys to symbols
+    ## additional_info = post_fields.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
 
-    [post_obj_hash, additional_info]
+    [post_obj_hash, post_fields]
   end
 
   def self.update_post_by_path(path, logger = Rails.logger)
