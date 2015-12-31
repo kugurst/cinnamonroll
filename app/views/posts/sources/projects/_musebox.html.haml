@@ -5,10 +5,22 @@
 - content_for :post_tags, PostsHelper.bundle_tags(['hardware', 'altera', 'fpga', 'verilog', 'quartus', 'music', 'audio', 'cyclone'])
 
 :markdown
-  #### A Long Time Coming ####
+  #### A Long Time Coming
 
   I really like headphones. If I had to rank my like of headphones, it would probably be on par with that of computer components (which is pretty up there). My first pair of headphones, whose name I can remember, were the Sony MDR-XD100. I thought they were amazing, but when I discovered the equalizer settings in Windows Media Player, things got really crazy. Fast forward a few years, and I find foobar2000 and its DSP customization. So, when the time came to pick a topic for my senior project, an equalizer was the obvious choice. Of course, an equalizer by itself is only partially useful, you probably also want some feedback, so we'll throw in a visualizer as well.
 
-  ## The Setup ##
+  ### The Setup
 
-  For [the project class](http://www.cs.columbia.edu/~sedwards/classes/2014/4840/), we were given access to a lab with a bunch of System-on-Chip (SoC) field-programmable gate arrays (FPGAs), specifically the Altera Cyclone V on the [Arrow SoCKit](https://www.arrow.com/en/products/sockit/arrow-development-tools#page-1). The draw of an SoC FPGA over a regular FPGA is its embedded microprocessor, which makes it really easy to interface custom hardware directly with a processor.
+  For [the project class](http://www.cs.columbia.edu/~sedwards/classes/2014/4840/), we were given access to a lab with a bunch of System-on-Chip (SoC) field-programmable gate arrays (FPGAs), specifically the Altera Cyclone V on the [Arrow SoCKit](https://www.arrow.com/en/products/sockit/arrow-development-tools#page-1). An SoC FPGA features an embedded processor, which lets us do pretty neat things, but we'll just have the processor boot Linux (which is still pretty neat). For this project, we ultimately went with implementing the visualizer in hardware, and the equalizer in software.
+
+  #### A Choice of Equalizers
+
+  FPGAs are digital beasts, so our choice of equalization is limited to digital methods. Among them, we have two approaches; (IIR/FIR) filter based or FFT based. A filter based approach would be more ammenable parametric equalizers, while FFTs would be more ammenable to graphic equalizers. We decided to take the FFT + graphic equalizer approach, mostly because the interface for a parametric equalizer would've been quite a lot of work on its own.
+
+  #### A Choice of Visualizers
+
+  ### Building the Equalizer
+
+  ### Building the Visualizer
+
+  ### If at First You Don't Succeed... (alternate strategies)

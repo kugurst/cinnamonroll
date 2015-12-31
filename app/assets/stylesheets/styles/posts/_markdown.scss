@@ -15,7 +15,7 @@ $main-padding: $offset*2;
 //   }
 // }
 
-$header-font-sizes: rem-calc(44) rem-calc(37) rem-calc(27) rem-calc(23) rem-calc(18) 1rem;
+$header-font-sizes: rem-calc(44) rem-calc(37) rem-calc(31) rem-calc(23) rem-calc(18) 1rem;
 $header-font-size-mobile-reduction: rem-calc(10) rem-calc(10) rem-calc(5) rem-calc(5) 0 0;
 
 $paragraph-margin: rem-calc(20);
@@ -25,6 +25,7 @@ $paragraph-margin: rem-calc(20);
     #main-content h#{$i} {
       background-color: $color;
       color: $bg-color;
+      font-size: nth($header-font-sizes, $i);
 
       margin-left: -$main-padding - $border-width;
       // margin-left: -$offset*2 - $border-width;
@@ -39,6 +40,7 @@ $paragraph-margin: rem-calc(20);
         margin-top: (nth($header-font-sizes, $i) - nth($header-font-size-mobile-reduction, $i));
         margin-bottom: (nth($header-font-sizes, $i) - nth($header-font-size-mobile-reduction, $i));
         padding-top: (nth($header-font-sizes, $i) - nth($header-font-size-mobile-reduction, $i))/8;
+        font-size: nth($header-font-sizes, $i) - nth($header-font-size-mobile-reduction, $i);
       }
     }
   }
