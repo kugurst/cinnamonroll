@@ -1,5 +1,5 @@
 module StaticHelper
-  MESSAGE_ARRAY = ['Hey there', 'Nice weather?', 'Good of you to drop by', 'Bonjour', 'puts "Hello"', "Hope you weren't waiting long"]
+  MESSAGE_ARRAY = ['Hey there', 'Nice weather?', 'Good of you to drop by', 'Bonjour', 'puts "Hello"', "Welcome"]
 
 
   def greeting_message

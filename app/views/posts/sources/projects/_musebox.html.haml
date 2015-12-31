@@ -1,11 +1,14 @@
 - content_for :post_title, 'MuseBox'
-- content_for :post_subtitle, 'What is an equalizer anyway?'
+- content_for :post_subtitle, 'A simple graphic equalizer + visualizer'
 - content_for :post_splash_img, 'visualizer.png'
 - content_for :post_splash_img_credit, '<a href="https://www.foobar2000.org/">foobar2000</a> <a href="http://wiki.hydrogenaud.io/index.php?title=Foobar2000:Components/Musical_Spectrum_(foo_musical_spectrum)">Musical Spectrum visualizer</a>'.html_safe
 - content_for :post_tags, PostsHelper.bundle_tags(['hardware', 'altera', 'fpga', 'verilog', 'quartus', 'music', 'audio', 'cyclone'])
 
-%section
-  :markdown
-    #### A Long Time Coming ####
+:markdown
+  #### A Long Time Coming ####
 
-    I really like headphones.
+  I really like headphones. If I had to rank my like of headphones, it would probably be on par with that of computer components (which is pretty up there). My first pair of headphones, whose name I can remember, were the Sony MDR-XD100. I thought they were amazing, but when I discovered the equalizer settings in Windows Media Player, things got really crazy. Fast forward a few years, and I find foobar2000 and its DSP customization. So, when the time came to pick a topic for my senior project, an equalizer was the obvious choice. Of course, an equalizer by itself is only partially useful, you probably also want some feedback, so we'll throw in a visualizer as well.
+
+  ## The Setup ##
+
+  For [the project class](http://www.cs.columbia.edu/~sedwards/classes/2014/4840/), we were given access to a lab with a bunch of System-on-Chip (SoC) field-programmable gate arrays (FPGAs), specifically the Altera Cyclone V on the [Arrow SoCKit](https://www.arrow.com/en/products/sockit/arrow-development-tools#page-1). The draw of an SoC FPGA over a regular FPGA is its embedded microprocessor, which makes it really easy to interface custom hardware directly with a processor.

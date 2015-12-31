@@ -19,6 +19,6 @@
 
 - @posts.each_with_index do |post, i|
   .post-date
-    %h2= format_time_just_calendar(post.u_at)
+    %h2= format_time_just_calendar(post.created_at)
   %hr(class="post-date-separator pd-separator-#{cat_index}")/
   = render "posts/category_post_item", post: post

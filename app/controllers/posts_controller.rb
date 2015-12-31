@@ -40,7 +40,7 @@ class PostsController < ApplicationController
     path.gsub! '/', ''
 
     # get all posts with this category
-    @posts = Post.order_by(u_at: 'desc').where(category: path.singularize)
+    @posts = Post.order_by(created_at: 'desc').where(category: path.singularize)
     @category =  path.singularize.to_sym
   end
 

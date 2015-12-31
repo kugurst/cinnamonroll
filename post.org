@@ -53,5 +53,5 @@
   1) Make a file in `app/views/posts/sources/:category` (remember, partials in rails begin with an underscore)
   2) Add a splash image under `public/img/posts/:category/:file_path`
   3) Add the metadata to the start of your source
-     + All you need is the title and splash_img
+     + All you need is the `:title` and `:splash_img`
   4) Write! (`PostsHelper` will take care of adding, updating, and removing (should you decide to) the post and its data, so you should never need to open up a console)
