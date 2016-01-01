@@ -4,3 +4,6 @@
 [submodule "foundation-rails"]
 	path = foundation-rails
 	url = https://github.com/zurb/foundation-rails/
+[submodule "public/img"]
+	path = public/img
+	url = git@gitlab.com:kugurst/cinnamonroll-images.git
