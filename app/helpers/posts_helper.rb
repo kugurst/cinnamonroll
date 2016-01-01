@@ -15,6 +15,9 @@ module PostsHelper
   POST_SOURCE_METADATA = ['title', 'subtitle', 'splash_img', 'splash_img_credit', 'tags']
   POST_TAG_DELIMITER = "\u0001"
 
+  # Enforce sequential access to the post modification routines
+  POST_CHANGE_LOCK = Mutex.new
+
   listener = Listen.to(Rails.root.join(PostsHelper::POST_SOURCE_PATH)) do |modified, added, removed|
     PostsHelper.dir_watcher modified, added, removed
   end
@@ -217,52 +220,56 @@ module PostsHelper
   def self.get_post_info_from_path(path)
     category, file_path = PostsHelper.path_to_cat_and_file_path path
     # get the post info
-    pr = PostRenderer.new
-    jb = pr.render file: path, layout: 'posts/get_post_content_json'
-    post_json = JSON.parse jb
-    post_fields = post_json['post']
+    post_fields = PostMetadataExtractor.extract_from_path path
     # fix the tags
-    post_fields['tags'] = self.unbundle_tags post_fields['tags']
+    post_fields[:tags] = self.unbundle_tags post_fields[:tags]
 
     # construct the post hash for creating the object
-    post_obj_hash = { title: post_fields.delete('title'),
-                      tags: post_fields.delete('tags'),
+    post_obj_hash = { title: post_fields.delete(:title),
+                      tags: post_fields.delete(:tags),
                       file_path: file_path,
                       category: category }
     # anything left in post_fields is additional_info
-    additional_info = post_fields.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
+    # keys are now already symbols
+    ## convert string keys to symbols
+    ## additional_info = post_fields.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
 
-    [post_obj_hash, additional_info]
+    [post_obj_hash, post_fields]
   end
 
   def self.update_post_by_path(path, logger = Rails.logger)
-    logger.info "updating: #{path}"
-    # Retrieve the post
-    category, file_path = PostsHelper.path_to_cat_and_file_path path
-    post = Post.where category: category, file_path: file_path
-    # Guarding against modified files that haven't been created yet
-    return unless post.exists?
-    post = post.first
+    POST_CHANGE_LOCK.synchronize do
+      logger.info "updating: #{path}"
+      # Retrieve the post
+      category, file_path = PostsHelper.path_to_cat_and_file_path path
+      post = Post.where category: category, file_path: file_path
+      # Guarding against modified files that haven't been created yet
+      return self.create_post_by_path path, logger unless post.exists?
+      post = post.first
 
-    # Update the time if necessary
-    time = File.mtime post.abs_file_path
-    post.set u_at: time if post.u_at != time
+      # Update the time if necessary
+      time = File.mtime post.abs_file_path
+      post.set u_at: time if post.u_at != time
 
-    # Update the other post info if necessary
+      # Update the other post info if necessary
 
-    # get the post info
-    post_obj_hash, additional_info = get_post_info_from_path path
-    # update those that need to be updated
-    post_obj_hash.each do |k, v|
-      eval %Q(
+      # get the post info
+      post_obj_hash, additional_info = get_post_info_from_path path
+      # update those that need to be updated
+      post_obj_hash.each do |k, v|
+        eval %Q(
         post.set #{k}: v if post.#{k} != v
       )
+      end
+      # update the additional_info
+      post.set additional_info: post.additional_info.merge(additional_info) if post.additional_info != additional_info
     end
-    # update the additional_info
-    post.set additional_info: post.additional_info.merge(additional_info) if post.additional_info != additional_info
   end
 
   def self.create_post_by_path(path, logger = Rails.logger)
+    # we can be called by another, that holds this lock, so let's make sure not to deadlock
+    locked = POST_CHANGE_LOCK.try_lock
+
     logger.info "creating: #{path}"
     # get the post info
     post_obj_hash, additional_info = get_post_info_from_path path
@@ -271,24 +278,39 @@ module PostsHelper
     # anything left in post_fields is additional_info
     post.additional_info = additional_info
     # update the u_at time
-    time = File.mtime post.abs_file_path
+    time = Time.now
+    begin
+      time = File.mtime post.abs_file_path
+    rescue
+      logger.error "#{$!.message} Backtrace:\n#{$!.backtrace.join "\n"}"
+    end
     post.u_at = time
     # create the post
     logger.info "Inserting: #{post.title}"
-    post.save!
+
+    # Guard against a double create
+    begin
+      logger.error "Post with title exists: #{Post.where(title: post.title).exists?}"
+      post.save! unless Post.where(title: post.title).exists?
+    rescue
+      logger.error "#{$!.message} Backtrace:\n#{$!.backtrace.join "\n"}"
+    end
+
+    POST_CHANGE_LOCK.unlock if locked
   end
 
   def self.delete_post_by_path(path, logger = Rails.logger)
-    logger.info "deleting: #{path}"
-    # Retrieve the post
-    category, path = PostsHelper.path_to_cat_and_file_path path
-    post = Post.where category: category, file_path: path
-    # Guarding against modified files that haven't been created yet
-    return unless post.exists?
-    post = post.first
+    POST_CHANGE_LOCK.synchronize do
+      logger.info "deleting: #{path}"
+      # Retrieve the post
+      category, path = PostsHelper.path_to_cat_and_file_path path
+      post = Post.where category: category, file_path: path
+      # Guarding against modified files that haven't been created yet
+      return unless post.exists?
+      post = post.first
 
-    # guarding against multiple fires
-    post.destroy unless post.nil?
+      post.destroy
+    end
   end
 
   # load all posts that we may not have in database
