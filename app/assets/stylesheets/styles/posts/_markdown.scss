@@ -64,3 +64,9 @@ aside {
 #main-content {
   padding-top: $paragraph-margin;
 }
+
+a {
+  code {
+    color: inherit;
+  }
+}

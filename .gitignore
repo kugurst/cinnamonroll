@@ -101,6 +101,10 @@ public/assets*
 *.#*
 *.bak*
 app/assets/stylesheets/base/.sass-cache/*
+passenger.log
+passenger.pid.lock
+
+# sensitive data files
 config/private_config.rb
 config/redis_config.rb
 config/mongoid.yml

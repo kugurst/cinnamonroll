@@ -1,12 +1,27 @@
 - content_for :post_title, 'Motion Estimation Accelerator'
-- content_for :post_subtitle, 'Exploiting hardware parallelism on data-independent kernels'
+- content_for :post_subtitle, 'Exploiting hardware parallelism on data parallel kernels'
 - content_for :post_splash_img, 'fumble.jpg'
 - content_for :post_splash_img_credit, 'http://en.wikipedia.org/wiki/American_football#/media/File:Arian_Foster_fumble.jpg'
 - content_for :post_tags, PostsHelper.bundle_tags(['hardware', 'systemc', 'zynq', 'fpga', 'images', 'kernel', 'parallelism'])
+- content_for :post_byline, 'Project Date: May 2015'
 
 :markdown
   #### Parallel&sup2;
-  ### From Software to Hardware (Subpixel motion estimation without interpolation)
+
+  Many image processing algorithms map well to hardware implementations. Ideal candidates are those that are data parallel, meaning that the same operation(s) is applied to data units. In the processor world, SIMD and MIMD instructions take advantage of this kind of parallelism. In the hardware design world though, we're building the hardware from scratch and can really exploit any opportunity for parallism in an algorithm. The Motion Estimation Accelerator (MEA culpa, this could use a better name) is an exploratory project into just what kinds gains we can acheive through design space exploration.
+
+  ### From Software to Hardware
+
+  Motion estimation is an actively studied problem with implementations in the form of deblurring, object tracking, and more. More efficient methods of motion estimation are necessary due to the ever increasing size of frames (8K UHD is just around the corner, once we figure out some of the other [issues](http://www.extremetech.com/extreme/215584-j-display-demos-first-17-3-inch-8k-panel)). One such study was done by [Stanley H. Chan, Dũng T. Võ, and Truong Q. Nguyen](http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=5495054&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D5495054), and it forms the basis of this project. I strongly recommend reading the paper, but it isn't strictly necessary is we'll be mostly discussing architectural design. Their approach to motion estimation is a combination of [block matching](https://en.wikipedia.org/wiki/Block-matching_algorithm) and [optical flow](https://en.wikipedia.org/wiki/Optical_flow), and we'll be talking about these two main points.
+
+  ### Or a Happy Medium
+
+  [SystemC](https://en.wikipedia.org/wiki/SystemC) is a relatively new hardware descriptive language that wants to take advantage of the growing power of ASICs and FPGAs.
+
   #### Block Matching
+
+  Block matching is a relatively straightforward task. Given
+
   #### Optical Flow
   ### Accuracy (notbad.jpg)
+  ### Performance vs. Area
