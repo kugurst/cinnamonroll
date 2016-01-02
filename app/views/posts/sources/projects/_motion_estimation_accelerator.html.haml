@@ -2,26 +2,49 @@
 - content_for :post_subtitle, 'Exploiting hardware parallelism on data parallel kernels'
 - content_for :post_splash_img, 'fumble.jpg'
 - content_for :post_splash_img_credit, 'http://en.wikipedia.org/wiki/American_football#/media/File:Arian_Foster_fumble.jpg'
-- content_for :post_tags, PostsHelper.bundle_tags(['hardware', 'systemc', 'zynq', 'fpga', 'images', 'kernel', 'parallelism'])
+- content_for :post_tags, PostsHelper.bundle_tags(['hardware', 'systemc', 'zynq', 'fpga', 'images', 'kernel', 'parallelism', 'college'])
 - content_for :post_byline, 'Project Date: May 2015'
 
 :markdown
   #### Parallel&sup2;
 
-  Many image processing algorithms map well to hardware implementations. Ideal candidates are those that are data parallel, meaning that the same operation(s) is applied to data units. In the processor world, SIMD and MIMD instructions take advantage of this kind of parallelism. In the hardware design world though, we're building the hardware from scratch and can really exploit any opportunity for parallism in an algorithm. The Motion Estimation Accelerator (MEA culpa, this could use a better name) is an exploratory project into just what kinds gains we can acheive through design space exploration.
+  Many image processing algorithms map well to hardware implementations. Ideal candidates are those that are data parallel, meaning that the same operation(s) is applied to data units. In the processor world, SIMD and MIMD instructions take advantage of this kind of parallelism. In the hardware design world though, we're building the hardware from scratch and can really exploit any opportunity for parallelism in an algorithm. The Motion Estimation Accelerator (MEA culpa, this could use a better name) is an exploratory project into just what kinds gains we can achieve through design space exploration.
 
   ### From Software to Hardware
 
-  Motion estimation is an actively studied problem with implementations in the form of deblurring, object tracking, and more. More efficient methods of motion estimation are necessary due to the ever increasing size of frames (8K UHD is just around the corner, once we figure out some of the other [issues](http://www.extremetech.com/extreme/215584-j-display-demos-first-17-3-inch-8k-panel)). One such study was done by [Stanley H. Chan, Dũng T. Võ, and Truong Q. Nguyen](http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=5495054&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D5495054), and it forms the basis of this project. I strongly recommend reading the paper, but it isn't strictly necessary is we'll be mostly discussing architectural design. Their approach to motion estimation is a combination of [block matching](https://en.wikipedia.org/wiki/Block-matching_algorithm) and [optical flow](https://en.wikipedia.org/wiki/Optical_flow), and we'll be talking about these two main points.
+  Motion estimation is trying to determine the shift between two frames. It's an actively studied problem with implementations in the form of deblurring, image stabilization, and more applications. Due to the ever frame size (8K UHD is just around the corner, once we figure out some of the other [issues](http://www.extremetech.com/extreme/215584-j-display-demos-first-17-3-inch-8k-panel)), more efficient methods of motion estimation are necessary. One such study was done by [Stanley H. Chan, Dũng T. Võ, and Truong Q. Nguyen](http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=5495054&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D5495054), and it forms the basis of this project. I strongly recommend reading the paper, but it isn't strictly necessary as we'll be mostly discussing architectural design. Their approach to motion estimation is a combination of [block matching](https://en.wikipedia.org/wiki/Block-matching_algorithm) and [optical flow](https://en.wikipedia.org/wiki/Optical_flow), and we'll be talking about these two main tasks.
 
-  ### Or a Happy Medium
+  #### Or a Happy Medium
 
-  [SystemC](https://en.wikipedia.org/wiki/SystemC) is a relatively new hardware descriptive language that wants to take advantage of the growing power of ASICs and FPGAs.
+  [SystemC](https://en.wikipedia.org/wiki/SystemC) is a relatively new hardware descriptive language that wants to take advantage of the growing power of ASICs and FPGAs. It's kind of like the love child of C++ and SystemVerilog, but C++ had most of the dominant genes. One of the most powerful features of SystemC is the `SC_THREAD`, which basically introduces the concept of a sequential execution. Combined with vendor support (like in the form of [Cadence CtoS](http://www.cadence.com/products/sd/silicon_compiler/pages/default.aspx)), you can actually synthesize these blocks. It's almost like coding a normal C function (almost).
 
-  #### Block Matching
+  This sort of high-level flexibility really makes it quick to explore various types of parallelism. As an example, a `for` loop can be fully unrolled, which replicates its block for the number of iterations of the loop. Of course, you still have to be aware of the speed of the underlying hardware as well as your available resources, so you can't abandon all notions of hardware concepts, but your freedom of expression is much greater than in Verilog/VHDL.
 
-  Block matching is a relatively straightforward task. Given
+  ### Block Matching
 
-  #### Optical Flow
-  ### Accuracy (notbad.jpg)
-  ### Performance vs. Area
+  The basic idea behind block matching is thus. You have a reference image and a sequential image, and you're trying to figure out the shift between the two images. You break them down into rectangles of pixels, called blocks. You then play a puzzle game, and try to match a block in the reference with a block in the sequential image. There are many different ways you can go about [matching these blocks](https://en.wikipedia.org/wiki/Block-matching_algorithm#Algorithms) though.
+
+  For our implementation, we went with the straightforward full search. The core of any block matching algorithm is the cost function, which in our case is the smallest absolute difference (SAD) between two blocks. Thus, the core of our exploration in block matching was focused on parallelizing the cost function.
+
+  We can parallelize in two ways:
+
+  - Search window:
+    - Block matching implementations operate on a window of blocks. We can compute the SAD for multiple blocks in parallel.
+  - Block level:
+    - When actually computing the SAD, we can compute the difference for multiple pixels in parallel.
+
+  We explored both options, but this task itself is relatively fast enough compared to the second part of estimation.
+
+  ### Optical Flow
+
+  Basically, when we compute the optical flow between two images we're computing the gradient. In particular, we use Taylor approximation to determine the \\(\\Delta x\\) and \\(\\Delta y\\) between the reference and sequential image. The details of how are described in the S.H. Chan et al study referenced above, but we're basically solving a system of linear equations. Our options here for parallelization are pretty much limited to just the block level, as with block matching. In implementation, we also have an accumulation loop, but considering the size of the blocks, a parallel reduce wouldn't give us significant gains.
+
+  As it turns out, Taylor approximation was the bottleneck in our implementation. Our location in the block (in particular, if we're at the edges of the block) determines which precise pixels we use, as well as the operation we perform on them. In hardware terms, this means we have to instantiate the hardware for all possibilities, and use a multiplexer to determine which result we take at the end. Now, if we want to parallelize, we have to duplicate all this hardware. Needless to say, our area explodes very quickly.
+
+  ### Results and Looking Forward
+
+  Let's start with the bad news. The hardware chain generated for our Taylor approximation kernel had a very long critical path, which meant that we had long cycles. So not only was Taylor approximation itself mostly serial, it also slowed down our pretty speedy block matching. Making a separate kernel just for our path dependent computation may be worthwhile, as there are many repeated operations among the paths.
+
+  The good news is that our results were quite accurate in comparison with a reference software implementation. Solving this system of linear equations requires the use of floating point values, which in hardware we implement as [fixed point numbers](https://en.wikipedia.org/wiki/Fixed-point_arithmetic). As it turns out, we didn't need particularly large fixed point values, so our register usage was also relatively small.
+
+  Of course, FPGAs and ASICs aren't the only devices that perform well on image tasks. GPUs are master image and video manipulators. Considering the resources available on a high-end GPU (both RAM and cores), we may be able to give an ASIC design a run for its money.
