@@ -2,9 +2,11 @@
 - content_for :post_subtitle, 'A simple graphic equalizer + visualizer'
 - content_for :post_splash_img, 'visualizer.png'
 - content_for :post_splash_img_credit, '<a href="https://www.foobar2000.org/">foobar2000</a> <a href="http://wiki.hydrogenaud.io/index.php?title=Foobar2000:Components/Musical_Spectrum_(foo_musical_spectrum)">Musical Spectrum visualizer</a>'.html_safe
-- content_for :post_tags, PostsHelper.bundle_tags(['hardware', 'altera', 'fpga', 'verilog', 'quartus', 'music', 'audio', 'cyclone'])
+- content_for :post_tags, PostsHelper.bundle_tags(['hardware', 'altera', 'fpga', 'verilog', 'quartus', 'music', 'audio', 'cyclone', 'college'])
+- content_for :post_byline, 'Project Date: May 2014'
 
 :markdown
+
   #### A Long Time Coming
 
   I really like headphones. If I had to rank my like of headphones, it would probably be on par with that of computer components (which is pretty up there). My first pair of headphones, whose name I can remember, were the Sony MDR-XD100. I thought they were amazing, but when I discovered the equalizer settings in Windows Media Player, things got really crazy. Fast forward a few years, and I find foobar2000 and its DSP customization, then things really got crazy. So, when the time came to pick a topic for our senior project, an equalizer was the obvious choice. Of course, an equalizer by itself is only partially useful, you probably also want some feedback, so we'll throw in a visualizer as well.
@@ -31,9 +33,7 @@
       b m &= \sqrt{(b r)^2+(b i)^2}
     \\end{align}
 
-  So boosting is just really two simple multiplications. See how easy FFTs make this? Well, we're not done yet.
-
-  The DFT gives you as many samples as the size of the FFT (e.g. 1k, 2k, 4k, etc...), but how do you know which sample corresponds to which? For that explanation, I'll defer to [Zytrax's](http://www.zytrax.com/tech/audio/equalization.html) equalization page, which really covers just about every technical detail you could care to know (it saved us who knows how many hours when we implemented this, but you probably want to scroll around to where it starts talking about the *Short Time Fourier Transform*, but low-bass resolution is also an important read).
+  So boosting is just really two simple multiplications. We still have some more details to work it before we just start multiplying complex numbers. So we know that the DFT gives you the frequency spectrum of the signal, but how do we know which element corresponds to which frequency? For that explanation, I'll defer to [Zytrax's](http://www.zytrax.com/tech/audio/equalization.html) equalization page, which really covers just about every technical detail you could care to know (it saved us who knows how many hours when we implemented this, but you probably want to scroll around to where it starts talking about the *Short Time Fourier Transform*, but low-bass resolution is also an important read).
 
   The article also explains something called windowing, which arises from the need that the FFT expects a complete waveform, whereas in real-time audio, you can't sit and wait for the entire song to finish (or if you're obtaining input from an external source, you don't even know where the "end" is). To correct this issue, we employ [windowing functions](https://en.wikipedia.org/wiki/Window_function), and specifically, the trivial triangle window.
 
@@ -49,4 +49,6 @@
 
   ### Et Cetera
 
-  Well, much debugging later, we built our equalizer/visualizer. Despite the all-nighters, it was pretty fulfilling to see and hear it in action. Not only did it have an equalizer bypass mode, but it also accepted line-in playback as well as WAV file playback, so it was a pretty neat box. It would've been interesting to see what effect the different window functions had on the quality of both the FFT and the equalization (for the latter, I imagine it would be mostly a matter of personal preference). If I had a suggestion for anyone implementing a music DSP, it would be to make sure you have some good music stocked up. Despite the number of times I listened to the album in its _entirety_, I definitely came out loving the [Final Fantasy Orchestral Album](http://finalfantasy.wikia.com/wiki/Final_Fantasy_Orchestra_Album) more than when I went in.
+  Well, much debugging later, we built our equalizer/visualizer. Despite the all-nighters, it was pretty fulfilling to see and hear it in action. Not only did it have an equalizer bypass mode, but it also accepted line-in playback as well as WAV file playback, so it was a pretty neat box. If you want to browse the repo, you probably want to start with [`fftw-test.c`](https://github.com/kugurst/musebox/blob/sabina/visualizer/fftw-test/fftw-test.c), which combines both the equalizer and visualizer. The `visualizer` folder has the drivers, and `freq_spec` and `audio` contain most of the interesting Verilog stuff (not the best organization of my undergrad career, to be sure).
+
+  It would've been interesting to see what effect the different window functions had on the quality of both the FFT and the equalization (for the latter, I imagine it would be mostly a matter of personal preference). Finally, if I had a suggestion for anyone implementing a music DSP, it would be to make sure you have some good music stocked up. Despite the number of times I listened to the album in its _entirety_, I definitely came out with a greater appreciation the [Final Fantasy Orchestral Album](http://finalfantasy.wikia.com/wiki/Final_Fantasy_Orchestra_Album).

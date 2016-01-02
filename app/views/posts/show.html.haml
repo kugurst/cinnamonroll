@@ -6,6 +6,9 @@
           %section
             %h1.first-header= @post.title
             %h3.last-header= @post.additional_info[:subtitle]
+          - if (byline = @post.additional_info[:byline])
+            .byline-container
+              %em= byline.html_safe
         %hr(class="title-rule bg-#{@post[:category].to_s}")
 
   .row(data-turbolinks-permanent)
