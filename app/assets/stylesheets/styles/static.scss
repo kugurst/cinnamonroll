@@ -101,6 +101,12 @@ $mobile-post-margin-top: $mobile-h1-size*2;
   top: 0;
   left: 0;
   text-shadow: 0px 0px 0.438em #000000;
+  h1 {
+    font-size: rem-calc(52);
+  }
+  h3 {
+    font-size: rem-calc(36);
+  }
 
   @media only screen and (max-width: 40em) {
     height: auto;

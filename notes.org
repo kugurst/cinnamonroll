@@ -30,37 +30,38 @@
    + A directory watcher monitors file additions, and expires the cache for a given object
 
 * TODO List
-** TODO Make page changes slide outs and use History.js to udpate the current URL
-** TODO Investigate the viability of Turbolinks or Turbograft to facilitate page replacement
+** DONE Investigate the viability of Turbolinks or Turbograft to facilitate page replacement
+   - Using Turbolink's default behaviour. Some CoffeeScript was added in `posts.coffee` to normalize weirdness when navigating through history
 ** encrypt.coffee **
 *** DONE Add that we are not encrypting to the sessionStorage (cinnamonroll.sec.NO_ENCRYPTION should go in sessionStorage)
 *** TODO Check to see if cinnamonroll.sec.NO_ENCRYPTION is true before attempting to request an AES key (prevents clients that can't generate a key from repeatedly generating an RSA key)
 *** TODO refactor the static code portion
 *** DONE dynamically add "enc_" fields to forms so as not to screw up the actual forms on submission
 *** DONE set encryption to false if HTTPS is active
-*** TODO call the function when setting encryption to none in recv_aes_key
+*** TODO implement encryption of data sent to the client
 ** comments_controller.rb **
 *** DONE Get the AES key from the session, not params
 ** user.coffee/session.coffee **
-*** TODO implement client side password validation (minimum length)
-**** TODO display a warning telling the user that we think their password is weak
+*** DONE implement client side password validation (minimum length)
+**** DONE display a warning telling the user that we think their password is weak
 *** TODO implement maximum password tries per second
 ** posts **
-*** TODO implement comment showing as a partial
-*** TODO implement body showing as a partial
+*** DONE implement comment showing as a partial
+*** DONE implement body showing as a partial
+*** TODO implement caching for comments
+** static **
+*** TODO implement caching for the posts displayed on the main page and on category pages
+    - First, investigate if there's a speed up
 ** users **
-*** TODO implement a before_destroy callback that sets all comments to deleted
+*** DONE implement a before_destroy callback that sets all comments to deleted
 ** comments **
-*** Final design
-**** Recursive embedding
-**** Has a post_id and user_id
-**** Users have an arraay of all comments they've written, regardless of nesting level
-**** Posts have an array of all head comments (comments with a nesting level of 0)
 ** application.rb **
-*** TODO remove sprockets from development
+*** DONE remove sprockets from development
 **** This will allow us to use per controller styles and coffee more easily, but without needing to do a require-tree and thus possibly clobbering files
+*** TODO make encrypt seamless by adding a before_action to decrypt all params
+    - It adds a burden to those designing controllers, and the behaviour is consistent in currently implemented controllers
 ** routes.rb **
-*** Shorten the post pages path by removing post and sticking them in the category loop
+*** DONE Shorten the post pages path by removing post and sticking them in the category loop
 ** configuration **
-*** TODO change redis.conf in production to use a socket. Need to trickle changes to sidekiq and cinnamonroll as well
+*** DONE change redis.conf in production to use a socket. Need to trickle changes to sidekiq and cinnamonroll as well
 *** DONE push comment sorting to mongoid by ordering the comments from the controller

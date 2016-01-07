@@ -5,10 +5,8 @@ class SessionController < ApplicationController
   BAD_COMBO_MSG = "Username/email and password combination not found"
 
   def new
-    begin
-      set_return_point URI(request.referer).path
-    rescue
-    end
+    set_return_point_to_referrer
+
     if logged_in?
       flash[:notice] = "Already logged in"
       rp = return_point_if_none root_path
@@ -17,6 +15,7 @@ class SessionController < ApplicationController
     end
   end
 
+  # post
   def create
     return request_aes_key if decrypt_sym!(:session).nil?
     lp = login_params
@@ -70,10 +69,7 @@ class SessionController < ApplicationController
   end
 
   def destroy
-    begin
-      set_return_point URI(request.referer).path
-    rescue
-    end
+    set_return_point_to_referrer true
     log_out if logged_in?
     redirect_to return_point_if_none root_url
   end
