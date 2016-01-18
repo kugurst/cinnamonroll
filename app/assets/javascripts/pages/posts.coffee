@@ -86,7 +86,7 @@ squeeze_headers = () ->
   )
   # remove the title rule and padding on #main-content if the first item is a header
   $first_header = $main_content.find(HEADERS).first()
-  if $first_header.prev().length == 0
+  if $first_header.length > 0 && $first_header.prev().length == 0
     $(".title-rule").remove()
     $main_content.css 'padding-top', 0
     $first_header.css 'margin-top', 0

@@ -110,6 +110,9 @@ GEM
       request_store (>= 1.0)
     haml (4.0.7)
       tilt
+    haml-coderay (0.2.0)
+      coderay
+      haml
     i18n (0.7.0)
     jbuilder (2.3.2)
       activesupport (>= 3.0.0, < 5)
@@ -328,6 +331,7 @@ DEPENDENCIES
   foundation-rails (~> 5.5.1.0)
   gon
   haml
+  haml-coderay
   jbuilder (~> 2.0)
   jquery-rails
   jquery-turbolinks

@@ -2,3 +2,55 @@
 - content_for :post_subtitle, 'Served three ways'
 - content_for :post_splash_img, 'comment_code.png'
 - content_for :post_tags, PostsHelper.bundle_tags(['cinnamonroll', 'mongoid', 'premature optimization', 'benchmark'])
+- content_for :post_byline, 'This post is part of a series of posts on creating this website'
+
+:markdown
+  A feature I definitely wanted when making this website was commenting. Initially, I was going to just use Disqus on this journey of not reinventing the wheel, but I wanted to write a little more Ruby, so I decided to roll my own.
+
+  ### The Design
+
+  Since I was using Mongoid, I thought this would be the best scenario to make use of embedded [documents](https://docs.mongodb.org/ecosystem/tutorial/ruby-mongoid-tutorial/#documents), but there were some [issues](https://github.com/kugurst/cinnamonroll/tree/embedded_comments). Principal among them, embedded comments can't `belongs_to` documents. This is problematic from a design perspective because comments belong to both the post they were written for and the user who wrote them.
+
+  While it wouldn't be too difficult to code the behavior, it would lead to maintenance nightmares down the road. Furthermore, we would have to be extra careful about coding callbacks and deleting documents. All in all, it wouldn't be worth it as it would complicate the codebase. Thus, we had to settle for `has_many` and `belongs_to`, basically the straightforward design of a site with users, posts, and comments.
+
+  ### Not Eager Enough
+
+  We can achieve basically the same effect (not having to hit the database again when loading the comments) as using embedded documents by using [eager loading](http://www.rubydoc.info/github/mongoid/mongoid/Mongoid%2FCriteria%3Aincludes). One thing to note though is that eager loading doesn't cascade, which makes perfect sense. If you eager load one kind of document, those documents don't also automatically bring in whatever other relations they may have. This is bad for us though, because `Comment`s have other `Comment`s (straightforward nesting comments). Thus, if we tried to access the `comments` field in a `Comment`, we would trigger another database query, which is a waste because we already loaded all comments when we fetched the post!
+
+  However, there are two fields that don't require a database access which give us all the information we need: the `id` of the comment and the `parent_comment_id`. We can identify which comments belong to which other comments by looking at the `parent_comment_id`, and the `id` of each comment lets us identify which comments are which, thus we can reconstruct our nested comments without having to touch the database again!
+
+  ### Served Three Ways
+
+  So, now we have our plan, but what's the most efficient way to go about it? Well, remembering that [premature optimization is the root of all evil](https://en.wikiquote.org/wiki/Donald_Knuth#Computer_Programming_as_an_Art_.281974.29), I decided to try out any way that came to mind, with some help from a friend. There were three unique takes, all in [`PostsHelper`](https://github.com/kugurst/cinnamonroll/blob/master/app/helpers/posts_helper.rb). The first way is basically to figure out what comments are there, and then parent them (`tree_comments_2_pass`). The second is to use an [`Array`](http://ruby-doc.org/core-2.2.0/Array.html) as a placeholder for parent comments we haven't found yet, and then when we find the comment, we parent the children in that array. The final way is basically the second approach, but instead of using an array, we stub the comment class to avoid one of the `if` checks.
+
+  Finally, there's nothing to do but to benchmark them, for which we use Ruby's [`Benchmark`](http://ruby-doc.org/stdlib-2.2.0/libdoc/benchmark/rdoc/Benchmark.html) class. You can see the details of the benchmark in the [`PostsHelperSpec`](https://github.com/kugurst/cinnamonroll/blob/master/spec/helpers/posts_helper_spec.rb), but for the results, we used the following modifications (to really stress each implementation):
+
+:coderay
+  #!ruby
+
+  itrs = 10000
+  comment_list: [3, 2, 1, 2, 1, 2, 2, 4]
+
+:markdown
+  And the results (`ruby 2.3.0dev (2015-10-26 trunk 52281) [x86_64-linux]` on an Intel Core i7 4810MQ):
+
+:coderay
+  #!text
+
+  Rehearsal --------------------------------------------------------------------
+  tree_comments_array_placeholder:  53.620000   0.120000  53.740000 ( 53.954377)
+  tree_comments_2_pass:             34.900000   0.010000  34.910000 ( 34.882461)
+  tree_comments_stub_placeholder:   40.190000   0.010000  40.200000 ( 40.184618)
+  --------------------------------------------------------- total: 128.850000sec
+
+                                         user     system      total        real
+  tree_comments_array_placeholder:  41.440000   0.010000  41.450000 ( 41.413919)
+  tree_comments_2_pass:             37.550000   0.050000  37.600000 ( 37.576457)
+  tree_comments_stub_placeholder:   39.230000   0.010000  39.240000 ( 39.211102)
+  .
+
+  Finished in 4 minutes 7.7 seconds (files took 1.86 seconds to load)
+  1 example, 0 failures
+
+:markdown
+  The lesson? `if` statements are pretty expensive. While there isn't too much of a difference in performance, our two pass method actually outperforms the other two, which was surprising, though from a computer architecture stand point, we're taking advantage of branch prediction more than in the other two implementations. As we suspected though, stubbing out the comment class improved performance, though not considerably. We could of course avoid this necessity by using embedded comments, but that makes our relations and callback more complicated than they should be. With modest enough comment counts, there won't really be an effect on user experience. And if a post gets really popular, I can always implement caching (which is currently used to serve you the body of posts).
