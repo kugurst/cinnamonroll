@@ -11,7 +11,7 @@
 
   Since I was using Mongoid, I thought this would be the best scenario to make use of embedded [documents](https://docs.mongodb.org/ecosystem/tutorial/ruby-mongoid-tutorial/#documents), but there were some [issues](https://github.com/kugurst/cinnamonroll/tree/embedded_comments). Principal among them, embedded comments can't `belongs_to` documents. This is problematic from a design perspective because comments belong to both the post they were written for and the user who wrote them.
 
-  While it wouldn't be too difficult to code the behavior, it would lead to maintenance nightmares down the road. Furthermore, we would have to be extra careful about coding callbacks and deleting documents. All in all, it wouldn't be worth it as it would complicate the codebase. Thus, we had to settle for `has_many` and `belongs_to`, basically the straightforward design of a site with users, posts, and comments.
+  While it wouldn't be too difficult to code the behavior, it would lead to maintenance nightmares down the road. Furthermore, we would have to be extra careful about coding callbacks and deleting documents. All in all, complicating the codebase wouldn't be worth the advantage of embedding comments. Thus, we had to settle for `has_many` and `belongs_to`, basically the straightforward design of a site with users, posts, and comments.
 
   ### Not Eager Enough
 
