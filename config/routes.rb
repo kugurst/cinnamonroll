@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   # resources :posts
   get 'users/:id/confirm/:confirmation_token', to: 'users#confirm', as: :confirm_user
   get 'users/:id/send_confirm', to: 'users#send_confirm', as: :send_confirm_user
+  get 'users/profile/:id', to: 'users#show', as: :user
   if Rails.env == 'production'
     post 'comments', to: 'comments#create' # , as: :new_comment
     post 'users', to: 'users#create' # , as: :new_user

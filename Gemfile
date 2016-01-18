@@ -52,6 +52,7 @@ gem 'gon'
 
 # syntax highlighting
 gem 'coderay'
+gem 'haml-coderay'
 # markdown support
 gem 'redcarpet'
 gem 'test-unit'
