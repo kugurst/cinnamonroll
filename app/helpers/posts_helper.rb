@@ -13,7 +13,6 @@ module PostsHelper
   POST_SOURCE_PATH = Rails.root.join "app", "views", Post::FILE_PATH
   POST_SOURCE_FILE_EXTS = ['.haml']
   POST_SOURCE_METADATA = ['title', 'subtitle', 'splash_img', 'splash_img_credit', 'tags']
-  POST_TAG_DELIMITER = "\u0001"
 
   # Enforce sequential access to the post modification routines
   POST_CHANGE_LOCK = Mutex.new
@@ -189,14 +188,6 @@ module PostsHelper
     [category, file]
   end
 
-  def self.bundle_tags(tags)
-    tags.join POST_TAG_DELIMITER
-  end
-
-  def self.unbundle_tags(tags)
-    tags.split POST_TAG_DELIMITER
-  end
-
   def self.dir_watcher(modified, added, removed)
     [modified, added, removed].each_with_index do |files, index|
       # Rather than writing the code to loop through these arrays three times, we'll loop through them generically and use
@@ -221,8 +212,6 @@ module PostsHelper
     category, file_path = PostsHelper.path_to_cat_and_file_path path
     # get the post info
     post_fields = PostMetadataExtractor.extract_from_path path
-    # fix the tags
-    post_fields[:tags] = self.unbundle_tags post_fields[:tags]
 
     # construct the post hash for creating the object
     post_obj_hash = { title: post_fields.delete(:title),
