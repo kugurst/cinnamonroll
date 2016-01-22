@@ -1,8 +1,8 @@
-- content_for :post_title, 'Comments'
-- content_for :post_subtitle, 'Served three ways'
-- content_for :post_splash_img, 'comment_code.png'
-- content_for :post_tags, PostsHelper.bundle_tags(['cinnamonroll', 'mongoid', 'premature optimization', 'benchmark'])
-- content_for :post_byline, 'This post is part of a series of posts on creating this website'
+- @metadata = { title: 'Comments',
+                subtitle: 'Served three ways',
+                splash_img: 'comment_code.png',
+                tags: ['cinnamonroll', 'mongoid', 'premature optimization', 'benchmark'],
+                byline: 'This post is part of a series of posts on creating this website' }
 
 :markdown
   A feature I definitely wanted when making this website was commenting. Initially, I was going to just use Disqus on this journey of not reinventing the wheel, but I wanted to write a little more Ruby, so I decided to roll my own.

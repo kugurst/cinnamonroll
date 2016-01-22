@@ -1,4 +1,6 @@
 module PostMetadataExtractor
+  ARRAY_TYPE_STRING = "array"
+
   def self.extract_from_path(path, real_path = false)
     # which costs more, string construction or an if statement?
     path = path.to_s unless path.is_a? String
@@ -17,21 +19,27 @@ module PostMetadataExtractor
 
     metadata = {}
 
-    # Let's now try opening the file
-    File.open(path, 'r') do |f|
-      f.each_line do |line|
-        # This matches a line in HAML like:
-        #   - content_for :post_title, 'hello'
-        # and breaks it down into:
-        #   :title => 'hello'
-        # The funky bit captures a second argument that spans multiple lines, though I don't think that's legal in HAML
-        m = /^\s*-\s*content_for\s*:([^,]+),\s*(((?!^-|^=|^%|^#|^\.).)*)/m.match line
-        unless m.nil?
-          # m[1] is the symbol
-          key = m[1].split('post_', 2).last
-          # m[2] is the content data
-          val = eval m[2]
-          metadata[key.to_sym] = val
+    # Get the metadata of the post in XML form
+    pr = PostRenderer.new
+    xml_str = pr.render file: path, layout: 'posts/get_post_content_xml'
+    doc = Nokogiri::XML(xml_str)
+
+    # Parse it using xpath
+    xpath = doc.xpath("post")
+    # Iterate over each key-value pair
+    xpath.first.try(:children).try(:each) do |child|
+      # Avoids empty elements
+      unless child.name.casecmp('text') == 0
+        # We assume types are strings if not specified.
+        type = child[:type]
+        if type == ARRAY_TYPE_STRING
+          arr = []
+          child.children.each do |value|
+            arr << value.text unless value.blank?
+          end
+          metadata[child.name.to_sym] = arr
+        else
+          metadata[child.name.to_sym] = child.text
         end
       end
     end

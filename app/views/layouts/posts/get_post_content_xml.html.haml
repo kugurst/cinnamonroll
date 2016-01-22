@@ -1,0 +1,11 @@
+!!! XML
+
+%post
+  - @metadata.each do |k, v|
+    = capture_haml do
+      - if v.is_a? String
+        - haml_tag k, v
+      - elsif v.is_a? Array
+        - haml_tag k, type: PostMetadataExtractor::ARRAY_TYPE_STRING do
+          - v.each do |e|
+            %value= e

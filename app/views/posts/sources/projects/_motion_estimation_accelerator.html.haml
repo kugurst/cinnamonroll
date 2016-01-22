@@ -1,9 +1,9 @@
-- content_for :post_title, 'Motion Estimation Accelerator'
-- content_for :post_subtitle, 'Exploiting hardware parallelism on data parallel kernels'
-- content_for :post_splash_img, 'fumble.jpg'
-- content_for :post_splash_img_credit, 'http://en.wikipedia.org/wiki/American_football#/media/File:Arian_Foster_fumble.jpg'
-- content_for :post_tags, PostsHelper.bundle_tags(['hardware', 'systemc', 'zynq', 'fpga', 'images', 'kernel', 'parallelism', 'college'])
-- content_for :post_byline, 'Project Date: May 2015'
+- @metadata = { title: 'Motion Estimation Accelerator',
+                subtitle: 'Exploiting hardware parallelism on data parallel kernels',
+                splash_img: 'fumble.jpg',
+                splash_img_credit: 'http://en.wikipedia.org/wiki/American_football#/media/File:Arian_Foster_fumble.jpg',
+                tags: ['hardware', 'systemc', 'zynq', 'fpga', 'images', 'kernel', 'parallelism', 'college'],
+                byline: 'Project Date: May 2015' }
 
 :markdown
   #### Parallel&sup2;
@@ -12,7 +12,7 @@
 
   ### From Software to Hardware
 
-  Motion estimation is trying to determine the shift between two frames. It's an actively studied problem with implementations in the form of deblurring, image stabilization, and more applications. Due to the ever frame size (8K UHD is just around the corner, once we figure out some of the other [issues](http://www.extremetech.com/extreme/215584-j-display-demos-first-17-3-inch-8k-panel)), more efficient methods of motion estimation are necessary. One such study was done by [Stanley H. Chan, Dũng T. Võ, and Truong Q. Nguyen](http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=5495054&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D5495054), and it forms the basis of this project. I strongly recommend reading the paper, but it isn't strictly necessary as we'll be mostly discussing architectural design. Their approach to motion estimation is a combination of [block matching](https://en.wikipedia.org/wiki/Block-matching_algorithm) and [optical flow](https://en.wikipedia.org/wiki/Optical_flow), and we'll be talking about these two main tasks.
+  Motion estimation is trying to determine the shift between two frames. It's an actively studied problem with implementations in the form of deblurring, image stabilization, and more applications. Due to the ever increasing frame size (8K UHD is just around the corner, once we figure out some of the other [issues](http://www.extremetech.com/extreme/215584-j-display-demos-first-17-3-inch-8k-panel)), more efficient methods of motion estimation are necessary. One such study was done by [Stanley H. Chan, Dũng T. Võ, and Truong Q. Nguyen](http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=5495054&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D5495054), and it forms the basis of this project. I strongly recommend reading the paper, but it isn't strictly necessary as we'll be mostly discussing architectural design. Their approach to motion estimation is a combination of [block matching](https://en.wikipedia.org/wiki/Block-matching_algorithm) and [optical flow](https://en.wikipedia.org/wiki/Optical_flow), and we'll be talking about these two main tasks.
 
   #### Or a Happy Medium
 
