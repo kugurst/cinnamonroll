@@ -13,13 +13,13 @@
    + Currently, we need as splash image and a title
 
 ** What does a Post look like in the database?
-   + `:title`: this is the title of the post. It shows up at the top of the post, as well as on the category page
-   + `:category`: what sort of post is this?
-   + `:file_path`: the name on disk of the post file. It is discussed further in [[Post file locations]]
-   + `:tags`: strings that describe this post (further categorizing the post)
-   + `:u_at`: This special field contains the modification time of the post file itself
-     + `:created_at` and `:updated_at` are set by Mongoid, and represent the times at which this post was created in the database and last updated, respectively. Neither necessarily reflect when the actual post file was created or updated.
-   + `:related_posts`: a list of posts that this post is related to
+   + ~:title~: this is the title of the post. It shows up at the top of the post, as well as on the category page
+   + ~:category~: what sort of post is this?
+   + ~:file_path~: the name on disk of the post file. It is discussed further in [[Post file locations]]
+   + ~:tags~: strings that describe this post (further categorizing the post)
+   + ~:u_at~: This special field contains the modification time of the post file itself
+     + ~:created_at~ and ~:updated_at~ are set by Mongoid, and represent the times at which this post was created in the database and last updated, respectively. Neither necessarily reflect when the actual post file was created or updated.
+   + ~:related_posts~: a list of posts that this post is related to
 
 
 * Structure of a Post
@@ -28,30 +28,27 @@
   + Posts should specify their metadata in the beginning of the file. This isn't a strict requirement, but it provides a clear distinction between metadata and the rest of the content
 
 ** Metadata
-   + All post relevant metadata should begin with `post_`
+   You write metadata by adding it to a ~Hash~ with variable name ~@metadata~.
 
 *** Required Metadata
-    + `title`: The title of the post (must be unique across all posts (enforced at the database level))
-    + `splash_img`: The image that shows when category browsing
-
-*** Metadata caveats
-    + Tags should use `PostsHelper.bundle_tags` to properly transmit the tags
+    + ~title~: The title of the post (must be unique across all posts (enforced at the database level))
+    + ~splash_img~: The image that shows when category browsing
 
 * Post file locations
-  + `app/views/posts/sources`
-    + Contains all the post categories. Not limited to the categories specified in `PostsHelper::CATEGORY_DESCRIPTIONS`, but they should be added in order to properly display on the landing page
+  + ~app/views/posts/sources~
+    + Contains all the post categories. Not limited to the categories specified in ~PostsHelper::CATEGORY_DESCRIPTIONS~, but they should be added in order to properly display on the landing page
     + Posts are partials
-    + A list of file endings that will automatically be assumed to be posts are in `PostsHelper::POST_SOURCE_FILE_EXTS`
-  + Post pictures should be given under `public/img/posts/:category/:file_path`
+    + A list of file endings that will automatically be assumed to be posts are in ~PostsHelper::POST_SOURCE_FILE_EXTS~
+  + Post pictures should be given under ~public/img/posts/:category/:file_path~
     + Post pictures are retrieved from the :additional_info hash, so the actual filename of the image need not be the same as its representation in the post object
 
 * Best practices
-  + Be kind to *NIX. `:file_path`s should contain no spaces in the absolute path
-  + Though not necessary, the `:file_path` and `:title` of a post should be the "same". By "same", the `:file_path` == `:title`.downcase.gsub(' ', '_').
+  + Be kind to *NIX. ~:file_path~ should contain no spaces in the absolute path
+  + Though not necessary, the ~:file_path~ and ~:title~ of a post should be the "same". By "same", the ~:file_path == :title.downcase.gsub(' ', '_')~.
 
 * Putting it together: how to write a post
-  1) Make a file in `app/views/posts/sources/:category` (remember, partials in rails begin with an underscore)
-  2) Add a splash image under `public/img/posts/:category/:file_path`
+  1) Make a file in ~app/views/posts/sources/:category~ (remember, partials in rails begin with an underscore)
+  2) Add a splash image under ~public/img/posts/:category/:file_path~
   3) Add the metadata to the start of your source
-     + All you need is the `:title` and `:splash_img`
-  4) Write! (`PostsHelper` will take care of adding, updating, and removing (should you decide to) the post and its data, so you should never need to open up a console)
+     + All you need is the ~:title~ and ~:splash_img~
+  4) Write! (~PostsHelper~ will take care of adding, updating, and removing (should you decide to) the post and its data, so you should never need to open up a console)
