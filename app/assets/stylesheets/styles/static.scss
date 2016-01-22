@@ -23,10 +23,14 @@ $post-block-margin: 5%;
 $mobile-h1-size: 2.125rem*3/4;
 $mobile-post-margin-top: $mobile-h1-size*2;
 
+$header-bottom-margin: .5rem;
 .post-container {
   @include post-block-offset;
   @media only screen and (max-width: 40em) {
-    margin-top: $mobile-post-margin-top;
+    margin-top: $header-bottom-margin*2;
+    h1 {
+      margin-top: 0;
+    }
   }
 }
 
@@ -153,12 +157,21 @@ $mobile-post-margin-top: $mobile-h1-size*2;
   vertical-align: middle;
 }
 
+.mobile-post-title {
+  display: none;
+  @media only screen and (max-width: 40em) {
+    display: inherit;
+    text-align: center;
+    h1 {
+      font-weight: 600;
+    }
+  }
+}
+
 .image-overlay-text-center {
   @include horizontal-center-contents;
   @media only screen and (max-width: 40em) {
-    h3 {
-      display: none;
-    }
+    display: none;
   }
 }
 
@@ -465,6 +478,9 @@ $static-badge-color: saturate(lighten($header-color, 10%), 10%);
   font-family: $sans-font;
   text-align: center;
   margin-top: $browser-clear/6;
+  a {
+    word-wrap: break-word;
+  }
 }
 
 

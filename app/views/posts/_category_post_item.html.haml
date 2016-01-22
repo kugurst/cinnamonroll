@@ -1,5 +1,7 @@
 .post-container
   %a.post-link(href="#{post_cat_path_fallback(post)}")
+    .mobile-post-title
+      %h1= post.title
     .image-container
       = image_tag post.get_image_path(:splash_img), class: 'post-image'
       .image-overlay-text
